@@ -1,0 +1,17 @@
+.idea
+*.iml
+*.iws
+target/
+working/
+TestingRoom/
+email_config.properties
+start.bat
+config.properties
+email_list.txt
+
+email_config.txt
+log_config.txt
+orc.txt
+pom.xml
+res/
+src/
