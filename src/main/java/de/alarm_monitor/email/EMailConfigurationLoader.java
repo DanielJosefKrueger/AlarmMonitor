@@ -1,5 +1,6 @@
 package de.alarm_monitor.email;
 
+import net.sf.ehcache.config.InvalidConfigurationException;
 import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -41,18 +42,29 @@ public class EMailConfigurationLoader {
 
 
     private static void testSense(EMailConfiguration configuration) {
+
         testSmtpAuth(configuration);
+
+
     }
 
 
     private static void testSmtpAuth(EMailConfiguration configuration) {
 
-        String auth = configuration.smtpAuth();
-        if (auth == null) {
-            System.out.println("AUTH was null");
+        try{
+            configuration.smtpAuth();
+        }catch(Exception e){
+            throw new InvalidConfigurationException("Fehler beim Feld smtpAuth");
         }
 
+        String auth =configuration.smtpAuth();
+        if (auth == null) {
+            throw new InvalidConfigurationException("\"Fehler beim Feld smtpAuth\"");
+        }
     }
+
+
+
 
 
 }

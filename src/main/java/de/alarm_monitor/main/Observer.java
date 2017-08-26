@@ -15,6 +15,8 @@ public class Observer extends Thread {
     private static Logger log = LoggerFactory.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
 
+
+
     @Override
     public void run() {
         MainConfiguration configuration = MainConfigurationLoader.getConfig();
