@@ -19,7 +19,7 @@ public interface EMailConfiguration extends Config {
     @Key("Start_Tls")
     String startTls();
 
-    @Key("SMTP_Auths")
+    @Key("SMTP_Auth")
     String smtpAuth();
 
 
