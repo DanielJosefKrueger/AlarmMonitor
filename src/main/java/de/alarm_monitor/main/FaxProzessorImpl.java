@@ -3,10 +3,7 @@ package de.alarm_monitor.main;
 import de.alarm_monitor.email.EMailQueue;
 import de.alarm_monitor.ocr.OCRProcessor;
 import de.alarm_monitor.ocr.PNGParser;
-import de.alarm_monitor.test.DisplayChangeException;
-import de.alarm_monitor.test.OcrParserException;
-import de.alarm_monitor.test.PngParserException;
-import de.alarm_monitor.test.EMailSendException;
+import de.alarm_monitor.test.*;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -24,65 +21,65 @@ public class FaxProzessorImpl implements FaxProcessor {
     public static final String EINSATZNUMMER_KEY = "Einsatznummer";
     public static final String MITTEILER_KEY = "Mitteiler";
     public static final String BEMERKUNG_KEY = "Bemerkung";
-
-
-    private File pdf;
     private static final Logger LOG = LogManager.getLogger(FaxProzessorImpl.class);
 
+    private File pdf;
+
+    private final Boolean shouldSendEmails;
+
+
+    FaxProzessorImpl() {
+        MainConfiguration configuration = MainConfigurationLoader.getConfig();
+        this.shouldSendEmails = configuration.isEmailActive();
+    }
+
     @Override
-    public void prozessAlarmFax(File pdf) {
+    public void processAlarmFax(File pdf) {
         this.pdf = pdf;
-        String pathPng = null;
+        String pathPng;
         try {
             pathPng = pdfToPng(pdf);
             String text = extractTextOfPng(pathPng);
-            Map<String, String> informationen =  analyzeText(text);
+            Map<String, String> informationen = analyzeText(text);
             updateDisplay(informationen);
-            sendEmail(informationen);
-
-
+            if (shouldSendEmails) {
+                sendEmail(informationen);
+            }
         } catch (PngParserException e) {
-            //TODO
-            e.printStackTrace();
+            LOG.error("Fehler beim Umwandeln der .pdf-Datei in eine .png-Datei", e);
         } catch (OcrParserException e) {
-            //TODO
-            e.printStackTrace();
+            LOG.error("Fehler beim OCR der .png-Datei", e);
         } catch (EMailSendException e) {
-            //TODO
-            e.printStackTrace();
+            LOG.error("Fehler beim Versenden der Emails", e);
         } catch (DisplayChangeException e) {
-            e.printStackTrace();
+            LOG.error("Fehler beim Update der Bildschirmanzeige", e);
         }
-
-
     }
 
 
     private String pdfToPng(File pdf) throws PngParserException {
-        try{
+        try {
             return PNGParser.parsePdfToPng(pdf);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new PngParserException();
         }
     }
 
 
-
     private String extractTextOfPng(String pathPng) throws OcrParserException {
         OCRProcessor ocrProcessor = new OCRProcessor();
-        try{
+        try {
             return ocrProcessor.getOCROfFile(pathPng);
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new OcrParserException(e);
         }
     }
 
 
-
-    public Map<String, String> analyzeText(String fax) {
+    private Map<String, String> analyzeText(String fax) {
 
         String[] lines = fax.split("\n");
-        StringBuilder info = new StringBuilder();
+
         StringBuilder schlagwort = new StringBuilder();
         StringBuilder adresse = new StringBuilder();
         StringBuilder mittel = new StringBuilder();
@@ -95,11 +92,7 @@ public class FaxProzessorImpl implements FaxProcessor {
         Map<String, String> informationen = new HashMap<>();
 
 
-
-
-        String prevLine = "";
         boolean bemerkungSeen = false;
-
         for (String line : lines) {
             String[] splitted = line.split(" ");
 
@@ -107,10 +100,8 @@ public class FaxProzessorImpl implements FaxProcessor {
                 continue;
             }
 
-
             //Einsatznummer und Alarmzeit
             if (splitted[0].contains("Einsatznu")) {
-
                 int beginAlarmPart = line.indexOf("Alarm");
                 einsatzNummer.append(line.subSequence(0, beginAlarmPart));
                 alarmZeit.append(line.subSequence(beginAlarmPart, line.length()));
@@ -123,17 +114,17 @@ public class FaxProzessorImpl implements FaxProcessor {
 
             //Einsatzmittel
             if (splitted[0].contains("mittel") | (splitted.length > 1 && splitted[1].toLowerCase().contains("ger"))) {
-                mittel.append(line + "\n");
+                mittel.append(line).append("\n");
             }
 
             if (splitted[0].contains("Koordinate")) {
-                koordinate.append(line + "\n");
+                koordinate.append(line).append("\n");
             }
 
             if (splitted[0].contains("Stra") | splitted[0].contains("Abschnitt") | splitted[0].contains("Ort") | splitted[0].contains("Objekt")) {
-                adresse.append(line + "\n");
+                adresse.append(line).append("\n");
             } else if (splitted[0].contains("Schlagw")) {
-                schlagwort.append(line + "\n");
+                schlagwort.append(line).append("\n");
             }
 
             if (bemerkungSeen) {
@@ -143,14 +134,14 @@ public class FaxProzessorImpl implements FaxProcessor {
             if (line.contains("BEMERKUNG")) {
                 bemerkungSeen = true;
             }
-            prevLine = line;
+
         }
 
         //for information
-        LOG.debug("Grund: "+ schlagwort);
-        LOG.debug("Adresse: "+ adresse);
-        LOG.debug("Koordidnate : "+ koordinate);
-        LOG.debug("Information: "+ info);
+        LOG.debug("Grund: " + schlagwort);
+        LOG.debug("Adresse: " + adresse);
+        LOG.debug("Koordidnate : " + koordinate);
+        LOG.debug("Bemerkung: " + bemerkung);
         LOG.debug("Mittel: " + mittel);
 
         informationen.put(SCHLAGWORT_KEY, schlagwort.toString());
@@ -160,27 +151,24 @@ public class FaxProzessorImpl implements FaxProcessor {
         informationen.put(EINSATZNUMMER_KEY, einsatzNummer.toString());
         informationen.put(MITTEILER_KEY, mitteiler.toString());
         informationen.put(BEMERKUNG_KEY, bemerkung.toString());
-
         return informationen;
     }
 
 
-
-
     private void updateDisplay(Map<String, String> informationen) throws DisplayChangeException {
-try{
-    IDisplay display = Start.getDisplay();
-    display.changeSchlagwort(informationen.get(SCHLAGWORT_KEY));
-    display.changeAdresse(informationen.get(ADRESSE_KEY));
-    display.changeEinsatzmittel(informationen.get(EINSATZMITTEL_KEY));
-    display.changeAlarmzeit(informationen.get(ALARMZEIT_KEY));
-    display.ChangeEinsatznummer(informationen.get(EINSATZNUMMER_KEY));
-    display.changeName(informationen.get(MITTEILER_KEY));
-    display.changeBemerkung(informationen.get(BEMERKUNG_KEY));
+        try {
+            IDisplay display = Start.getDisplay();
+            display.changeSchlagwort(informationen.get(SCHLAGWORT_KEY));
+            display.changeAdresse(informationen.get(ADRESSE_KEY));
+            display.changeEinsatzmittel(informationen.get(EINSATZMITTEL_KEY));
+            display.changeAlarmzeit(informationen.get(ALARMZEIT_KEY));
+            display.ChangeEinsatznummer(informationen.get(EINSATZNUMMER_KEY));
+            display.changeName(informationen.get(MITTEILER_KEY));
+            display.changeBemerkung(informationen.get(BEMERKUNG_KEY));
 
-}catch(Exception e){
-    throw new DisplayChangeException(e);
-}
+        } catch (Exception e) {
+            throw new DisplayChangeException(e);
+        }
 
 
     }
@@ -189,20 +177,24 @@ try{
     private void sendEmail(Map<String, String> informationen) throws EMailSendException {
         StringBuilder email = new StringBuilder();
         email.append("Informationen zum Alarm\n");
-        email.append(informationen.get(EINSATZNUMMER_KEY)+ "\n");
-        email.append(informationen.get(ALARMZEIT_KEY)+ "\n");
-        email.append(informationen.get(MITTEILER_KEY)+ "\n");
-        email.append(informationen.get(SCHLAGWORT_KEY)+ "\n");
-        email.append(informationen.get(BEMERKUNG_KEY)+ "\n");
-        email.append(informationen.get(ADRESSE_KEY)+ "\n");
-        email.append(informationen.get(EINSATZMITTEL_KEY)+ "\n");
+        email.append(informationen.get(EINSATZNUMMER_KEY)).append("\n");
+        email.append(informationen.get(ALARMZEIT_KEY)).append("\n");
+        email.append(informationen.get(MITTEILER_KEY)).append("\n");
+        email.append(informationen.get(SCHLAGWORT_KEY)).append("\n");
+        email.append(informationen.get(BEMERKUNG_KEY)).append("\n");
+        email.append(informationen.get(ADRESSE_KEY)).append("\n");
+        email.append(informationen.get(EINSATZMITTEL_KEY)).append("\n");
 
-        try{
+        try {
             EMailQueue queue = new EMailQueue();
             queue.broadcast(email.toString(), "TestPdf");
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new EMailSendException();
         }
     }
+
+
+
+
 
 }

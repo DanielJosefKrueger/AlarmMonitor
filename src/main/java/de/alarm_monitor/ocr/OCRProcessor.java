@@ -1,7 +1,6 @@
 package de.alarm_monitor.ocr;
 
 
-import de.alarm_monitor.test.BadOrcFileException;
 import de.alarm_monitor.main.MainConfiguration;
 import de.alarm_monitor.main.MainConfigurationLoader;
 import org.apache.tika.exception.TikaException;
@@ -16,7 +15,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.xml.sax.SAXException;
 
-import java.io.*;
+import java.io.BufferedReader;
+import java.io.FileInputStream;
+import java.io.IOException;
+import java.io.InputStreamReader;
 import java.util.HashMap;
 import java.util.Map;
 
@@ -66,7 +68,7 @@ public class OCRProcessor {
         return content;
     }
 
-    private  String correctOCR(String text) {
+    private String correctOCR(String text) throws IOException {
         if (mapping == null) {
             initiateOcrMapping();
         }
@@ -78,14 +80,10 @@ public class OCRProcessor {
 
     }
 
-    private void initiateOcrMapping() {
+    private void initiateOcrMapping() throws IOException {
 
         if (mapping == null) {
-
-
             try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(configuration.path_ocr()), "Cp1252"))) {
-
-
                 mapping = new HashMap<>();
                 String line = in.readLine();
                 while (line != null) {
@@ -95,17 +93,13 @@ public class OCRProcessor {
                     }
                     String[] splitted = line.split(" ");
                     if (splitted.length != 2) {
-                        throw new BadOrcFileException("Fehler in ORC-File");
+                        //TODO error loggen weitermachen
+                        continue;
                     }
                     mapping.put(splitted[0], splitted[1]);
                     line = in.readLine();
                 }
-            } catch (IOException | BadOrcFileException e) {
-                log.error("", e);
             }
-
         }
-
     }
-
 }

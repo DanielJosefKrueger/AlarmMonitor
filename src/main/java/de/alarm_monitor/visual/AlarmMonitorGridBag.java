@@ -1,11 +1,11 @@
 
 package de.alarm_monitor.visual;
 
-        import javax.swing.*;
-        import javax.swing.border.LineBorder;
-        import java.awt.*;
-        import java.awt.event.ActionEvent;
-        import java.awt.event.ActionListener;
+import javax.swing.*;
+import javax.swing.border.LineBorder;
+import java.awt.*;
+import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 
 
 public class AlarmMonitorGridBag extends JFrame implements IDisplay {
@@ -169,7 +169,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
 
 	/*
-	public static void main(String[] args){
+    public static void main(String[] args){
 		new DisplayNew();
 
 	}*/

@@ -19,4 +19,14 @@ public interface MainConfiguration extends Config {
     @Key("path_ocr")
     String path_ocr();
 
+    @Key("email_active")
+    boolean isEmailActive();
+
+    @Key("printing_active")
+    boolean isPrintingActive();
+
+
+    @Key("number_copies")
+    int numerOfCopies();
+
 }

@@ -1,6 +1,6 @@
 package de.alarm_monitor.test;
 
-public class DisplayChangeException extends Exception{
+public class DisplayChangeException extends Exception {
     public DisplayChangeException() {
     }
 

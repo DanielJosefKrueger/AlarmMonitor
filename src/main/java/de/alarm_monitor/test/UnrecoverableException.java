@@ -1,6 +1,6 @@
 package de.alarm_monitor.test;
 
-public class UnrecoverableException extends Exception{
+public class UnrecoverableException extends Exception {
     public UnrecoverableException() {
     }
 

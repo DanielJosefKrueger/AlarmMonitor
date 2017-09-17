@@ -10,17 +10,24 @@ import java.awt.print.Paper;
 import java.awt.print.PrinterException;
 import java.awt.print.PrinterJob;
 import java.io.File;
+import java.io.IOException;
 
 public class Printer {
 
     private static final Logger log = LoggerFactory.getLogger(Printer.class);
 
 
-    public static void print(PDDocument doc) {
+    public static void print(PDDocument doc, int numberOfCopies) {
 
         if (doc == null) {
-            return;
+            throw new NullPointerException();
         }
+
+        if (numberOfCopies < 1) {
+            throw new IllegalArgumentException("Number of copies was " + numberOfCopies);
+        }
+
+
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
             PageFormat pf = job.defaultPage(); // standard PageFormat holen (bei
@@ -30,7 +37,7 @@ public class Printer {
             temp.setImageableArea(0, 0, temp.getWidth(), temp.getHeight());
             pf.setPaper(temp); // Den Bedruckbaren Rand auf Seitengr��e anpassen
             job.setPrintable(new PDFPrintable(doc), pf);
-
+            job.setCopies(numberOfCopies);
             job.print();
         } catch (PrinterException e) {
             log.error("", e);
@@ -38,8 +45,30 @@ public class Printer {
         }
     }
 
+    public static void print(File file, int numberOfCopies) throws PrinterException, IOException {
 
-    public static void main(String[] args) {
+        if (file == null) {
+            throw new NullPointerException();
+        }
+        if (numberOfCopies < 1) {
+            throw new IllegalArgumentException("Number of copies was " + numberOfCopies);
+        }
+
+        PDDocument doc = PDDocument.load(file);
+        PrinterJob job = PrinterJob.getPrinterJob();
+        PageFormat pf = job.defaultPage(); // standard PageFormat holen (bei
+        // uns a4 - beinhaltet groe�e in
+        // pixeln und r�nder
+        Paper temp = pf.getPaper();
+        temp.setImageableArea(0, 0, temp.getWidth(), temp.getHeight());
+        pf.setPaper(temp); // Den Bedruckbaren Rand auf Seitengr��e anpassen
+        job.setPrintable(new PDFPrintable(doc), pf);
+        job.setCopies(numberOfCopies);
+        job.print();
+    }
+
+
+   /* public static void main(String[] args) {
         try {
             PrinterJob job = PrinterJob.getPrinterJob();
 
@@ -58,6 +87,6 @@ public class Printer {
         } catch (Exception e) {
             log.error("", e);
         }
-    }
+    }*/
 
 }

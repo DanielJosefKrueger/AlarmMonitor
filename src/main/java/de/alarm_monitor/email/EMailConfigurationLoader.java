@@ -1,10 +1,10 @@
 package de.alarm_monitor.email;
 
 
+import de.alarm_monitor.test.InvalidConfigurationException;
 import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import de.alarm_monitor.test.InvalidConfigurationException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -42,7 +42,7 @@ public class EMailConfigurationLoader {
     }
 
 
-    private static void testSense(EMailConfiguration configuration)  {
+    private static void testSense(EMailConfiguration configuration) {
 
 
         try {
@@ -55,22 +55,19 @@ public class EMailConfigurationLoader {
     }
 
 
-    private static void testSmtpAuth(EMailConfiguration configuration) throws InvalidConfigurationException{
+    private static void testSmtpAuth(EMailConfiguration configuration) throws InvalidConfigurationException {
 
-        try{
+        try {
             configuration.smtpAuth();
-        }catch(Exception e){
+        } catch (Exception e) {
             throw new InvalidConfigurationException("Fehler beim Feld smtpAuth");
         }
 
-        String auth =configuration.smtpAuth();
+        String auth = configuration.smtpAuth();
         if (auth == null) {
             throw new InvalidConfigurationException("\"Fehler beim Feld smtpAuth\"");
         }
     }
-
-
-
 
 
 }

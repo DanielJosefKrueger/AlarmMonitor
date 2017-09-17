@@ -22,7 +22,7 @@ public class EMailSender {
 
         Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
-			props.put("mail.smtp.starttls.enable", "true");
+            props.put("mail.smtp.starttls.enable", "true");
 			props.put("mail.smtp.host", "smtp-mail.outlook.com");
 			props.put("mail.smtp.port", "587");*/
 

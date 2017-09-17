@@ -16,7 +16,6 @@ public class Observer extends Thread {
     private List<NewPdfCallback> callbacks = new ArrayList<>();
 
 
-
     @Override
     public void run() {
         MainConfiguration configuration = MainConfigurationLoader.getConfig();
@@ -59,7 +58,7 @@ public class Observer extends Thread {
                         System.out.println("Alarm: new File " + s);
                         //wait for file to be completely stored
                         int counter = 0;
-                        while(counter <10 && !file.toFile().canRead()){
+                        while (counter < 10 && !file.toFile().canRead()) {
                             Thread.sleep(100);
                             System.out.println(counter);
                             counter++;

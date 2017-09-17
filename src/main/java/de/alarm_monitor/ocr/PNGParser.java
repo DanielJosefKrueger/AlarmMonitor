@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
@@ -18,27 +19,22 @@ public class PNGParser {
 
     private static Logger log = LoggerFactory.getLogger(PNGParser.class);
 
-    public static String parsePdfToPng(File file) {
+    public static String parsePdfToPng(File file) throws IOException {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd MM YYYY HH mm ss");
         String time = sdf.format(cal.getTime());
 
         String name = MainConfigurationLoader.getConfig().path_working() + time.toString() + ".png";
-        try {
-            PDDocument document = PDDocument.load(file);
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
 
-            for (int page = 0; page < document.getNumberOfPages(); ++page) {
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
-                ImageIOUtil.writeImage(bim, name, 300);
-            }
-            document.close();
+        PDDocument document = PDDocument.load(file);
+        PDFRenderer pdfRenderer = new PDFRenderer(document);
 
-        } catch (Exception e) {
-            log.error("", e);
-            e.printStackTrace();
+        for (int page = 0; page < document.getNumberOfPages(); ++page) {
+            BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
+            ImageIOUtil.writeImage(bim, name, 300);
         }
+        document.close();
         return name;
     }
 
