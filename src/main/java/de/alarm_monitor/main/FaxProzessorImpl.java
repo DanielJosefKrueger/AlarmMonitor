@@ -6,7 +6,7 @@ import de.alarm_monitor.ocr.PNGParser;
 import de.alarm_monitor.test.DisplayChangeException;
 import de.alarm_monitor.test.OcrParserException;
 import de.alarm_monitor.test.PngParserException;
-import de.alarm_monitor.test.eMailSendException;
+import de.alarm_monitor.test.EMailSendException;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.log4j.LogManager;
 import org.apache.log4j.Logger;
@@ -37,7 +37,9 @@ public class FaxProzessorImpl implements FaxProcessor {
             pathPng = pdfToPng(pdf);
             String text = extractTextOfPng(pathPng);
             Map<String, String> informationen =  analyzeText(text);
-            sendEmail(emailText);
+            updateDisplay(informationen);
+            sendEmail(informationen);
+
 
         } catch (PngParserException e) {
             //TODO
@@ -45,11 +47,12 @@ public class FaxProzessorImpl implements FaxProcessor {
         } catch (OcrParserException e) {
             //TODO
             e.printStackTrace();
-        } catch (eMailSendException e) {
+        } catch (EMailSendException e) {
             //TODO
             e.printStackTrace();
+        } catch (DisplayChangeException e) {
+            e.printStackTrace();
         }
-
 
 
     }
@@ -67,7 +70,6 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     private String extractTextOfPng(String pathPng) throws OcrParserException {
         OCRProcessor ocrProcessor = new OCRProcessor();
-        String text = null;
         try{
             return ocrProcessor.getOCROfFile(pathPng);
         }catch(Exception e){
@@ -184,27 +186,23 @@ try{
     }
 
 
-    private void sendEmail(Map<String, String> informationen) throws eMailSendException {
+    private void sendEmail(Map<String, String> informationen) throws EMailSendException {
         StringBuilder email = new StringBuilder();
         email.append("Informationen zum Alarm\n");
-
-        email.append(einsatzNummer + "\n");
-        email.append(alarmZeit + "\n");
-        email.append(mitteiler + "\n");
-        email.append(schlagwort + "\n");
-        email.append(bemerkung + "\n");
-        email.append(adresse + "\n");
-        email.append(mittel + "\n");
-        return email.toString();
+        email.append(informationen.get(EINSATZNUMMER_KEY)+ "\n");
+        email.append(informationen.get(ALARMZEIT_KEY)+ "\n");
+        email.append(informationen.get(MITTEILER_KEY)+ "\n");
+        email.append(informationen.get(SCHLAGWORT_KEY)+ "\n");
+        email.append(informationen.get(BEMERKUNG_KEY)+ "\n");
+        email.append(informationen.get(ADRESSE_KEY)+ "\n");
+        email.append(informationen.get(EINSATZMITTEL_KEY)+ "\n");
 
         try{
             EMailQueue queue = new EMailQueue();
             queue.broadcast(email.toString(), "TestPdf");
         }catch(Exception e){
-            throw new eMailSendException();
+            throw new EMailSendException();
         }
-
-
     }
 
 }
