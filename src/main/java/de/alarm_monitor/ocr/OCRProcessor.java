@@ -1,7 +1,7 @@
 package de.alarm_monitor.ocr;
 
 
-import de.alarm_monitor.exception.BadOrcFileException;
+import de.alarm_monitor.test.BadOrcFileException;
 import de.alarm_monitor.main.MainConfiguration;
 import de.alarm_monitor.main.MainConfigurationLoader;
 import org.apache.tika.exception.TikaException;

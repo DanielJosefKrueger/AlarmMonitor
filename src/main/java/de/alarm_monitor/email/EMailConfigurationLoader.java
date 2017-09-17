@@ -1,9 +1,10 @@
 package de.alarm_monitor.email;
 
-import net.sf.ehcache.config.InvalidConfigurationException;
+
 import org.aeonbits.owner.ConfigFactory;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import de.alarm_monitor.test.InvalidConfigurationException;
 
 import java.io.File;
 import java.io.FileReader;
@@ -41,15 +42,20 @@ public class EMailConfigurationLoader {
     }
 
 
-    private static void testSense(EMailConfiguration configuration) {
+    private static void testSense(EMailConfiguration configuration)  {
 
-        testSmtpAuth(configuration);
+
+        try {
+            testSmtpAuth(configuration);
+        } catch (InvalidConfigurationException e) {
+            e.printStackTrace();
+        }
 
 
     }
 
 
-    private static void testSmtpAuth(EMailConfiguration configuration) {
+    private static void testSmtpAuth(EMailConfiguration configuration) throws InvalidConfigurationException{
 
         try{
             configuration.smtpAuth();

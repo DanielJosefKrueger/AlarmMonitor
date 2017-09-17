@@ -1,10 +1,7 @@
-package de.alarm_monitor.exception;
+package de.alarm_monitor.test;
 
 public class BadOrcFileException extends Exception {
 
-    /**
-     *
-     */
     private static final long serialVersionUID = 8656571236792820060L;
 
     public BadOrcFileException() {

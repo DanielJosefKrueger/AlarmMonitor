@@ -1,4 +1,4 @@
-package de.alarm_monitor.exception;
+package de.alarm_monitor.test;
 
 public class InvalidConfigurationException extends Exception {
 
