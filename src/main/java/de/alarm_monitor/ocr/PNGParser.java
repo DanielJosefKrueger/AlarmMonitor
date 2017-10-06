@@ -1,14 +1,13 @@
 package de.alarm_monitor.ocr;
 
 
-import de.alarm_monitor.main.MainConfigurationLoader;
+import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.rendering.ImageType;
 import org.apache.pdfbox.rendering.PDFRenderer;
 import org.apache.pdfbox.tools.imageio.ImageIOUtil;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.awt.image.BufferedImage;
 import java.io.File;
 import java.io.IOException;
@@ -17,7 +16,7 @@ import java.util.Calendar;
 
 public class PNGParser {
 
-    private static Logger log = LoggerFactory.getLogger(PNGParser.class);
+    private static Logger log = LogManager.getLogger(PNGParser.class);
 
     public static String parsePdfToPng(File file) throws IOException {
 
@@ -25,7 +24,7 @@ public class PNGParser {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MM YYYY HH mm ss");
         String time = sdf.format(cal.getTime());
 
-        String name = MainConfigurationLoader.getConfig().path_working() + time.toString() + ".png";
+        String name = SystemInformationenImpl.get().getWorkingFolder().getPath()+ File.separatorChar + time.toString() + ".png";
 
         PDDocument document = PDDocument.load(file);
         PDFRenderer pdfRenderer = new PDFRenderer(document);
@@ -37,5 +36,4 @@ public class PNGParser {
         document.close();
         return name;
     }
-
 }

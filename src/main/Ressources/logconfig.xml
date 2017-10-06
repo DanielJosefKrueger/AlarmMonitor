@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<configuration>
+
+
+    <Appenders>
+        <RollingFile name="ROLLING" fileName="logs/alarmmonitor.log"
+                     filePattern="logs/alarmmonitor-%d{yyyy-MM-dd}.log">
+            <PatternLayout>
+                <pattern>[%-5level] %d{yyyy-MM-dd HH:mm:ss.SSS} %c{1} - %msg%n</pattern>
+            </PatternLayout>
+            <Policies>
+                    <TimeBasedTriggeringPolicy />
+                    <SizeBasedTriggeringPolicy size="0.001 MB"/>
+            </Policies>
+            <DefaultRolloverStrategy max="10"/>
+        </RollingFile>
+        <File name="FILE" fileName="logs/alarmmonitor_normal.log">
+            <PatternLayout pattern="%d %p %c: %m%n" />
+        </File>
+    </Appenders>
+
+
+    <Loggers>
+        <Root level="trace">
+            <AppenderRef ref="ROLLING"/>
+            <AppenderRef ref="FILE"/>
+        </Root>
+    </Loggers>
+
+</configuration>

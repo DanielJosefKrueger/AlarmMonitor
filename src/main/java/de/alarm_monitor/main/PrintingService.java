@@ -7,15 +7,15 @@ import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
 
-public class PrintingService extends Thread{
-
+public class PrintingService extends Thread {
 
 
     private final File toPrint;
     private final int numberOfCopies;
     private final Boolean shouldPrint;
-    PrintingService(File toPrint){
-        this.toPrint =toPrint;
+
+    PrintingService(File toPrint) {
+        this.toPrint = toPrint;
         MainConfiguration configuration = MainConfigurationLoader.getConfig();
         this.numberOfCopies = configuration.numerOfCopies();
         this.shouldPrint = configuration.isPrintingActive();
@@ -24,9 +24,9 @@ public class PrintingService extends Thread{
 
     @Override
     public void run() {
-        if(!shouldPrint){
+        if (!shouldPrint) {
             return;
-        }else{
+        } else {
             try {
                 Printer.print(toPrint, numberOfCopies);
             } catch (IOException e) {

@@ -1,7 +1,7 @@
 package de.alarm_monitor.email;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
@@ -11,7 +11,7 @@ import java.util.Properties;
 
 public class EMailSender {
 
-    final static Logger log = LoggerFactory.getLogger(EMailSender.class);
+    final static Logger log = LogManager.getLogger(EMailSender.class);
     private final EMailConfiguration config;
 
     public EMailSender() {

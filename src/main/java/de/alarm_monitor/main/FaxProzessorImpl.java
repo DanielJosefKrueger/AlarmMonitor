@@ -5,14 +5,16 @@ import de.alarm_monitor.ocr.OCRProcessor;
 import de.alarm_monitor.ocr.PNGParser;
 import de.alarm_monitor.test.*;
 import de.alarm_monitor.visual.IDisplay;
-import org.apache.log4j.LogManager;
-import org.apache.log4j.Logger;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
+
 
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FaxProzessorImpl implements FaxProcessor {
+
 
     private final static String EINSATZMITTEL_KEY = "Einsatzmittel";
     private final static String SCHLAGWORT_KEY = "Schlagwort";
@@ -26,11 +28,25 @@ public class FaxProzessorImpl implements FaxProcessor {
     private File pdf;
 
     private final Boolean shouldSendEmails;
+    private final Boolean shouldFilterEinsatzMittel;
+    private final String filter;
 
 
     FaxProzessorImpl() {
         MainConfiguration configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
+
+        if(configuration.should_filter_einsatzmittel()){
+            if(configuration.filter_einsatzmittel().length() > 2){
+                shouldFilterEinsatzMittel = true;
+            }else{
+                LOG.error("Filter der Einsatzmittel wurde deaktiviert, da kein Filter gesetzt wurde");
+                shouldFilterEinsatzMittel = false;
+            }
+        }else{
+            shouldFilterEinsatzMittel = false;
+        }
+        this.filter = configuration.filter_einsatzmittel();
     }
 
     @Override
@@ -93,6 +109,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
         boolean bemerkungSeen = false;
+        String previousLine ="";
         for (String line : lines) {
             String[] splitted = line.split(" ");
 
@@ -114,7 +131,26 @@ public class FaxProzessorImpl implements FaxProcessor {
 
             //Einsatzmittel
             if (splitted[0].contains("mittel") | (splitted.length > 1 && splitted[1].toLowerCase().contains("ger"))) {
-                mittel.append(line).append("\n");
+
+                if(!shouldFilterEinsatzMittel){
+                    mittel.append(line).append("\n");
+                }else{
+                    if(line.contains(filter)){
+                        mittel.append(line).append("\n");
+                    }
+
+                    if(line.toLowerCase().contains("ger")){
+                        if(previousLine.contains(filter)){
+                            mittel.append(line);
+                        }
+
+                    }
+                }
+
+
+
+
+
             }
 
             if (splitted[0].contains("Koordinate")) {
@@ -134,7 +170,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             if (line.contains("BEMERKUNG")) {
                 bemerkungSeen = true;
             }
-
+            previousLine = line;
         }
 
         //for information
@@ -143,6 +179,9 @@ public class FaxProzessorImpl implements FaxProcessor {
         LOG.debug("Koordidnate : " + koordinate);
         LOG.debug("Bemerkung: " + bemerkung);
         LOG.debug("Mittel: " + mittel);
+
+
+
 
         informationen.put(SCHLAGWORT_KEY, schlagwort.toString());
         informationen.put(ADRESSE_KEY, adresse.toString());
@@ -192,9 +231,6 @@ public class FaxProzessorImpl implements FaxProcessor {
             throw new EMailSendException();
         }
     }
-
-
-
 
 
 }

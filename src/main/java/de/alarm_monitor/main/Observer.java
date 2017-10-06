@@ -1,8 +1,8 @@
 package de.alarm_monitor.main;
 
 import de.alarm_monitor.callback.NewPdfCallback;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.IOException;
 import java.nio.file.*;
@@ -12,7 +12,7 @@ import java.util.List;
 public class Observer extends Thread {
 
 
-    private static Logger log = LoggerFactory.getLogger(Observer.class);
+    private static Logger log = LogManager.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
 
 
@@ -64,9 +64,11 @@ public class Observer extends Thread {
                             counter++;
                         }
 
+
                         //callbacks
                         for (NewPdfCallback callback : callbacks) {
-                            callback.onNewPdfFile(file.toFile());
+                            ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());
+                            handler.start();
                         }
                     }
 

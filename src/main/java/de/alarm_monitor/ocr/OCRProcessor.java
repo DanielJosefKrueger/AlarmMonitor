@@ -3,6 +3,7 @@ package de.alarm_monitor.ocr;
 
 import de.alarm_monitor.main.MainConfiguration;
 import de.alarm_monitor.main.MainConfigurationLoader;
+import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -11,20 +12,17 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.parser.pdf.PDFParserConfig;
 import org.apache.tika.sax.BodyContentHandler;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
-import java.io.BufferedReader;
-import java.io.FileInputStream;
-import java.io.IOException;
-import java.io.InputStreamReader;
+import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
 public class OCRProcessor {
 
-    private final static Logger log = LoggerFactory.getLogger(OCRProcessor.class);
+    private final static Logger log = LogManager.getLogger(OCRProcessor.class);
     private static String tPath = null;
     private MainConfiguration configuration;
     private HashMap<String, String> mapping = null;
@@ -83,7 +81,8 @@ public class OCRProcessor {
     private void initiateOcrMapping() throws IOException {
 
         if (mapping == null) {
-            try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(configuration.path_ocr()), "Cp1252"))) {
+            String file = SystemInformationenImpl.get().getConfigFolder().getPath() + File.separator + "ocr.txt";
+            try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Cp1252"))) {
                 mapping = new HashMap<>();
                 String line = in.readLine();
                 while (line != null) {

@@ -1,7 +1,8 @@
 package de.alarm_monitor.email;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import de.alarm_monitor.main.SystemInformationenImpl;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.*;
 import java.util.ArrayList;
@@ -14,7 +15,7 @@ public class EMailQueue {
     private static final String EMAIL_List_PATH = "email_list.txt";
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
-    Logger log = LoggerFactory.getLogger(EMailQueue.class);
+    Logger log = LogManager.getLogger(EMailQueue.class);
 
 
     public EMailQueue() {
@@ -23,12 +24,14 @@ public class EMailQueue {
     }
 
     public void loadReceiverList() {
-        try (BufferedReader in = new BufferedReader(new FileReader(new File(EMAIL_List_PATH)))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(new File(SystemInformationenImpl.get().getConfigFolder(),EMAIL_List_PATH)))) {
             String line = in.readLine();
             String[] split = line.split(";");
             for (String s : split) {
-                log.info("Adding {} to Recervers", s);
-                receivers.add(s);
+                if (s.length() > 2) {
+                    log.info("Adding {} to Recervers", s);
+                    receivers.add(s);
+                }
             }
         } catch (FileNotFoundException e) {
             log.error("", e);

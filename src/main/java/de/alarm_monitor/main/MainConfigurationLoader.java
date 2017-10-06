@@ -21,7 +21,7 @@ public class MainConfigurationLoader {
 
     public static MainConfiguration getConfig() {
 
-        File file = new File(CONFIG_PATH);
+        File file = new File(SystemInformationenImpl.get().getConfigFolder(),CONFIG_PATH);
 
         if (!file.canRead()) {
             log.error("Die Konfigurationsdatei {} konnte nicht geladen werden", file.getAbsoluteFile());
@@ -30,7 +30,7 @@ public class MainConfigurationLoader {
         if (singleton != null) {
             return singleton;
         }
-        try (FileReader in = new FileReader(new File(CONFIG_PATH))) {
+        try (FileReader in = new FileReader(new File(SystemInformationenImpl.get().getConfigFolder(),CONFIG_PATH))) {
             Properties props = new Properties();
             props.load(in);
             System.out.println(props);

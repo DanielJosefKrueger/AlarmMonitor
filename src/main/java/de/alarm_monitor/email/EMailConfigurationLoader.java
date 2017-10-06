@@ -1,11 +1,11 @@
 package de.alarm_monitor.email;
 
 
+import de.alarm_monitor.main.SystemInformationenImpl;
 import de.alarm_monitor.test.InvalidConfigurationException;
 import org.aeonbits.owner.ConfigFactory;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import java.io.File;
 import java.io.FileReader;
 import java.io.IOException;
@@ -13,9 +13,9 @@ import java.util.Properties;
 
 public class EMailConfigurationLoader {
 
-    public final static String EMAIL_CONFIG_PATH = "email_config.properties";
+    public final static String EMAIL_CONFIG_FILR = "email_config.properties";
     public final static String EMAIL_List_PATH = "email_list.txt";
-    final static Logger log = LoggerFactory.getLogger(EMailConfigurationLoader.class);
+    final static Logger log = LogManager.getLogger(EMailConfigurationLoader.class);
     private static EMailConfiguration singleton;
 
     private EMailConfigurationLoader() {
@@ -29,7 +29,7 @@ public class EMailConfigurationLoader {
         if (singleton != null) {
             return singleton;
         }
-        try (FileReader in = new FileReader(new File(EMAIL_CONFIG_PATH))) {
+        try (FileReader in = new FileReader(new File(SystemInformationenImpl.get().getConfigFolder(), EMAIL_CONFIG_FILR))) {
             Properties props = new Properties();
             props.load(in);
             EMailConfiguration cfg = ConfigFactory.create(EMailConfiguration.class, props);

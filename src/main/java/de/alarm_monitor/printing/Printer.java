@@ -2,8 +2,8 @@ package de.alarm_monitor.printing;
 
 import org.apache.pdfbox.pdmodel.PDDocument;
 import org.apache.pdfbox.printing.PDFPrintable;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;
@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Printer {
 
-    private static final Logger log = LoggerFactory.getLogger(Printer.class);
+    private static final Logger log = LogManager.getLogger(Printer.class);
 
 
     public static void print(PDDocument doc, int numberOfCopies) {
