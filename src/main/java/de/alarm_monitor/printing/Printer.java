@@ -14,7 +14,7 @@ import java.io.IOException;
 
 public class Printer {
 
-    private static final Logger log = LogManager.getLogger(Printer.class);
+    private static final Logger logger = LogManager.getLogger(Printer.class);
 
 
     public static void print(PDDocument doc, int numberOfCopies) {
@@ -40,7 +40,7 @@ public class Printer {
             job.setCopies(numberOfCopies);
             job.print();
         } catch (PrinterException e) {
-            log.error("", e);
+            logger.error("", e);
             e.printStackTrace();
         }
     }
@@ -85,7 +85,7 @@ public class Printer {
 
             job.print();
         } catch (Exception e) {
-            log.error("", e);
+            logger.error("", e);
         }
     }*/
 

@@ -16,7 +16,7 @@ import java.util.Calendar;
 
 public class PNGParser {
 
-    private static Logger log = LogManager.getLogger(PNGParser.class);
+    private static Logger logger = LogManager.getLogger(PNGParser.class);
 
     public static String parsePdfToPng(File file) throws IOException {
 

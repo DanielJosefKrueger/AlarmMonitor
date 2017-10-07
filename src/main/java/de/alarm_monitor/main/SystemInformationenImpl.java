@@ -12,7 +12,7 @@ public class SystemInformationenImpl implements SystemInformationen {
 
     private static final String configFolderSuffix = "config"+ File.separator;
     private static final String workingFolderSuffix = "working"+ File.separator;
-    private static final String logFolderSuffix = "log"+ File.separator;
+    private static final String logFolderSuffix = "logger"+ File.separator;
 
     private static SystemInformationenImpl singleton;
 

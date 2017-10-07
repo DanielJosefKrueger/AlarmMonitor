@@ -14,17 +14,18 @@
             </Policies>
             <DefaultRolloverStrategy max="10"/>
         </RollingFile>
-        <File name="FILE" fileName="logs/alarmmonitor_normal.log">
-            <PatternLayout pattern="%d %p %c: %m%n" />
-        </File>
+        <Console name="CONSOLE" target="SYSTEM_OUT">
+            <PatternLayout pattern="%d{HH:mm:ss.SSS} [%t] %-5level %logger{36} - %msg%n"/>
+        </Console>
     </Appenders>
 
 
     <Loggers>
+        <Logger name="de.alarm_monitor" level="info">
+            <AppenderRef ref="CONSOLE"/>
+        </Logger>
         <Root level="trace">
             <AppenderRef ref="ROLLING"/>
-            <AppenderRef ref="FILE"/>
         </Root>
     </Loggers>
-
 </configuration>

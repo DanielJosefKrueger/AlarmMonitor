@@ -23,7 +23,8 @@ public class FaxProzessorImpl implements FaxProcessor {
     public static final String EINSATZNUMMER_KEY = "Einsatznummer";
     public static final String MITTEILER_KEY = "Mitteiler";
     public static final String BEMERKUNG_KEY = "Bemerkung";
-    private static final Logger LOG = LogManager.getLogger(FaxProzessorImpl.class);
+    public static final String ROUTING_LINK_KEY = "Bemerkung";
+    private static final Logger logger = LogManager.getLogger(FaxProzessorImpl.class);
 
     private File pdf;
 
@@ -40,7 +41,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             if(configuration.filter_einsatzmittel().length() > 2){
                 shouldFilterEinsatzMittel = true;
             }else{
-                LOG.error("Filter der Einsatzmittel wurde deaktiviert, da kein Filter gesetzt wurde");
+                logger.error("Filter der Einsatzmittel wurde deaktiviert, da kein Filter gesetzt wurde");
                 shouldFilterEinsatzMittel = false;
             }
         }else{
@@ -58,17 +59,29 @@ public class FaxProzessorImpl implements FaxProcessor {
             String text = extractTextOfPng(pathPng);
             Map<String, String> informationen = analyzeText(text);
             updateDisplay(informationen);
+
+            try{
+                doSthWithAdress(informationen.get(ADRESSE_KEY), informationen);
+            }catch (LinkCreationException e) {
+                logger.error("Fehler beim Erstellen des Routing Links");
+                logger.trace("Ursprüngliche Exception:", e);
+            }
+            
             if (shouldSendEmails) {
                 sendEmail(informationen);
             }
         } catch (PngParserException e) {
-            LOG.error("Fehler beim Umwandeln der .pdf-Datei in eine .png-Datei", e);
+            logger.error("Fehler beim Umwandeln der .pdf-Datei in eine .png-Datei");
+            logger.trace("Ursprüngliche Exception:", e);
         } catch (OcrParserException e) {
-            LOG.error("Fehler beim OCR der .png-Datei", e);
+            logger.error("Fehler beim OCR der .png-Datei");
+            logger.trace("Ursprüngliche Exception:", e);
         } catch (EMailSendException e) {
-            LOG.error("Fehler beim Versenden der Emails", e);
+            logger.error("Fehler beim Versenden der Emails");
+            logger.trace("Ursprüngliche Exception:", e);
         } catch (DisplayChangeException e) {
-            LOG.error("Fehler beim Update der Bildschirmanzeige", e);
+            logger.error("Fehler beim Update der Bildschirmanzeige");
+            logger.trace("Ursprüngliche Exception:", e);
         }
     }
 
@@ -174,11 +187,11 @@ public class FaxProzessorImpl implements FaxProcessor {
         }
 
         //for information
-        LOG.debug("Grund: " + schlagwort);
-        LOG.debug("Adresse: " + adresse);
-        LOG.debug("Koordidnate : " + koordinate);
-        LOG.debug("Bemerkung: " + bemerkung);
-        LOG.debug("Mittel: " + mittel);
+        logger.debug("Grund: " + schlagwort);
+        logger.debug("Adresse: " + adresse);
+        logger.debug("Koordidnate : " + koordinate);
+        logger.debug("Bemerkung: " + bemerkung);
+        logger.debug("Mittel: " + mittel);
 
 
 
@@ -230,6 +243,19 @@ public class FaxProzessorImpl implements FaxProcessor {
         } catch (Exception e) {
             throw new EMailSendException();
         }
+    }
+
+
+    void doSthWithAdress(String address, Map<String, String> informationen) throws LinkCreationException {
+        try{
+           String link =  AddressFinder.createLink(address);
+           informationen.put(ROUTING_LINK_KEY, link);
+        }catch(Exception e){
+            throw new LinkCreationException(e.getMessage());
+        }
+
+
+
     }
 
 

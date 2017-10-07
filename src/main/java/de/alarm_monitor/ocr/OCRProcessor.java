@@ -22,7 +22,7 @@ import java.util.Map;
 
 public class OCRProcessor {
 
-    private final static Logger log = LogManager.getLogger(OCRProcessor.class);
+    private final static Logger logger = LogManager.getLogger(OCRProcessor.class);
     private static String tPath = null;
     private MainConfiguration configuration;
     private HashMap<String, String> mapping = null;

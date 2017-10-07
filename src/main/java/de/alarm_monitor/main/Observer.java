@@ -12,7 +12,7 @@ import java.util.List;
 public class Observer extends Thread {
 
 
-    private static Logger log = LogManager.getLogger(Observer.class);
+    private static Logger logger = LogManager.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
 
 
@@ -25,7 +25,7 @@ public class Observer extends Thread {
         try {
             p = Paths.get(configuration.path_folder());
         } catch (Exception e) {
-            log.error("", e);
+            logger.error("", e);
             System.exit(-1);
         }
         //first Run
@@ -41,7 +41,7 @@ public class Observer extends Thread {
         } catch (IOException | DirectoryIteratorException x) {
             // IOException can never be thrown by the iteration.
             // In this snippet, it can only be thrown by newDirectoryStream.
-            log.error("", x);
+            logger.error("", x);
         }
 
 
@@ -79,7 +79,7 @@ public class Observer extends Thread {
                 // IOException can never be thrown by the iteration.
                 // In this snippet, it can only be thrown by newDirectoryStream.
 
-                log.error("", x);
+                logger.error("", x);
             }
 
         }

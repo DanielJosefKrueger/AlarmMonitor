@@ -20,12 +20,8 @@ public class Start {
 
     public static void main(String[] args) {
 
-        System.out.println(
-
-        );
-
-
         startProcedure();
+        logger.info("Der Alarmmonitor startet");
         Observer obs = new Observer();
         obs.start();
         NewPdfCallback callback = new NewPdfCallback() {
@@ -45,16 +41,15 @@ public class Start {
 
     public static void startProcedure() {
 
-
+        //configurating the log4j2 logging
         Configurator.initialize(null, "config/logconfig.xml");
         logger = LogManager.getLogger(FaxProzessorImpl.class);
-        logger.info("Using own configuration file for logging");
+        logger.info("Die Logger-Konfiguration aus dem config Ordner wird verwendet");
+
 
         display = new AlarmMonitorGridBag();
         systemInformationen = new SystemInformationenImpl();
     }
-
-
 }
 
 
