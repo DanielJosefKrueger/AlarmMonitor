@@ -41,12 +41,15 @@ public class EMailQueue {
     }
 
 
-    public void broadcast(String msg, String subject) {
+    public void broadcast(String msg) {
 
+
+        String subject = config.getEmailTopic();
         EMailSender sender = new EMailSender();
-        System.out.println("Sending Broadcast to Recedivers");
+        log.info("Sending Broadcast to Receivers");
+        log.trace("EMail-Content\n"+ msg);
         for (String receiver : receivers) {
-            System.out.println("Send Email to" + receiver);
+            log.info("Send Email to" + receiver);
             sender.sendEmail(receiver, msg, subject);
         }
     }

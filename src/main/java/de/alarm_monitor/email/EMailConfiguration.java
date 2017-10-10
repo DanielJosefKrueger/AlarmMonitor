@@ -22,5 +22,8 @@ public interface EMailConfiguration extends Config {
     @Key("SMTP_Auth")
     String smtpAuth();
 
+    @DefaultValue("AlarmFax")
+    @Key("email_betreff")
+    String getEmailTopic();
 
 }

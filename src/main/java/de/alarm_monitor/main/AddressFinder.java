@@ -7,19 +7,14 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
-import com.lowagie.text.DocumentException;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.xhtmlrenderer.pdf.ITextRenderer;
-
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
 import java.net.URL;
 import java.util.Arrays;
-import java.util.stream.Stream;
+
 
 public class AddressFinder {
 
@@ -60,7 +55,7 @@ public class AddressFinder {
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
     private static String createLinkFromCoordinates(LatLng kords){
-        return "https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/" + kords.lat + " , " + kords.lng;
+        return "https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/" + kords.lat + "," + kords.lng;
     }
 
     public static String createLink(String address){
@@ -110,7 +105,7 @@ public class AddressFinder {
     }
 
 
-    public static void printPdfFromHtml(String buffer){
+    /*public static void printPdfFromHtml(String buffer){
         try{
             ITextRenderer renderer = new ITextRenderer();
 
@@ -134,7 +129,7 @@ public class AddressFinder {
             e.printStackTrace();
         }
 
-    }
+    }*/
 
 
 

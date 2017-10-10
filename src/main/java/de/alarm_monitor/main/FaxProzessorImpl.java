@@ -31,10 +31,10 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final Boolean shouldSendEmails;
     private final Boolean shouldFilterEinsatzMittel;
     private final String filter;
-
+    private final MainConfiguration configuration;
 
     FaxProzessorImpl() {
-        MainConfiguration configuration = MainConfigurationLoader.getConfig();
+         configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
 
         if(configuration.should_filter_einsatzmittel()){
@@ -58,15 +58,20 @@ public class FaxProzessorImpl implements FaxProcessor {
             pathPng = pdfToPng(pdf);
             String text = extractTextOfPng(pathPng);
             Map<String, String> informationen = analyzeText(text);
-            updateDisplay(informationen);
-
             try{
-                doSthWithAdress(informationen.get(ADRESSE_KEY), informationen);
-            }catch (LinkCreationException e) {
-                logger.error("Fehler beim Erstellen des Routing Links");
+                updateDisplay(informationen);
+            }catch (DisplayChangeException e) {
+                logger.error("Fehler beim Update der Bildschirmanzeige");
                 logger.trace("Ursprüngliche Exception:", e);
             }
-            
+
+            try{
+                addLinkToInformation(informationen.get(ADRESSE_KEY), informationen);
+            }catch (LinkCreationException e) {
+                logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
+                logger.trace("Ursprüngliche Exception:", e);
+            }
+
             if (shouldSendEmails) {
                 sendEmail(informationen);
             }
@@ -78,9 +83,6 @@ public class FaxProzessorImpl implements FaxProcessor {
             logger.trace("Ursprüngliche Exception:", e);
         } catch (EMailSendException e) {
             logger.error("Fehler beim Versenden der Emails");
-            logger.trace("Ursprüngliche Exception:", e);
-        } catch (DisplayChangeException e) {
-            logger.error("Fehler beim Update der Bildschirmanzeige");
             logger.trace("Ursprüngliche Exception:", e);
         }
     }
@@ -236,17 +238,19 @@ public class FaxProzessorImpl implements FaxProcessor {
         email.append(informationen.get(BEMERKUNG_KEY)).append("\n");
         email.append(informationen.get(ADRESSE_KEY)).append("\n");
         email.append(informationen.get(EINSATZMITTEL_KEY)).append("\n");
+        email.append("Link zum Routenplaner von Google:\n");
+        email.append(informationen.get(ROUTING_LINK_KEY)).append("\n");
 
         try {
             EMailQueue queue = new EMailQueue();
-            queue.broadcast(email.toString(), "TestPdf");
+            queue.broadcast(email.toString());
         } catch (Exception e) {
             throw new EMailSendException();
         }
     }
 
 
-    void doSthWithAdress(String address, Map<String, String> informationen) throws LinkCreationException {
+    void addLinkToInformation(String address, Map<String, String> informationen) throws LinkCreationException {
         try{
            String link =  AddressFinder.createLink(address);
            informationen.put(ROUTING_LINK_KEY, link);

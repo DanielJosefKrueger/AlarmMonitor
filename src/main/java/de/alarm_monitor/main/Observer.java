@@ -56,6 +56,7 @@ public class Observer extends Thread {
                     if (!foundedFiles.contains(s)) {
                         foundedFiles.add(file.getFileName().toString());
                         System.out.println("Alarm: new File " + s);
+                        Thread.sleep(1000);
                         //wait for file to be completely stored
                         int counter = 0;
                         while (counter < 10 && !file.toFile().canRead()) {
@@ -73,7 +74,7 @@ public class Observer extends Thread {
                     }
 
                 }
-                Thread.sleep(10);
+                Thread.sleep(2000);
 
             } catch (IOException | DirectoryIteratorException | InterruptedException x) {
                 // IOException can never be thrown by the iteration.

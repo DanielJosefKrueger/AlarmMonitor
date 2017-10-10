@@ -33,4 +33,6 @@ public interface MainConfiguration extends Config {
     @Key("number_copies")
     int numerOfCopies();
 
+
+
 }
