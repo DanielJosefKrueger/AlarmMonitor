@@ -23,7 +23,7 @@ public class FaxProzessorImpl implements FaxProcessor {
     public static final String EINSATZNUMMER_KEY = "Einsatznummer";
     public static final String MITTEILER_KEY = "Mitteiler";
     public static final String BEMERKUNG_KEY = "Bemerkung";
-    public static final String ROUTING_LINK_KEY = "Bemerkung";
+    public static final String ROUTING_LINK_KEY = "Routing";
     private static final Logger logger = LogManager.getLogger(FaxProzessorImpl.class);
 
     private File pdf;
@@ -66,12 +66,14 @@ public class FaxProzessorImpl implements FaxProcessor {
                 logger.trace("Ursprüngliche Exception:", e);
             }
 
+            
             try{
-                addLinkToInformation(informationen.get(ADRESSE_KEY), informationen);
+                addLinkToInformation(informationen);
             }catch (LinkCreationException e) {
                 logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
                 logger.trace("Ursprüngliche Exception:", e);
             }
+
 
             if (shouldSendEmails) {
                 sendEmail(informationen);
@@ -251,16 +253,13 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
 
-    void addLinkToInformation(String address, Map<String, String> informationen) throws LinkCreationException {
+    void addLinkToInformation( Map<String, String> informationen) throws LinkCreationException {
         try{
-           String link =  AddressFinder.createLink(address);
+           String link =  AddressFinder.createLink(informationen.get(ADRESSE_KEY));
            informationen.put(ROUTING_LINK_KEY, link);
         }catch(Exception e){
             throw new LinkCreationException(e.getMessage());
         }
-
-
-
     }
 
 
