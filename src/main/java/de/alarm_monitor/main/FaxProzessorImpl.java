@@ -57,6 +57,7 @@ public class FaxProzessorImpl implements FaxProcessor {
         try {
             pathPng = pdfToPng(pdf);
             String text = extractTextOfPng(pathPng);
+            logger.trace("Parsed Text:\n"+text);
             Map<String, String> informationen = analyzeText(text);
             try{
                 updateDisplay(informationen);

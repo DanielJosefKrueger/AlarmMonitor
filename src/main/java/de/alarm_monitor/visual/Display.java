@@ -26,7 +26,7 @@ public class Display extends JFrame {
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
         this.setSize(dim);
-        this.setContentPane(new BackGroundPane(configuration.path_background()));
+        //this.setContentPane(new BackGroundPane(configuration.path_background()));
         this.getContentPane().setLayout(null);
         //this.setLayout(null);
         this.setAlwaysOnTop(false);

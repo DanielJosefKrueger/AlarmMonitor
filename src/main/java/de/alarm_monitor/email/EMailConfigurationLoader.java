@@ -3,6 +3,7 @@ package de.alarm_monitor.email;
 
 import de.alarm_monitor.main.SystemInformationenImpl;
 import de.alarm_monitor.test.InvalidConfigurationException;
+import org.aeonbits.owner.ConfigCache;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -26,19 +27,9 @@ public class EMailConfigurationLoader {
 
     public static EMailConfiguration getConfig() {
 
-        if (singleton != null) {
-            return singleton;
-        }
-        try (FileReader in = new FileReader(new File(SystemInformationenImpl.get().getConfigFolder(), EMAIL_CONFIG_FILR))) {
-            Properties props = new Properties();
-            props.load(in);
-            EMailConfiguration cfg = ConfigFactory.create(EMailConfiguration.class, props);
-            singleton = cfg;
-            testSense(cfg);
-        } catch (IOException e) {
-            log.error("Die Konfigurationsdatei kann nicht geladen werden", e);
-        }
-        return singleton;
+
+      return  ConfigCache.getOrCreate(EMailConfiguration.class);
+
     }
 
 

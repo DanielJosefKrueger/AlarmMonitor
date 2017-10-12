@@ -34,7 +34,7 @@ public class AddressFinder {
                         .replaceAll("=","")
                         .replaceAll(":", "")
                 ));
-        System.out.println(adressbuilder);
+
 
         GeoApiContext context = new GeoApiContext.Builder()
             .apiKey(api_key)
@@ -43,6 +43,7 @@ public class AddressFinder {
 
 
         logger.trace("Fetching the kords from Google");
+        logger.trace("Fetch-String is:"+ adressbuilder );
         results = GeocodingApi.geocode(context, adressbuilder.toString()).awaitIgnoreError();
             Gson gson = new GsonBuilder().setPrettyPrinting().create();
             logger.trace("Received following coordinates from Google" +gson.toJson(results[0].geometry.location));

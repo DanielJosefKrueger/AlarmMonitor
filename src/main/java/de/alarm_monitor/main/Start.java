@@ -6,6 +6,7 @@ import de.alarm_monitor.visual.AlarmMonitorGridBag;
 import de.alarm_monitor.visual.IDisplay;
 
 
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
@@ -46,6 +47,9 @@ public class Start {
         logger = LogManager.getLogger(FaxProzessorImpl.class);
         logger.info("Die Logger-Konfiguration aus dem config Ordner wird verwendet");
 
+
+        ConfigFactory.setProperty("mainconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("emailconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "email_config.properties").toURI().getRawPath());
 
         display = new AlarmMonitorGridBag();
         systemInformationen = new SystemInformationenImpl();

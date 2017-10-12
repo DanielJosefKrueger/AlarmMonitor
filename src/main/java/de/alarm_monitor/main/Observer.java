@@ -14,7 +14,27 @@ public class Observer extends Thread {
 
     private static Logger logger = LogManager.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
+    private  long lastErrorMsg=0;
 
+    private void initiateFirstRun(MainConfiguration configuration, List<String> foundedFiles, Path p) {
+
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
+            for (Path file : stream) {
+                String s = file.getFileName().toString();
+
+                if (!foundedFiles.contains(s)) {
+                    foundedFiles.add(file.getFileName().toString());
+                    logger.trace("Registered " + s + " at first Run ");
+                }
+            }
+        } catch (IOException | DirectoryIteratorException x) {
+            if (System.currentTimeMillis() - lastErrorMsg > 5000) {
+                logger.error("", x);
+                p = Paths.get(configuration.path_folder());
+                lastErrorMsg = System.currentTimeMillis();
+            }
+        }
+    }
 
     @Override
     public void run() {
@@ -29,23 +49,8 @@ public class Observer extends Thread {
             System.exit(-1);
         }
         //first Run
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
-            for (Path file : stream) {
-                String s = file.getFileName().toString();
+        initiateFirstRun(configuration, foundedFiles,p);
 
-                if (!foundedFiles.contains(s)) {
-                    foundedFiles.add(file.getFileName().toString());
-                    System.out.println("Registered " + s + " at first Run ");
-                }
-            }
-        } catch (IOException | DirectoryIteratorException x) {
-            // IOException can never be thrown by the iteration.
-            // In this snippet, it can only be thrown by newDirectoryStream.
-            logger.error("", x);
-        }
-
-
-        //noinspection InfiniteLoopStatement
         while (true) {
 
             try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
@@ -55,13 +60,12 @@ public class Observer extends Thread {
 
                     if (!foundedFiles.contains(s)) {
                         foundedFiles.add(file.getFileName().toString());
-                        System.out.println("Alarm: new File " + s);
+                        logger.info("Alarm: new File " + s);
                         Thread.sleep(1000);
                         //wait for file to be completely stored
                         int counter = 0;
                         while (counter < 10 && !file.toFile().canRead()) {
                             Thread.sleep(100);
-                            System.out.println(counter);
                             counter++;
                         }
 
@@ -77,10 +81,15 @@ public class Observer extends Thread {
                 Thread.sleep(2000);
 
             } catch (IOException | DirectoryIteratorException | InterruptedException x) {
-                // IOException can never be thrown by the iteration.
-                // In this snippet, it can only be thrown by newDirectoryStream.
+                if(System.currentTimeMillis() -lastErrorMsg > 5000 ){
+                    logger.error("", x);
+                    lastErrorMsg = System.currentTimeMillis();
+                    if(!p.equals(configuration.path_folder())){
+                        p = Paths.get(configuration.path_folder());
+                        initiateFirstRun(configuration, foundedFiles,p);
+                    }
 
-                logger.error("", x);
+                }
             }
 
         }

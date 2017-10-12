@@ -1,11 +1,13 @@
 package de.alarm_monitor.main;
 
 import org.aeonbits.owner.Config;
+import org.aeonbits.owner.Reloadable;
 
-public interface MainConfiguration extends Config {
+import java.io.File;
 
-    @Key("background")
-    String path_background();
+@Config.HotReload
+@Config.Sources("file:${mainconfig}")
+public interface MainConfiguration extends Reloadable, Config {
 
     @Key("folder_with_pdfs")
     String path_folder();
@@ -33,6 +35,8 @@ public interface MainConfiguration extends Config {
     @Key("number_copies")
     int numerOfCopies();
 
-
+    @Key("ocr_packet")
+    @DefaultValue("eng")
+    String getOcrPacket();
 
 }

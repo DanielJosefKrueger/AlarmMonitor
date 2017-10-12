@@ -15,6 +15,7 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
+import sun.applet.Main;
 
 import java.io.*;
 import java.util.HashMap;
@@ -43,8 +44,8 @@ public class OCRProcessor {
         BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
         TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
         tesseractOCRConfig.setTesseractPath(tPath);
-
-
+        tesseractOCRConfig.setLanguage(MainConfigurationLoader.getConfig().getOcrPacket());
+        logger.trace("Used language for OCR: "+ tesseractOCRConfig.getLanguage());
         PDFParserConfig pdfConfig = new PDFParserConfig();
         pdfConfig.setExtractInlineImages(true);
         pdfConfig.setExtractUniqueInlineImagesOnly(false); // set to false if

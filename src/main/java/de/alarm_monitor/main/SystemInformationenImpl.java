@@ -18,7 +18,6 @@ public class SystemInformationenImpl implements SystemInformationen {
 
     SystemInformationenImpl() {
         projectPath = calcProjectPath();
-        System.out.println(projectPath);
         this.configFolder = new File(projectPath, configFolderSuffix);
         this.workingFolder = new File(projectPath, workingFolderSuffix);
         this.logFolder = new File(projectPath, logFolderSuffix);
