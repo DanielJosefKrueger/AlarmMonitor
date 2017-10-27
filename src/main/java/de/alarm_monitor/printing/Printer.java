@@ -78,7 +78,7 @@ public class Printer {
             Paper temp = pf.getPaper();
             temp.setImageableArea(0, 0, temp.getWidth(), temp.getHeight());
             pf.setPaper(temp); // Den Bedruckbaren Rand auf Seitengr��e anpassen
-            PDDocument pdf = PDDocument.load(new File("test.pdf"));
+            PDDocument pdf = PDDocument.load(new File("exception.pdf"));
             job.setPrintable(new PDFPrintable(pdf), pf);
 
             // job.setPageable(new PDFPageable(pdf));

@@ -1,4 +1,4 @@
-package de.alarm_monitor.test;
+package de.alarm_monitor.exception;
 
 public class EMailSendException extends Exception {
     public EMailSendException() {

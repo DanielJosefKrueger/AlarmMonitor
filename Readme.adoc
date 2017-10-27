@@ -1,0 +1,32 @@
+= Alarmmonitor
+
+== Installieren
+
+=== Installation von Tesseract
+Für die Funktionalität des Alarmmonitor ist eine Installation von Tesseract notwendig
+Dieses kann
+link:[hier]
+heruntergeladen werden. Für die genaue Installation von Tesseract beachten Sie bitte die Hinweise des Herstellers.
+
+NOTE: Der Installationspfad von Tesseract muss in der Konfiguration des Alarmmonitor angegeben werden, Schreiben Sie sich diesen auf.
+
+=== Installation des Alarmmonitors
+
+
+
+
+
+
+== Konfigurieren
+
+
+
+
+
+
+== Testlauf
+
+
+
+
+

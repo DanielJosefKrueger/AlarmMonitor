@@ -3,36 +3,36 @@ package de.alarm_monitor.main;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
 
-import java.io.File;
+
 
 @Config.HotReload
 @Config.Sources("file:${mainconfig}")
 public interface MainConfiguration extends Reloadable, Config {
 
-    @Key("folder_with_pdfs")
+    @Key("pdf_ordners")
     String path_folder();
 
-    @Key("tesseract_directory")
+    @Key("tesseract_verzeichnis")
     String path_tesseract();
 
     @Key("path_ocr")
     String path_ocr();
 
     @DefaultValue("false")
-    @Key("filter_einsatzmittel")
+    @Key("einsatzmittel_filtern")
     Boolean should_filter_einsatzmittel();
 
     @DefaultValue("")
-    @Key("filter")
+    @Key("filter_signal_wort")
     String filter_einsatzmittel();
 
-    @Key("email_active")
+    @Key("email_versenden_aktiv")
     boolean isEmailActive();
 
-    @Key("printing_active")
+    @Key("drucken_active")
     boolean isPrintingActive();
 
-    @Key("number_copies")
+    @Key("anzahl_kopien")
     int numerOfCopies();
 
     @Key("ocr_packet")

@@ -1,7 +1,6 @@
 package de.alarm_monitor.main;
 
 import de.alarm_monitor.printing.Printer;
-import de.alarm_monitor.test.PrintingException;
 
 import java.awt.print.PrinterException;
 import java.io.File;

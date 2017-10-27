@@ -1,16 +1,10 @@
 package de.alarm_monitor.email;
 
 
-import de.alarm_monitor.main.SystemInformationenImpl;
-import de.alarm_monitor.test.InvalidConfigurationException;
+import de.alarm_monitor.exception.InvalidConfigurationException;
 import org.aeonbits.owner.ConfigCache;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
 
 public class EMailConfigurationLoader {
 

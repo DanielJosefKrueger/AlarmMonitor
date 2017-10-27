@@ -3,7 +3,7 @@ package de.alarm_monitor.main;
 import de.alarm_monitor.email.EMailQueue;
 import de.alarm_monitor.ocr.OCRProcessor;
 import de.alarm_monitor.ocr.PNGParser;
-import de.alarm_monitor.test.*;
+import de.alarm_monitor.exception.*;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -66,7 +66,7 @@ public class FaxProzessorImpl implements FaxProcessor {
                 logger.trace("Ursprüngliche Exception:", e);
             }
 
-            
+
             try{
                 addLinkToInformation(informationen);
             }catch (LinkCreationException e) {
