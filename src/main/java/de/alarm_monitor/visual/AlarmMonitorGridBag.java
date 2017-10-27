@@ -161,9 +161,26 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         body.add(einsatzmittelPane, c);
 
 
+
         this.resetAlarm();
+        this.setUndecorated(true);
+        getRootPane().setBackground(Color.white);
+        getRootPane().setOpaque(true);
+
+        getContentPane().setBackground(Color.white);
+
+       // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
         this.setVisible(true);
 
+
+    }
+
+
+
+
+
+    public static void main(String... args){
+        new AlarmMonitorGridBag().activateAlarm();
 
     }
 
@@ -173,6 +190,10 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 		new DisplayNew();
 
 	}*/
+
+	private void refresh(){
+	    repaint();
+    }
 
 
     @Override
@@ -220,6 +241,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     }
 
 
+
     @Override
     public void resetAlarm() {
         ChangeEinsatznummer("Einsatznummer:");
@@ -229,6 +251,42 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         changeName("");
         changeAdresse("");
         changeEinsatzmittel("");
+
+    }
+
+    @Override
+    public void activateAlarm() {
+       // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
+
+
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                long start = System.currentTimeMillis();
+
+                while(System.currentTimeMillis() < start + 5*60*1000) {
+                    //getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
+                    getContentPane().setBackground(Color.red);
+                    refresh();
+                    try {
+                        Thread.sleep(500);
+
+
+                   // getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+                        getContentPane().setBackground(Color.white);
+
+                        refresh();
+                    Thread.sleep(500);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                }
+
+            }
+
+        };
+        Thread thread = new Thread(runnable);
+        thread.start();
     }
 
 

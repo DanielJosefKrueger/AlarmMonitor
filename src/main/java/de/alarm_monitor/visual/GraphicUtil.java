@@ -17,9 +17,6 @@ public class GraphicUtil {
         GraphicsEnvironment ge = GraphicsEnvironment
                 .getLocalGraphicsEnvironment();
         GraphicsDevice[] gs = ge.getScreenDevices();
-        logger.info(Arrays.toString(gs[0].getDisplayModes()));
-
-
 
         if( screen > -1 && screen < gs.length )
         {
@@ -28,6 +25,7 @@ public class GraphicUtil {
         else if( gs.length > 0 )
         {
            gs[0].setFullScreenWindow( frame );
+
         }
         else
         {

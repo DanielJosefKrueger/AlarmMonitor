@@ -22,4 +22,6 @@ public interface IDisplay {
     public void resetAlarm();
 
 
+    public void activateAlarm();
+
 }

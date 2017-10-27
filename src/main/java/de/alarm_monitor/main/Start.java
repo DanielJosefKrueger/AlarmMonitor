@@ -1,6 +1,8 @@
 package de.alarm_monitor.main;
 
 
+import com.google.inject.Guice;
+import com.google.inject.Injector;
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.visual.AlarmMonitorGridBag;
 import de.alarm_monitor.visual.GraphicUtil;
@@ -13,6 +15,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 
+import javax.inject.Inject;
 import javax.swing.*;
 import java.io.File;
 
@@ -20,6 +23,9 @@ public class Start {
     private static Logger logger;
     static private IDisplay display;
     static private SystemInformationen systemInformationen;
+
+
+
 
     public static void main(String[] args) {
 
@@ -30,7 +36,8 @@ public class Start {
         NewPdfCallback callback = new NewPdfCallback() {
             @Override
             public void onNewPdfFile(File pdf) {
-                FaxProcessor processor = new FaxProzessorImpl();
+                Injector injector = Guice.createInjector();
+                FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
                 new PrintingService(pdf).start();
                 processor.processAlarmFax(pdf);
             }

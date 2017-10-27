@@ -4,11 +4,13 @@ import de.alarm_monitor.email.EMailQueue;
 import de.alarm_monitor.ocr.OCRProcessor;
 import de.alarm_monitor.ocr.PNGParser;
 import de.alarm_monitor.exception.*;
+import de.alarm_monitor.util.AlarmResetter;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
+import javax.inject.Inject;
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
@@ -19,11 +21,18 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final static String EINSATZMITTEL_KEY = "Einsatzmittel";
     private final static String SCHLAGWORT_KEY = "Schlagwort";
     private final static String ADRESSE_KEY = "Adresse";
+
+    private final AlarmResetter alarmResetter;
+
+
     public static final String ALARMZEIT_KEY = "Alarmzeit";
     public static final String EINSATZNUMMER_KEY = "Einsatznummer";
     public static final String MITTEILER_KEY = "Mitteiler";
     public static final String BEMERKUNG_KEY = "Bemerkung";
     public static final String ROUTING_LINK_KEY = "Routing";
+
+
+
     private static final Logger logger = LogManager.getLogger(FaxProzessorImpl.class);
 
     private File pdf;
@@ -33,8 +42,10 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final String filter;
     private final MainConfiguration configuration;
 
-    FaxProzessorImpl() {
-         configuration = MainConfigurationLoader.getConfig();
+    @Inject
+    FaxProzessorImpl(AlarmResetter alarmResetter) {
+        this.alarmResetter = alarmResetter;
+        configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
 
         if(configuration.should_filter_einsatzmittel()){
@@ -213,6 +224,8 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
     private void updateDisplay(Map<String, String> informationen) throws DisplayChangeException {
+
+        alarmResetter.resetAlarm(1000*60);
         try {
             IDisplay display = Start.getDisplay();
             display.changeSchlagwort(informationen.get(SCHLAGWORT_KEY));
