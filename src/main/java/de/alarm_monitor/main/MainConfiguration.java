@@ -9,14 +9,11 @@ import org.aeonbits.owner.Reloadable;
 @Config.Sources("file:${mainconfig}")
 public interface MainConfiguration extends Reloadable, Config {
 
-    @Key("pdf_ordners")
+    @Key("pdf_ordner")
     String path_folder();
 
     @Key("tesseract_verzeichnis")
     String path_tesseract();
-
-    @Key("path_ocr")
-    String path_ocr();
 
     @DefaultValue("false")
     @Key("einsatzmittel_filtern")
@@ -29,7 +26,7 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("email_versenden_aktiv")
     boolean isEmailActive();
 
-    @Key("drucken_active")
+    @Key("drucken_aktiv")
     boolean isPrintingActive();
 
     @Key("anzahl_kopien")
