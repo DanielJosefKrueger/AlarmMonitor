@@ -32,6 +32,10 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("anzahl_kopien")
     int numerOfCopies();
 
+    @DefaultValue("1")
+    @Key("monitor")
+    int monitor();
+
     @Key("ocr_packet")
     @DefaultValue("eng")
     String getOcrPacket();

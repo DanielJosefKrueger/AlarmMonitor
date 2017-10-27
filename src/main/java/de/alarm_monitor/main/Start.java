@@ -3,6 +3,7 @@ package de.alarm_monitor.main;
 
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.visual.AlarmMonitorGridBag;
+import de.alarm_monitor.visual.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
 
 
@@ -12,6 +13,7 @@ import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 
+import javax.swing.*;
 import java.io.File;
 
 public class Start {
@@ -52,6 +54,7 @@ public class Start {
         ConfigFactory.setProperty("emailconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "email_config.properties").toURI().getRawPath());
 
         display = new AlarmMonitorGridBag();
+        GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame)display);
         systemInformationen = new SystemInformationenImpl();
     }
 }

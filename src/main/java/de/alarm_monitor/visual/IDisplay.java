@@ -1,5 +1,7 @@
 package de.alarm_monitor.visual;
 
+import javax.swing.*;
+
 public interface IDisplay {
 
 
