@@ -1,27 +1,28 @@
 package de.alarm_monitor.visual;
 
-import javax.swing.*;
+import de.alarm_monitor.main.AlarmFax;
 
 public interface IDisplay {
 
 
-    public void changeName(String name);
+     void changeReporter(String name);
 
-    public void ChangeEinsatznummer(String einsatznummer);
+     void changeOperationNumber(String operationNumber);
 
-    public void changeAlarmzeit(String alarmzeit);
+     void changeAlarmTime(String alarmTime);
 
-    public void changeSchlagwort(String schlagwort);
+     void changeKeyWord(String keyWord);
 
-    public void changeBemerkung(String bemerkung);
+     void changeComment(String comment);
 
-    public void changeAdresse(String adresse);
+     void changeAdress(String adresse);
 
-    public void changeEinsatzmittel(String einsatzmittel);
+     void changeOperationRessources(String operationRessources);
 
-    public void resetAlarm();
+     void resetAlarm();
 
 
-    public void activateAlarm();
+     void activateAlarm();
 
+    void changeAlarmFax(AlarmFax alarmFax);
 }

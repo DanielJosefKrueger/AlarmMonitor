@@ -4,18 +4,19 @@ package de.alarm_monitor.main;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.alarm_monitor.callback.NewPdfCallback;
+import de.alarm_monitor.printing.PrintingService;
 import de.alarm_monitor.visual.AlarmMonitorGridBag;
-import de.alarm_monitor.visual.GraphicUtil;
+import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
 
 
+import de.alarm_monitor.visual.NewLayout;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 
-import javax.inject.Inject;
 import javax.swing.*;
 import java.io.File;
 
@@ -33,12 +34,15 @@ public class Start {
         logger.info("Der Alarmmonitor startet");
         Observer obs = new Observer();
         obs.start();
+        Injector injector = Guice.createInjector();
+
+
         NewPdfCallback callback = new NewPdfCallback() {
             @Override
             public void onNewPdfFile(File pdf) {
-                Injector injector = Guice.createInjector();
-                FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
+
                 new PrintingService(pdf).start();
+                FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
                 processor.processAlarmFax(pdf);
             }
         };
@@ -60,7 +64,7 @@ public class Start {
         ConfigFactory.setProperty("mainconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "config.properties").toURI().getRawPath());
         ConfigFactory.setProperty("emailconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "email_config.properties").toURI().getRawPath());
 
-        display = new AlarmMonitorGridBag();
+        display = new NewLayout();
         GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame)display);
         systemInformationen = new SystemInformationenImpl();
     }

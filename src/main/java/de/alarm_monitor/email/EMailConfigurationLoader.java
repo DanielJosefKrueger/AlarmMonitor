@@ -14,29 +14,20 @@ public class EMailConfigurationLoader {
     private static EMailConfiguration singleton;
 
     private EMailConfigurationLoader() {
-
-
     }
 
 
     public static EMailConfiguration getConfig() {
-
-
-      return  ConfigCache.getOrCreate(EMailConfiguration.class);
-
+        return ConfigCache.getOrCreate(EMailConfiguration.class);
     }
 
 
     private static void testSense(EMailConfiguration configuration) {
-
-
         try {
             testSmtpAuth(configuration);
         } catch (InvalidConfigurationException e) {
             e.printStackTrace();
         }
-
-
     }
 
 

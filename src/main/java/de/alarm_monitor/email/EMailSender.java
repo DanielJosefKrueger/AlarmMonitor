@@ -21,10 +21,6 @@ public class EMailSender {
     public boolean sendEmail(String receiver, String msg, String subject) {
 
         Properties props = new Properties();
-            /*props.put("mail.smtp.auth", "true");
-            props.put("mail.smtp.starttls.enable", "true");
-			props.put("mail.smtp.host", "smtp-mail.outlook.com");
-			props.put("mail.smtp.port", "587");*/
 
         props.put("mail.smtp.auth", config.smtpAuth());
         props.put("mail.smtp.starttls.enable", config.startTls());

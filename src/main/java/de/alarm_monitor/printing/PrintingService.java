@@ -1,5 +1,7 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.printing;
 
+import de.alarm_monitor.main.MainConfiguration;
+import de.alarm_monitor.main.MainConfigurationLoader;
 import de.alarm_monitor.printing.Printer;
 
 import java.awt.print.PrinterException;
@@ -13,7 +15,7 @@ public class PrintingService extends Thread {
     private final int numberOfCopies;
     private final Boolean shouldPrint;
 
-    PrintingService(File toPrint) {
+    public PrintingService(File toPrint) {
         this.toPrint = toPrint;
         MainConfiguration configuration = MainConfigurationLoader.getConfig();
         this.numberOfCopies = configuration.numerOfCopies();

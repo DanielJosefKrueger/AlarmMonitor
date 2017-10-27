@@ -67,12 +67,6 @@ public class Observer extends Thread {
                         foundedFiles.add(file.getFileName().toString());
                         logger.info("Alarm: new File " + s);
                         Thread.sleep(InternalConfiguration.DELAY_AFTER_FOUND_PDF);
-                        //wait for file to be completely stored
-                        int counter = 0;
-                        while (counter < 10 && !file.toFile().canRead()) {
-                            Thread.sleep(100);
-                            counter++;
-                        }
 
 
                         //callbacks

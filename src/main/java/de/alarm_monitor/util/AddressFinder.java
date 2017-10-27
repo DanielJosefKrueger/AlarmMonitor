@@ -1,4 +1,4 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
@@ -7,6 +7,7 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
+import de.alarm_monitor.main.FaxProzessorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;

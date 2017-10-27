@@ -42,8 +42,6 @@ public class EMailQueue {
 
 
     public void broadcast(String msg) {
-
-
         String subject = config.getEmailTopic();
         EMailSender sender = new EMailSender();
         log.info("Sending Broadcast to Receivers");
