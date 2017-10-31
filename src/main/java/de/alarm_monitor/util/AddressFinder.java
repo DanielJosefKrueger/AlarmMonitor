@@ -67,7 +67,14 @@ public class AddressFinder {
 
 
         }catch(Exception e){
-            return "Leider konnte kein Link geparst werden";
+            if(address.lastIndexOf(" ")>-1){
+                logger.info("Couldnt get link from google, retry");
+                return createLink(address.substring(0, address.lastIndexOf(" ")));
+            }else{
+                return "Leider konnte kein Link geparst werden";
+            }
+
+
         }
 
 

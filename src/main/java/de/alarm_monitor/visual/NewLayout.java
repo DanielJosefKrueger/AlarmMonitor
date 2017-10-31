@@ -18,6 +18,8 @@ public class NewLayout extends JFrame implements IDisplay {
     private final static String ADRESSE_DEFAULT = "Adresse:\n";
     private final static String OPERATIONRESSOURCES_DEFAULT = "Einsatzmittel:\n";
     private static Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
+
+
     private final JLabel sectionOperationNumber;
     private final JLabel sectionOperationTime;
     private final JLabel sectionKeyWord;

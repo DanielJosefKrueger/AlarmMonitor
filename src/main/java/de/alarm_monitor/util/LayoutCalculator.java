@@ -4,8 +4,6 @@ import java.awt.*;
 
 public class LayoutCalculator {
 
-
-
    private final int heightPerPart;
    private final int widthPerPart;
    private final int widthParts;
@@ -28,7 +26,7 @@ public class LayoutCalculator {
             throw new IllegalArgumentException("Soviel Platz gibt es nicht: zu hoch");
         }
 
-        return new Rectangle((int)(widthStart*widthPerPart), (int)(heightStart*heightPerPart), (int)(width*widthPerPart), (int)(height*heightPerPart));
+        return new Rectangle(widthStart*widthPerPart, heightStart*heightPerPart, (int)(width*widthPerPart), (int)(height*heightPerPart));
      }
 
 
