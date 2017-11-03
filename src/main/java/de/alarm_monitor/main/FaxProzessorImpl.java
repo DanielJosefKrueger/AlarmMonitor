@@ -1,6 +1,6 @@
 package de.alarm_monitor.main;
 
-import de.alarm_monitor.email.EMailQueue;
+import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.ocr.OCRProcessor;
 import de.alarm_monitor.ocr.PNGParser;
 import de.alarm_monitor.exception.*;
@@ -258,7 +258,7 @@ public class FaxProzessorImpl implements FaxProcessor {
         email.append(informationen.get(ROUTING_LINK_KEY)).append("\n");
 
         try {
-            EMailQueue queue = new EMailQueue();
+            EMailList queue = new EMailList();
             queue.broadcast(email.toString());
         } catch (Exception e) {
             throw new EMailSendException();
