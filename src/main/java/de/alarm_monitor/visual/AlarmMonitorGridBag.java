@@ -1,6 +1,8 @@
 
 package de.alarm_monitor.visual;
 
+import de.alarm_monitor.main.AlarmFax;
+
 import javax.swing.*;
 import javax.swing.border.LineBorder;
 import java.awt.*;
@@ -11,22 +13,26 @@ import java.awt.event.ActionListener;
 public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
 
-    private final static String EINSATZNUMMER_DEFAULT = "";
-    private final static String ALARMZEIT_DEFAULT = "";
-    private final static String MITTEILER_DEFAULT = "Mitteiler:\n";
-    private final static String SCHLAGWORT_DEFAULT = "";
-    private final static String BEMERKUNG_DEFAULT = "Bemerkung:\n";
+    private final static String OPERATIONNUMBER_DEFAULT = "";
+    private final static String ALARMTIME_DEFAULT = "";
+    private final static String REPORTER_DEFAULT = "Mitteiler:\n";
+    private final static String KEYWORD_DEFAULT = "";
+    private final static String COMMENT_DEFAULT = "Bemerkung:\n";
     private final static String ADRESSE_DEFAULT = "Adresse:\n";
-    private final static String EINSATZMITTEL_DEFAULT = "Einsatzmittel:\n";
+    private final static String OPERATIONRESSOURCES_DEFAULT = "Einsatzmittel:\n";
     private static Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
-    private JLabel einsatznummer;
-    private JLabel alarmzeit;
-    private JLabel name;
-    private JLabel schlagWort;
-    private JTextArea bemerkung;
+    private JLabel oprationNumber;
+    private JLabel alarmTime;
+    private JLabel reporter;
+    private JLabel KEYWORD;
+    private JTextArea comment;
     private JTextArea adresse;
-    private JTextArea einsatzMittel;
+    private JTextArea operationRessources;
     private JButton resetButton;
+
+
+
+
 
 
     public AlarmMonitorGridBag() {
@@ -53,33 +59,32 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         body.setOpaque(true);
 
         LineBorder lBorder = new LineBorder(new Color(100, 100, 100));
-        einsatznummer = new JLabel(EINSATZNUMMER_DEFAULT);
-        //einsatznummer.setBackground(Color.black);
-        einsatznummer.setFont(FONT);
+        oprationNumber = new JLabel(OPERATIONNUMBER_DEFAULT);
+        //oprationNumber.setBackground(Color.black);
+        oprationNumber.setFont(FONT);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 0;
-        body.add(einsatznummer, c);
+        body.add(oprationNumber, c);
 
 
-        alarmzeit = new JLabel(ALARMZEIT_DEFAULT);
-        alarmzeit.setBackground(Color.white);
-        alarmzeit.setOpaque(true);
-        alarmzeit.setFont(FONT);
+        alarmTime = new JLabel(ALARMTIME_DEFAULT);
+        alarmTime.setBackground(Color.white);
+        alarmTime.setOpaque(true);
+        alarmTime.setFont(FONT);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 1;
         c.gridy = 0;
-        body.add(alarmzeit, c);
+        body.add(alarmTime, c);
 
-
-        name = new JLabel(MITTEILER_DEFAULT);
-        name.setBackground(Color.white);
-        name.setOpaque(true);
-        name.setFont(FONT);
+        reporter = new JLabel(REPORTER_DEFAULT);
+        reporter.setBackground(Color.white);
+        reporter.setOpaque(true);
+        reporter.setFont(FONT);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 1;
-        body.add(name, c);
+        body.add(reporter, c);
 
 
         JPanel buttonPanel = new JPanel();
@@ -101,32 +106,32 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         body.add(buttonPanel, c);
 
 
-        schlagWort = new JLabel(SCHLAGWORT_DEFAULT);
-        schlagWort.setBackground(Color.white);
-        schlagWort.setOpaque(true);
-        schlagWort.setFont(FONT);
-        schlagWort.setOpaque(true);
+        KEYWORD = new JLabel(KEYWORD_DEFAULT);
+        KEYWORD.setBackground(Color.white);
+        KEYWORD.setOpaque(true);
+        KEYWORD.setFont(FONT);
+        KEYWORD.setOpaque(true);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 0;
         c.gridy = 2;
         c.gridwidth = 2;
-        body.add(schlagWort, c);
+        body.add(KEYWORD, c);
         c.gridwidth = 1;
 
 
         JPanel bemerkungPane = new JPanel();
-        bemerkung = new JTextArea(BEMERKUNG_DEFAULT);
-        bemerkung.setBackground(Color.white);
-        bemerkung.setOpaque(true);
-        bemerkung.setFont(FONT);
+        comment = new JTextArea(COMMENT_DEFAULT);
+        comment.setBackground(Color.white);
+        comment.setOpaque(true);
+        comment.setFont(FONT);
         c.weighty = 0.6;
         c.gridwidth = 2;
         c.gridx = 0;
         c.gridy = 3;
         c.fill = GridBagConstraints.BOTH;
         bemerkungPane.setLayout(null);
-        bemerkung.setBounds(0, 0, (int) (dim.getWidth()), (int) (dim.getHeight() * 0.3));
-        bemerkungPane.add(bemerkung);
+        comment.setBounds(0, 0, (int) (dim.getWidth()), (int) (dim.getHeight() * 0.3));
+        bemerkungPane.add(comment);
         body.add(bemerkungPane, c);
         c.gridwidth = 1;
 
@@ -149,15 +154,15 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
         JPanel einsatzmittelPane = new JPanel();
         einsatzmittelPane.setLayout(null);
-        einsatzMittel = new JTextArea(EINSATZMITTEL_DEFAULT);
-        einsatzMittel.setBackground(Color.white);
-        einsatzMittel.setOpaque(true);
-        einsatzMittel.setFont(FONT);
+        operationRessources = new JTextArea(OPERATIONRESSOURCES_DEFAULT);
+        operationRessources.setBackground(Color.white);
+        operationRessources.setOpaque(true);
+        operationRessources.setFont(FONT);
         c.fill = GridBagConstraints.BOTH;
         c.gridx = 1;
         c.gridy = 4;
-        einsatzMittel.setBounds(0, 0, (int) (dim.getWidth() * 0.5), (int) (dim.getHeight() * 0.3));
-        einsatzmittelPane.add(einsatzMittel);
+        operationRessources.setBounds(0, 0, (int) (dim.getWidth() * 0.5), (int) (dim.getHeight() * 0.3));
+        einsatzmittelPane.add(operationRessources);
         body.add(einsatzmittelPane, c);
 
 
@@ -185,58 +190,66 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     }
 
 
-	/*
-    public static void main(String[] args){
-		new DisplayNew();
 
-	}*/
+
 
 	private void refresh(){
 	    repaint();
     }
 
+    @Override
+    public void changeAlarmFax(AlarmFax alarmFax) {
+        this.reporter.setText(REPORTER_DEFAULT + alarmFax.getReporter());
+        this.oprationNumber.setText(OPERATIONNUMBER_DEFAULT + alarmFax.getOperatioNumber());
+        this.alarmTime.setText(ALARMTIME_DEFAULT + alarmFax.getAlarmTime());
+        this.KEYWORD.setText(KEYWORD_DEFAULT + alarmFax.getKeyword());
+        this.adresse.setText(ADRESSE_DEFAULT + alarmFax.getAddress());
+        this.operationRessources.setText(OPERATIONRESSOURCES_DEFAULT + alarmFax.getOperationRessources());
+        this.comment.setText(COMMENT_DEFAULT + alarmFax.getComment());
+    }
 
     @Override
-    public void changeName(String name) {
-        this.name.setText(MITTEILER_DEFAULT + name);
+    public void changeReporter(String name) {
+        this.reporter.setText(REPORTER_DEFAULT + name);
 
     }
 
 
     @Override
-    public void ChangeEinsatznummer(String einsatznummer) {
-        this.einsatznummer.setText(EINSATZNUMMER_DEFAULT + einsatznummer);
+    public void changeOperationNumber(String operationNumber) {
+        this.oprationNumber.setText(OPERATIONNUMBER_DEFAULT + operationNumber);
     }
 
 
     @Override
-    public void changeAlarmzeit(String alarmzeit) {
-        this.alarmzeit.setText(ALARMZEIT_DEFAULT + alarmzeit);
+    public void changeAlarmTime(String alarmTime) {
+        this.alarmTime.setText(ALARMTIME_DEFAULT + alarmTime);
 
     }
 
 
     @Override
-    public void changeSchlagwort(String schlagwort) {
-        this.schlagWort.setText(SCHLAGWORT_DEFAULT + schlagwort);
+    public void changeKeyWord(String keyWord) {
+
+	    this.KEYWORD.setText(KEYWORD_DEFAULT + keyWord);
     }
 
 
     @Override
-    public void changeAdresse(String adresse) {
+    public void changeAdress(String adresse) {
         this.adresse.setText(ADRESSE_DEFAULT + adresse);
     }
 
 
     @Override
-    public void changeEinsatzmittel(String einsatzmittel) {
-        this.einsatzMittel.setText(EINSATZMITTEL_DEFAULT + einsatzmittel);
+    public void changeOperationRessources(String operationRessources) {
+        this.operationRessources.setText(OPERATIONRESSOURCES_DEFAULT + operationRessources);
 
     }
 
     @Override
-    public void changeBemerkung(String bemerkung) {
-        this.bemerkung.setText(BEMERKUNG_DEFAULT + bemerkung);
+    public void changeComment(String comment) {
+        this.comment.setText(COMMENT_DEFAULT + comment);
 
     }
 
@@ -244,13 +257,13 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
     @Override
     public void resetAlarm() {
-        ChangeEinsatznummer("Einsatznummer:");
-        changeAlarmzeit("Alarmzeit:");
-        changeSchlagwort("Schlagwort:");
-        changeBemerkung("");
-        changeName("");
-        changeAdresse("");
-        changeEinsatzmittel("");
+        changeOperationNumber("Einsatznummer:");
+        changeAlarmTime("Alarmzeit:");
+        changeKeyWord("Schlagwort:");
+        changeComment("");
+        changeReporter("");
+        changeAdress("");
+        changeOperationRessources("");
 
     }
 
@@ -288,6 +301,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         Thread thread = new Thread(runnable);
         thread.start();
     }
+
 
 
 }

@@ -1,6 +1,7 @@
 package de.alarm_monitor.ocr;
 
 
+import de.alarm_monitor.main.InternalConfiguration;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -15,11 +16,11 @@ import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
-public class PNGParser {
+public class PngConverter {
 
-    private static Logger logger = LogManager.getLogger(PNGParser.class);
+    private static Logger logger = LogManager.getLogger(PngConverter.class);
 
-    public static String parsePdfToPng(File file) throws IOException {
+    public static String convertToPng(File file) throws IOException {
 
         Calendar cal = Calendar.getInstance();
         SimpleDateFormat sdf = new SimpleDateFormat("dd MM YYYY HH mm ss");
@@ -30,8 +31,8 @@ public class PNGParser {
         try {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, 300, ImageType.RGB);
-                ImageIOUtil.writeImage(bim, name, 300);
+                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, InternalConfiguration.DPI_PNG_CONVERTER, ImageType.RGB);
+                ImageIOUtil.writeImage(bim, name, InternalConfiguration.DPI_PNG_CONVERTER);
             }
             return name;
         } finally {

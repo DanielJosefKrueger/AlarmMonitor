@@ -15,7 +15,7 @@ import org.apache.tika.sax.BodyContentHandler;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
-import sun.applet.Main;
+
 
 import java.io.*;
 import java.util.HashMap;

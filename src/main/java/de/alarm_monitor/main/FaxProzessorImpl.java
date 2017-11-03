@@ -1,27 +1,28 @@
 package de.alarm_monitor.main;
 
 import de.alarm_monitor.email.EMailList;
+import com.google.inject.Inject;
+import de.alarm_monitor.email.EMailQueue;
 import de.alarm_monitor.ocr.OCRProcessor;
-import de.alarm_monitor.ocr.PNGParser;
+import de.alarm_monitor.ocr.PngConverter;
 import de.alarm_monitor.exception.*;
+import de.alarm_monitor.util.AddressFinder;
 import de.alarm_monitor.util.AlarmResetter;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 
-import javax.inject.Inject;
+
 import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
 
 public class FaxProzessorImpl implements FaxProcessor {
 
-
     private final static String EINSATZMITTEL_KEY = "Einsatzmittel";
     private final static String SCHLAGWORT_KEY = "Schlagwort";
     private final static String ADRESSE_KEY = "Adresse";
-
     private final AlarmResetter alarmResetter;
 
 
@@ -69,9 +70,12 @@ public class FaxProzessorImpl implements FaxProcessor {
             pathPng = pdfToPng(pdf);
             String text = extractTextOfPng(pathPng);
             logger.trace("Parsed Text:\n"+text);
-            Map<String, String> informationen = analyzeText(text);
+
+            AlarmFax alarmFax= analyzeText(text);
+
+
             try{
-                updateDisplay(informationen);
+                updateDisplay(alarmFax);
             }catch (DisplayChangeException e) {
                 logger.error("Fehler beim Update der Bildschirmanzeige");
                 logger.trace("Ursprüngliche Exception:", e);
@@ -79,7 +83,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
             try{
-                addLinkToInformation(informationen);
+                addLinkToInformation(alarmFax);
             }catch (LinkCreationException e) {
                 logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
                 logger.trace("Ursprüngliche Exception:", e);
@@ -87,7 +91,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
             if (shouldSendEmails) {
-                sendEmail(informationen);
+                sendEmail(alarmFax);
             }
         } catch (PngParserException e) {
             logger.error("Fehler beim Umwandeln der .pdf-Datei in eine .png-Datei");
@@ -104,7 +108,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     private String pdfToPng(File pdf) throws PngParserException {
         try {
-            return PNGParser.parsePdfToPng(pdf);
+            return PngConverter.convertToPng(pdf);
         } catch (Exception e) {
             throw new PngParserException();
         }
@@ -121,18 +125,18 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
 
-    private Map<String, String> analyzeText(String fax) {
+    private AlarmFax analyzeText(String fax) {
 
         String[] lines = fax.split("\n");
 
-        StringBuilder schlagwort = new StringBuilder();
-        StringBuilder adresse = new StringBuilder();
-        StringBuilder mittel = new StringBuilder();
+        StringBuilder keyWord = new StringBuilder();
+        StringBuilder address = new StringBuilder();
+        StringBuilder operationRessources = new StringBuilder();
         StringBuilder koordinate = new StringBuilder();
-        StringBuilder einsatzNummer = new StringBuilder();
-        StringBuilder alarmZeit = new StringBuilder();
-        StringBuilder mitteiler = new StringBuilder();
-        StringBuilder bemerkung = new StringBuilder();
+        StringBuilder operatioNumber = new StringBuilder();
+        StringBuilder alarmTime = new StringBuilder();
+        StringBuilder reporter = new StringBuilder();
+        StringBuilder comment = new StringBuilder();
 
         Map<String, String> informationen = new HashMap<>();
 
@@ -149,37 +153,32 @@ public class FaxProzessorImpl implements FaxProcessor {
             //Einsatznummer und Alarmzeit
             if (splitted[0].contains("Einsatznu")) {
                 int beginAlarmPart = line.indexOf("Alarm");
-                einsatzNummer.append(line.subSequence(0, beginAlarmPart));
-                alarmZeit.append(line.subSequence(beginAlarmPart, line.length()));
+                operatioNumber.append(line.subSequence(0, beginAlarmPart));
+                alarmTime.append(line.subSequence(beginAlarmPart, line.length()));
             }
 
             //mitteiler
             if (splitted[0].contains("Name")) {
-                mitteiler.append(line);
+                reporter.append(line);
             }
 
             //Einsatzmittel
             if (splitted[0].contains("mittel") | (splitted.length > 1 && splitted[1].toLowerCase().contains("ger"))) {
 
                 if(!shouldFilterEinsatzMittel){
-                    mittel.append(line).append("\n");
+                    operationRessources.append(line).append("\n");
                 }else{
                     if(line.contains(filter)){
-                        mittel.append(line).append("\n");
+                        operationRessources.append(line).append("\n");
                     }
 
                     if(line.toLowerCase().contains("ger")){
                         if(previousLine.contains(filter)){
-                            mittel.append(line);
+                            operationRessources.append(line);
                         }
 
                     }
                 }
-
-
-
-
-
             }
 
             if (splitted[0].contains("Koordinate")) {
@@ -187,13 +186,13 @@ public class FaxProzessorImpl implements FaxProcessor {
             }
 
             if (splitted[0].contains("Stra") | splitted[0].contains("Abschnitt") | splitted[0].contains("Ort") | splitted[0].contains("Objekt")) {
-                adresse.append(line).append("\n");
+                address.append(line).append("\n");
             } else if (splitted[0].contains("Schlagw")) {
-                schlagwort.append(line).append("\n");
+                keyWord.append(line).append("\n");
             }
 
             if (bemerkungSeen) {
-                bemerkung.append(line);
+                comment.append(line);
             }
 
             if (line.contains("BEMERKUNG")) {
@@ -203,38 +202,36 @@ public class FaxProzessorImpl implements FaxProcessor {
         }
 
         //for information
-        logger.debug("Grund: " + schlagwort);
-        logger.debug("Adresse: " + adresse);
+        logger.debug("Grund: " + keyWord);
+        logger.debug("Adresse: " + address);
         logger.debug("Koordidnate : " + koordinate);
-        logger.debug("Bemerkung: " + bemerkung);
-        logger.debug("Mittel: " + mittel);
+        logger.debug("Bemerkung: " + comment);
+        logger.debug("Mittel: " + operationRessources);
 
 
 
 
-        informationen.put(SCHLAGWORT_KEY, schlagwort.toString());
-        informationen.put(ADRESSE_KEY, adresse.toString());
-        informationen.put(EINSATZMITTEL_KEY, mittel.toString());
-        informationen.put(ALARMZEIT_KEY, alarmZeit.toString());
-        informationen.put(EINSATZNUMMER_KEY, einsatzNummer.toString());
-        informationen.put(MITTEILER_KEY, mitteiler.toString());
-        informationen.put(BEMERKUNG_KEY, bemerkung.toString());
-        return informationen;
+        AlarmFax alarmFax = new AlarmFax();
+        alarmFax.setKeyword(keyWord.toString());
+        alarmFax.setAddress(address.toString());
+        alarmFax.setOperationRessources(operationRessources.toString());
+        alarmFax.setAlarmTime(alarmTime.toString());
+        alarmFax.setOperatioNumber(operatioNumber.toString());
+        alarmFax.setReporter(reporter.toString());
+        alarmFax.setComment(comment.toString());
+
+
+        return alarmFax;
     }
 
 
-    private void updateDisplay(Map<String, String> informationen) throws DisplayChangeException {
+    private void updateDisplay(AlarmFax alarmFax) throws DisplayChangeException {
 
         alarmResetter.resetAlarm(1000*60);
         try {
             IDisplay display = Start.getDisplay();
-            display.changeSchlagwort(informationen.get(SCHLAGWORT_KEY));
-            display.changeAdresse(informationen.get(ADRESSE_KEY));
-            display.changeEinsatzmittel(informationen.get(EINSATZMITTEL_KEY));
-            display.changeAlarmzeit(informationen.get(ALARMZEIT_KEY));
-            display.ChangeEinsatznummer(informationen.get(EINSATZNUMMER_KEY));
-            display.changeName(informationen.get(MITTEILER_KEY));
-            display.changeBemerkung(informationen.get(BEMERKUNG_KEY));
+            display.changeAlarmFax(alarmFax);
+
 
         } catch (Exception e) {
             throw new DisplayChangeException(e);
@@ -244,18 +241,21 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
 
-    private void sendEmail(Map<String, String> informationen) throws EMailSendException {
+    private void sendEmail(AlarmFax alarmFax) throws EMailSendException {
         StringBuilder email = new StringBuilder();
         email.append("Informationen zum Alarm\n");
-        email.append(informationen.get(EINSATZNUMMER_KEY)).append("\n");
-        email.append(informationen.get(ALARMZEIT_KEY)).append("\n");
-        email.append(informationen.get(MITTEILER_KEY)).append("\n");
-        email.append(informationen.get(SCHLAGWORT_KEY)).append("\n");
-        email.append(informationen.get(BEMERKUNG_KEY)).append("\n");
-        email.append(informationen.get(ADRESSE_KEY)).append("\n");
-        email.append(informationen.get(EINSATZMITTEL_KEY)).append("\n");
+        email.append(alarmFax.getOperatioNumber()).append("\n");
+        email.append(alarmFax.getAlarmTime()).append("\n");
+
+        email.append(alarmFax.getReporter()).append("\n");
+        email.append(alarmFax.getKeyword()).append("\n");
+        email.append(alarmFax.getComment()).append("\n");
+        email.append(alarmFax.getAddress()).append("\n");
+
+        email.append(alarmFax.getOperationRessources()).append("\n");
+
         email.append("Link zum Routenplaner von Google:\n");
-        email.append(informationen.get(ROUTING_LINK_KEY)).append("\n");
+        email.append(alarmFax.getLink()).append("\n");
 
         try {
             EMailList queue = new EMailList();
@@ -266,10 +266,10 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
 
-    void addLinkToInformation( Map<String, String> informationen) throws LinkCreationException {
+    void  addLinkToInformation( AlarmFax alarmFax) throws LinkCreationException {
         try{
-           String link =  AddressFinder.createLink(informationen.get(ADRESSE_KEY));
-           informationen.put(ROUTING_LINK_KEY, link);
+           String link =  AddressFinder.createLink(alarmFax.getAddress());
+           alarmFax.setLink(link);
         }catch(Exception e){
             throw new LinkCreationException(e.getMessage());
         }

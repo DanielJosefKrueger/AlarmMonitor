@@ -13,7 +13,7 @@ http://maven.apache.org/xsd/assembly-1.1.2.xsd ">
             <outputDirectory>/</outputDirectory>
         </file>
         <file>
-            <source>target/Alarm_monitor-${version}.jar</source>
+            <source>target/alarm_monitor-${version}-shaded.jar</source>
             <destName>Alarm_monitor-${version}.jar</destName>
             <outputDirectory>/</outputDirectory>
         </file>

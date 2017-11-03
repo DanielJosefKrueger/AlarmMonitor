@@ -1,5 +1,6 @@
 package de.alarm_monitor.main;
 
+import com.google.inject.Provides;
 import de.alarm_monitor.email.EMailConfigurationLoader;
 import org.aeonbits.owner.ConfigCache;
 import org.aeonbits.owner.ConfigFactory;
@@ -16,7 +17,7 @@ public class MainConfigurationLoader {
     public final static String CONFIG_PATH = "config.properties";
     final static Logger logger = LogManager.getLogger(EMailConfigurationLoader.class);
 
-
+    @Provides
     public static MainConfiguration getConfig() {
         File file = new File(SystemInformationenImpl.get().getConfigFolder(),CONFIG_PATH);
         if (!file.canRead()) {

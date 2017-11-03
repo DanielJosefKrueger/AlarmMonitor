@@ -1,0 +1,28 @@
+package de.alarm_monitor.exception;
+
+public class BadOcrFileException extends Exception {
+
+    private static final long serialVersionUID = 8656571236792820060L;
+
+    public BadOcrFileException() {
+        super();
+    }
+
+    public BadOcrFileException(String arg0, Throwable arg1, boolean arg2, boolean arg3) {
+        super(arg0, arg1, arg2, arg3);
+    }
+
+    public BadOcrFileException(String arg0, Throwable arg1) {
+        super(arg0, arg1);
+    }
+
+    public BadOcrFileException(String arg0) {
+        super(arg0);
+    }
+
+    public BadOcrFileException(Throwable arg0) {
+        super(arg0);
+    }
+
+
+}
