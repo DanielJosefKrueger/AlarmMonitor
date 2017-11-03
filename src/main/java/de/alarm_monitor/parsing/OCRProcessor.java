@@ -1,4 +1,4 @@
-package de.alarm_monitor.ocr;
+package de.alarm_monitor.parsing;
 
 
 import de.alarm_monitor.main.MainConfiguration;
@@ -82,7 +82,7 @@ public class OCRProcessor {
     private void initiateOcrMapping() throws IOException {
 
         if (mapping == null) {
-            String file = SystemInformationenImpl.get().getConfigFolder().getPath() + File.separator + "ocr.txt";
+            String file = SystemInformationenImpl.get().getConfigFolder().getPath() + File.separator + "parsing.txt";
             try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Cp1252"))) {
                 mapping = new HashMap<>();
                 String line = in.readLine();

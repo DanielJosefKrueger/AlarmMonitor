@@ -8,6 +8,7 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import de.alarm_monitor.main.FaxProzessorImpl;
+import de.alarm_monitor.main.MainConfigurationLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import java.io.IOException;
@@ -57,7 +58,9 @@ public class AddressFinder {
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
     private static String createLinkFromCoordinates(LatLng kords){
-        return "https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/" + kords.lat + "," + kords.lng;
+       String begin = MainConfigurationLoader.getConfig().getRoutingLinkBegin();
+
+        return begin + kords.lat + "," + kords.lng;
     }
 
     public static String createLink(String address){

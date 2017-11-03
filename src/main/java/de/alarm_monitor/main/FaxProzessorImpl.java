@@ -2,41 +2,21 @@ package de.alarm_monitor.main;
 
 import de.alarm_monitor.email.EMailList;
 import com.google.inject.Inject;
-import de.alarm_monitor.email.EMailQueue;
-import de.alarm_monitor.ocr.OCRProcessor;
-import de.alarm_monitor.ocr.PngConverter;
+import de.alarm_monitor.parsing.OCRProcessor;
+import de.alarm_monitor.parsing.PngConverter;
 import de.alarm_monitor.exception.*;
 import de.alarm_monitor.util.AddressFinder;
 import de.alarm_monitor.util.AlarmResetter;
 import de.alarm_monitor.visual.IDisplay;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-
-
-
 import java.io.File;
-import java.util.HashMap;
-import java.util.Map;
+
 
 public class FaxProzessorImpl implements FaxProcessor {
 
-    private final static String EINSATZMITTEL_KEY = "Einsatzmittel";
-    private final static String SCHLAGWORT_KEY = "Schlagwort";
-    private final static String ADRESSE_KEY = "Adresse";
     private final AlarmResetter alarmResetter;
-
-
-    public static final String ALARMZEIT_KEY = "Alarmzeit";
-    public static final String EINSATZNUMMER_KEY = "Einsatznummer";
-    public static final String MITTEILER_KEY = "Mitteiler";
-    public static final String BEMERKUNG_KEY = "Bemerkung";
-    public static final String ROUTING_LINK_KEY = "Routing";
-
-
-
     private static final Logger logger = LogManager.getLogger(FaxProzessorImpl.class);
-
-    private File pdf;
 
     private final Boolean shouldSendEmails;
     private final Boolean shouldFilterEinsatzMittel;
@@ -64,7 +44,6 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     @Override
     public void processAlarmFax(File pdf) {
-        this.pdf = pdf;
         String pathPng;
         try {
             pathPng = pdfToPng(pdf);
@@ -138,7 +117,6 @@ public class FaxProzessorImpl implements FaxProcessor {
         StringBuilder reporter = new StringBuilder();
         StringBuilder comment = new StringBuilder();
 
-        Map<String, String> informationen = new HashMap<>();
 
 
         boolean bemerkungSeen = false;
@@ -266,7 +244,7 @@ public class FaxProzessorImpl implements FaxProcessor {
     }
 
 
-    void  addLinkToInformation( AlarmFax alarmFax) throws LinkCreationException {
+    private void addLinkToInformation( AlarmFax alarmFax) throws LinkCreationException {
         try{
            String link =  AddressFinder.createLink(alarmFax.getAddress());
            alarmFax.setLink(link);

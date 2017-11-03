@@ -3,6 +3,7 @@ package de.alarm_monitor.main;
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
 
+import javax.ws.rs.DefaultValue;
 
 
 @Config.HotReload
@@ -39,5 +40,14 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("ocr_packet")
     @DefaultValue("eng")
     String getOcrPacket();
+
+    @DefaultValue("https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/")
+    @Key("RoutingLinkAnfang")
+    String getRoutingLinkBegin();
+
+
+    @DefaultValue("1000")
+    @Key("wartezeit_pdf")
+    Long getDelayPdf();
 
 }

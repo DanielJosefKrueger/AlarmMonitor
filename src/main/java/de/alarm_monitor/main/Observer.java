@@ -9,6 +9,7 @@ import java.io.IOException;
 import java.nio.file.*;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.concurrent.TimeUnit;
 
 public class Observer extends Thread {
 
@@ -29,7 +30,7 @@ public class Observer extends Thread {
 
                 if (!foundedFiles.contains(s)) {
                     foundedFiles.add(file.getFileName().toString());
-                    logger.trace("Registered " + s + " at first Run ");
+                    logger.trace("Registered {} at first Run ", s);
                 }
             }
         } catch (IOException | DirectoryIteratorException x) {
@@ -66,7 +67,7 @@ public class Observer extends Thread {
                     if (!foundedFiles.contains(s)) {
                         foundedFiles.add(file.getFileName().toString());
                         logger.info("Alarm: new File " + s);
-                        Thread.sleep(InternalConfiguration.DELAY_AFTER_FOUND_PDF);
+                        TimeUnit.MILLISECONDS.sleep(MainConfigurationLoader.getConfig().getDelayPdf());
 
 
                         //callbacks
@@ -84,7 +85,7 @@ public class Observer extends Thread {
                     logger.error("", x);
                     lastErrorMsg = System.currentTimeMillis();
                     if(!folder.equals(new File(configuration.path_folder()).toPath())){
-                        logger.trace("pdf folder Configurationo: changedfrom {} to  {}",folder.getFileName(), configuration.path_folder());
+                        logger.trace("pdf folder Configurationo: changed from {} to  {}",folder.getFileName(), configuration.path_folder());
                         folder = new File(configuration.path_folder()).toPath();;
                         initiateFirstRun(configuration, foundedFiles, folder);
                     }

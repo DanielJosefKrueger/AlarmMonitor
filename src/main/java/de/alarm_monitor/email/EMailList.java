@@ -47,9 +47,7 @@ public class EMailList {
 
     public void broadcast(String msg) {
 
-
         String subject = config.getEmailTopic();
-
         log.info("Sending Broadcast to Receivers");
         log.trace("EMail-Content\n"+ msg);
         StringBuilder sb = new StringBuilder();

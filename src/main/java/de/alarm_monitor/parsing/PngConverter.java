@@ -1,4 +1,4 @@
-package de.alarm_monitor.ocr;
+package de.alarm_monitor.parsing;
 
 
 import de.alarm_monitor.main.InternalConfiguration;

@@ -24,7 +24,7 @@ public class Printer {
         }
 
         if (numberOfCopies < 1) {
-            throw new IllegalArgumentException("Number of copies was " + numberOfCopies);
+            throw new IllegalArgumentException("Number of copies was negative:" + numberOfCopies);
         }
 
 
@@ -51,7 +51,7 @@ public class Printer {
             throw new NullPointerException();
         }
         if (numberOfCopies < 1) {
-            throw new IllegalArgumentException("Number of copies was " + numberOfCopies);
+            throw new IllegalArgumentException("Number of copies was negative: " + numberOfCopies);
         }
 
         PDDocument doc = PDDocument.load(file);
