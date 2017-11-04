@@ -17,17 +17,24 @@ public class Observer extends Thread {
     private static Logger logger = LogManager.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
     private  long lastErrorMsg=0;
-    private Path folder;
+    private MainConfiguration mainConfiguration;
+    private Path pathPdfFolder;
+    private List<String> foundedFiles;
+
+    Observer(){
+        mainConfiguration = MainConfigurationLoader.getConfig();
+        pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
+        foundedFiles = new ArrayList<>();
+    }
 
 
 
 
-    private void initiateFirstRun(MainConfiguration configuration, List<String> foundedFiles, Path p) {
+    private boolean initiateFirstRun(List<String> foundedFiles) {
 
-        try (DirectoryStream<Path> stream = Files.newDirectoryStream(p)) {
-            for (Path file : stream) {
+        try{
+            for (Path file : getListOfFiles()) {
                 String s = file.getFileName().toString();
-
                 if (!foundedFiles.contains(s)) {
                     foundedFiles.add(file.getFileName().toString());
                     logger.trace("Registered {} at first Run ", s);
@@ -36,71 +43,75 @@ public class Observer extends Thread {
         } catch (IOException | DirectoryIteratorException x) {
             if (System.currentTimeMillis() - lastErrorMsg > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES) {
                 logger.error("", x);
-                p = Paths.get(configuration.path_folder());
                 lastErrorMsg = System.currentTimeMillis();
             }
+            return false;
         }
+        return true;
     }
 
     @Override
     public void run() {
-        MainConfiguration configuration = MainConfigurationLoader.getConfig();
         ArrayList<String> foundedFiles = new ArrayList<>();
-        logger.trace("PDF Folder is set to: {}", configuration.path_folder());
-
-        try {
-            folder = new File(configuration.path_folder()).toPath();
-        } catch (Exception e) {
-            logger.error("", e);
-            System.exit(-1);
-        }
+        logger.trace("PDF Folder is set to: {}", mainConfiguration.path_folder());
         //first Run
-        initiateFirstRun(configuration, foundedFiles,folder);
+        initiateFirstRun(foundedFiles);
 
         while (true) {
+            try{
 
-            try (DirectoryStream<Path> stream = Files.newDirectoryStream(folder)) {
-                for (Path file : stream) {
-
-                    String s = file.getFileName().toString();
-
-                    if (!foundedFiles.contains(s)) {
-                        foundedFiles.add(file.getFileName().toString());
-                        logger.info("Alarm: new File " + s);
-                        TimeUnit.MILLISECONDS.sleep(MainConfigurationLoader.getConfig().getDelayPdf());
-
-
-                        //callbacks
-                        for (NewPdfCallback callback : callbacks) {
-                            ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());
-                            handler.start();
-                        }
-                    }
-
-                }
+               for(Path file: getListOfFiles()){
+                   if (!foundedFiles.contains(file.getFileName().toString())) {
+                       foundedFiles.add(file.getFileName().toString());
+                       triggerCallbacks(file);
+                   }
+               }
                 Thread.sleep(InternalConfiguration.INTERVAL_PDF_FOLDER_INVESTIGATION);
 
             } catch (IOException | DirectoryIteratorException | InterruptedException x) {
-                if(System.currentTimeMillis() -lastErrorMsg > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES ){
+                if (System.currentTimeMillis() - lastErrorMsg > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES) {
                     logger.error("", x);
                     lastErrorMsg = System.currentTimeMillis();
-                    if(!folder.equals(new File(configuration.path_folder()).toPath())){
-                        logger.trace("pdf folder Configurationo: changed from {} to  {}",folder.getFileName(), configuration.path_folder());
-                        folder = new File(configuration.path_folder()).toPath();;
-                        initiateFirstRun(configuration, foundedFiles, folder);
-                    }
-
+                    testNewFolderConfigured();
                 }
             }
+        }
+    }
 
+    private void testNewFolderConfigured() {
+        if (!pathPdfFolder.equals(new File(mainConfiguration.path_folder()).toPath())) {
+            logger.trace("pdf folder Configurationo: changed from {} to  {}", pathPdfFolder.getFileName(), mainConfiguration.path_folder());
+            pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
+
+            initiateFirstRun(foundedFiles);
+        }
+    }
+
+    private void triggerCallbacks(Path file) throws InterruptedException {
+
+        logger.info("Neue Datei wurde gefunden " + file.getFileName());
+        TimeUnit.MILLISECONDS.sleep(MainConfigurationLoader.getConfig().getDelayPdf());
+
+        for (NewPdfCallback callback : callbacks) {
+            ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());
+            handler.start();
         }
     }
 
 
-    public void addCallback(NewPdfCallback callback) {
+    void addCallback(NewPdfCallback callback) {
         this.callbacks.add(callback);
     }
 
 
+    private List<Path> getListOfFiles() throws IOException {
+        List<Path> list = new ArrayList<>();
+        try (DirectoryStream<Path> stream = Files.newDirectoryStream(pathPdfFolder)) {
+            for (Path path : stream) {
+                list.add(path);
+            }
+        }
+        return list;
+    }
 }
 
