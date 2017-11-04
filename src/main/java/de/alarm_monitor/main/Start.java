@@ -5,6 +5,7 @@ import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.printing.PrintingService;
+import de.alarm_monitor.security.AdminReporter;
 import de.alarm_monitor.visual.AlarmMonitorGridBag;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
@@ -35,6 +36,9 @@ public class Start {
         Observer obs = new Observer();
         obs.start();
         Injector injector = Guice.createInjector();
+
+        AdminReporter reporter = injector.getInstance(AdminReporter.class);
+        reporter.start();
 
 
         NewPdfCallback callback = new NewPdfCallback() {

@@ -50,4 +50,15 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("wartezeit_pdf")
     Long getDelayPdf();
 
+
+    @Key("email_admin")
+    String getEmailAdmin();
+
+    @DefaultValue("720")
+    @Key("interval_email_admin")
+    long getIntervalEmailAdmin(); //in min
+
+
+
+
 }

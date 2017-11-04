@@ -1,5 +1,7 @@
 package de.alarm_monitor.email;
 
+import de.alarm_monitor.main.MainConfiguration;
+import de.alarm_monitor.main.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +21,7 @@ public class EMailList {
     private static final String EMAIL_List_PATH = "email_list.txt";
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
-    Logger log = LogManager.getLogger(EMailList.class);
+    private final static Logger log = LogManager.getLogger(EMailList.class);
 
 
     public EMailList() {
@@ -60,8 +62,8 @@ public class EMailList {
 
 
 
-    public boolean sendEmail(String receiver, String msg, String subject) {
-
+    public static  boolean sendEmail(String receiver, String msg, String subject) {
+        EMailConfiguration config = EMailConfigurationLoader.getConfig();
         Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");

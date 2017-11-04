@@ -12,7 +12,7 @@ public class Validator {
 
 
 
-    
+
     /**
      *
      * @return true: all configuration is valid, false otherwise
