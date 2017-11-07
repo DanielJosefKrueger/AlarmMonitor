@@ -13,15 +13,38 @@ NOTE: Der Installationspfad von Tesseract muss in der Konfiguration des Alarmmon
 === Installation des Alarmmonitors
 
 
-
+Muss noch ausformuliert werden
 
 
 
 == Konfigurieren
 
+Muss noch ausformuliert werden
 
 
+== Features
 
+=== Kern Funktionen
+
+- Strukturiertes Darstellen des Faxinhaltes auf dem Monitor
+
+- Versenden von Emails mit Inhalt des Alarmfaxes
+
+- Ausdrucken des Faxes mit beliebiger Anzahl an Kopien
+
+=== Zusätzliche Funktionen
+
+-  Konfigurierbares Loggen sämtlicher Schritte
+
+- regelmäßiges Verschicken von Emails an den Admin mit letzten Logeinträgen
+
+- Auswählen des Monitors, an welchem der Alarmmonitor angezeigt wird
+
+- Selbstständiges Zurücksetzen des Monitors nach einer Zeitspanne
+
+- Versenden von Links zu Google Routenplaner in der Email
+
+-
 
 
 == Testlauf
