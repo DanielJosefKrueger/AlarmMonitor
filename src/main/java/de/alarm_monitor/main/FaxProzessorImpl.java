@@ -3,6 +3,7 @@ package de.alarm_monitor.main;
 import de.alarm_monitor.email.EMailList;
 import com.google.inject.Inject;
 import de.alarm_monitor.parsing.OCRProcessor;
+import de.alarm_monitor.parsing.OCRProcessorImpl1;
 import de.alarm_monitor.parsing.PngConverter;
 import de.alarm_monitor.exception.*;
 import de.alarm_monitor.util.AddressFinder;
@@ -22,10 +23,15 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final Boolean shouldFilterEinsatzMittel;
     private final String filter;
     private final MainConfiguration configuration;
+    private final OCRProcessor ocrProcessor;
 
     @Inject
-    FaxProzessorImpl(AlarmResetter alarmResetter) {
+    FaxProzessorImpl(final AlarmResetter alarmResetter,
+                     final OCRProcessor ocrProcessor) {
+
+
         this.alarmResetter = alarmResetter;
+        this.ocrProcessor = ocrProcessor;
         configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
 
@@ -46,24 +52,23 @@ public class FaxProzessorImpl implements FaxProcessor {
     public void processAlarmFax(File pdf) {
         String pathPng;
         try {
-            pathPng = pdfToPng(pdf);
-            String text = extractTextOfPng(pathPng);
-            logger.trace("Parsed Text:\n"+text);
+            String text = ocrProcessor.pdfToString(pdf);
+            logger.trace("Parsed Text:\n" + text);
 
-            AlarmFax alarmFax= analyzeText(text);
+            AlarmFax alarmFax = analyzeText(text);
 
 
-            try{
+            try {
                 updateDisplay(alarmFax);
-            }catch (DisplayChangeException e) {
+            } catch (DisplayChangeException e) {
                 logger.error("Fehler beim Update der Bildschirmanzeige");
                 logger.trace("Ursprüngliche Exception:", e);
             }
 
 
-            try{
+            try {
                 addLinkToInformation(alarmFax);
-            }catch (LinkCreationException e) {
+            } catch (LinkCreationException e) {
                 logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
                 logger.trace("Ursprüngliche Exception:", e);
             }
@@ -72,9 +77,6 @@ public class FaxProzessorImpl implements FaxProcessor {
             if (shouldSendEmails) {
                 sendEmail(alarmFax);
             }
-        } catch (PngParserException e) {
-            logger.error("Fehler beim Umwandeln der .pdf-Datei in eine .png-Datei");
-            logger.trace("Ursprüngliche Exception:", e);
         } catch (OcrParserException e) {
             logger.error("Fehler beim OCR der .png-Datei");
             logger.trace("Ursprüngliche Exception:", e);
@@ -83,6 +85,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             logger.trace("Ursprüngliche Exception:", e);
         }
     }
+
 
 
     private String pdfToPng(File pdf) throws PngParserException {
@@ -95,9 +98,9 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
     private String extractTextOfPng(String pathPng) throws OcrParserException {
-        OCRProcessor ocrProcessor = new OCRProcessor();
+        OCRProcessorImpl1 ocrProcessorImpl1 = new OCRProcessorImpl1();
         try {
-            return ocrProcessor.getOCROfFile(pathPng);
+            return ocrProcessorImpl1.getOCROfFile(pathPng);
         } catch (Exception e) {
             throw new OcrParserException(e);
         }
@@ -205,7 +208,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     private void updateDisplay(AlarmFax alarmFax) throws DisplayChangeException {
 
-        alarmResetter.resetAlarm(1000*60);
+        alarmResetter.resetAlarm(MainConfigurationLoader.getConfig().getMonitorResetTime());
         try {
             IDisplay display = Start.getDisplay();
             display.changeAlarmFax(alarmFax);

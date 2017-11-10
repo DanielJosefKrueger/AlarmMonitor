@@ -58,7 +58,12 @@ public interface MainConfiguration extends Reloadable, Config {
     @Key("interval_email_admin")
     long getIntervalEmailAdmin(); //in min
 
+    @DefaultValue("60")
+    @Key("monitor_ruecksetz_zeit")
+    long getMonitorResetTime();
 
-
+    @DefaultValue("300")
+    @Key("dpi_png")
+    int getDpiPng();
 
 }

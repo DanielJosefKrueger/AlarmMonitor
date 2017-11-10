@@ -30,7 +30,7 @@ public class AlarmResetter {
 
     public void resetAlarm(long delay){
         logger.info("Setting delay");
-        resetTime =System.currentTimeMillis() + delay;
+        resetTime =System.currentTimeMillis() + delay*1000*60;
     }
 
     private void  startController(){

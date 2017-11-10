@@ -35,7 +35,8 @@ public class Start {
         logger.info("Der Alarmmonitor startet");
         Observer obs = new Observer();
         obs.start();
-        Injector injector = Guice.createInjector();
+        Injector injector = Guice.createInjector(new AlarmMonitorModule());
+
 
         AdminReporter reporter = injector.getInstance(AdminReporter.class);
         reporter.start();

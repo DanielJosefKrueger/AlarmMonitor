@@ -2,6 +2,7 @@ package de.alarm_monitor.parsing;
 
 
 import de.alarm_monitor.main.InternalConfiguration;
+import de.alarm_monitor.main.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +32,8 @@ public class PngConverter {
         try {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
-                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, InternalConfiguration.DPI_PNG_CONVERTER, ImageType.RGB);
-                ImageIOUtil.writeImage(bim, name, InternalConfiguration.DPI_PNG_CONVERTER);
+                BufferedImage bim = pdfRenderer.renderImageWithDPI(page, MainConfigurationLoader.getConfig().getDpiPng(), ImageType.RGB);
+                ImageIOUtil.writeImage(bim, name, MainConfigurationLoader.getConfig().getDpiPng());
             }
             return name;
         } finally {
