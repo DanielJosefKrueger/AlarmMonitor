@@ -1,5 +1,6 @@
 package de.alarm_monitor.main;
 
+import de.alarm_monitor.TextCorrecting.TextCorrecter;
 import de.alarm_monitor.email.EMailList;
 import com.google.inject.Inject;
 import de.alarm_monitor.parsing.OCRProcessor;
@@ -24,14 +25,16 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final String filter;
     private final MainConfiguration configuration;
     private final OCRProcessor ocrProcessor;
+    private final TextCorrecter correcter;
 
     @Inject
     FaxProzessorImpl(final AlarmResetter alarmResetter,
-                     final OCRProcessor ocrProcessor) {
+                     final OCRProcessor ocrProcessor, TextCorrecter correcter) {
 
 
         this.alarmResetter = alarmResetter;
         this.ocrProcessor = ocrProcessor;
+        this.correcter = correcter;
         configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
 
@@ -53,9 +56,20 @@ public class FaxProzessorImpl implements FaxProcessor {
         String pathPng;
         try {
             String text = ocrProcessor.pdfToString(pdf);
+
+            try {
+                text = correcter.correct(text);
+            } catch (CorrectingException e) {
+                logger.error("Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort");
+                logger.trace("Ursprüngliche Exception:", e);
+            }
+
             logger.trace("Parsed Text:\n" + text);
 
-            AlarmFax alarmFax = analyzeText(text);
+
+                AlarmFax alarmFax = analyzeText(text);
+
+
 
 
             try {
