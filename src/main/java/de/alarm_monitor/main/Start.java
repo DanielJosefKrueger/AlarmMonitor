@@ -27,6 +27,11 @@ public class Start {
     static private SystemInformationen systemInformationen;
 
 
+//TODO bemerkung newLine
+    //TODO dummes Fenster beim Parser
+    //TODO refsctor beim text extrahieren
+    //TODO adminemail länger (evtl zippen)
+
 
 
     public static void main(String[] args) {
