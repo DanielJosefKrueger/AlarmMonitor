@@ -3,18 +3,15 @@ package de.alarm_monitor.security;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.alarm_monitor.email.EMailList;
-import de.alarm_monitor.main.MainConfiguration;
-import de.alarm_monitor.main.MainConfigurationLoader;
+import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformationen;
 import de.alarm_monitor.main.SystemInformationenImpl;
-import de.alarm_monitor.printing.Printer;
 import de.alarm_monitor.util.FileUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.io.*;
-import java.util.ArrayList;
-import java.util.List;
+import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -26,19 +23,18 @@ public class AdminReporter extends Thread {
     private SystemInformationen systemInformationen;
 
     @Inject
-    AdminReporter(){
+    AdminReporter() {
         mainConfiguration = MainConfigurationLoader.getConfig();
         systemInformationen = SystemInformationenImpl.get();
     }
 
 
-
     @Override
-    public void run(){
+    public void run() {
 
         logger.debug("Starting Adminreporter");
 
-        while(true){
+        while (true) {
 
             String content = createEmailForAdmin();
             String emailAdresses = mainConfiguration.getEmailAdmin();
@@ -54,9 +50,7 @@ public class AdminReporter extends Thread {
     }
 
 
-
-
-    private String createEmailForAdmin(){
+    private String createEmailForAdmin() {
 
         File dir = systemInformationen.getLoggingFolder();
 

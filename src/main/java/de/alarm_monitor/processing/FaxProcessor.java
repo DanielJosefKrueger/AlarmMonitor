@@ -1,4 +1,4 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.processing;
 
 import java.io.File;
 

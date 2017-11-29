@@ -5,24 +5,24 @@ import de.alarm_monitor.main.AlarmFax;
 public interface IDisplay {
 
 
-     void changeReporter(String name);
+    void changeReporter(String name);
 
-     void changeOperationNumber(String operationNumber);
+    void changeOperationNumber(String operationNumber);
 
-     void changeAlarmTime(String alarmTime);
+    void changeAlarmTime(String alarmTime);
 
-     void changeKeyWord(String keyWord);
+    void changeKeyWord(String keyWord);
 
-     void changeComment(String comment);
+    void changeComment(String comment);
 
-     void changeAdress(String adresse);
+    void changeAdress(String adresse);
 
-     void changeOperationRessources(String operationRessources);
+    void changeOperationRessources(String operationRessources);
 
-     void resetAlarm();
+    void resetAlarm();
 
 
-     void activateAlarm();
+    void activateAlarm();
 
     void changeAlarmFax(AlarmFax alarmFax);
 }

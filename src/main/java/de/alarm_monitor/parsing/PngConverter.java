@@ -1,8 +1,7 @@
 package de.alarm_monitor.parsing;
 
 
-import de.alarm_monitor.main.InternalConfiguration;
-import de.alarm_monitor.main.MainConfigurationLoader;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -27,7 +26,7 @@ public class PngConverter {
         SimpleDateFormat sdf = new SimpleDateFormat("dd MM YYYY HH mm ss");
         String time = sdf.format(cal.getTime());
 
-        String name = SystemInformationenImpl.get().getWorkingFolder().getPath()+ File.separatorChar + time.toString() + ".png";
+        String name = SystemInformationenImpl.get().getWorkingFolder().getPath() + File.separatorChar + time.toString() + ".png";
         PDDocument document = PDDocument.load(file);
         try {
             PDFRenderer pdfRenderer = new PDFRenderer(document);

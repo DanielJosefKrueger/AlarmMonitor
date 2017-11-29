@@ -2,14 +2,14 @@ package de.alarm_monitor.main;
 
 public class AlarmFax {
 
-    private String reporter ="Mitteiler nicht gesetzt";
-    private String operatioNumber ="Einsatznummer nicht gesetzt";
-    private String alarmTime ="Keine Alarmzeit gesetzt";
-    private String keyword ="Keine Schlüsselwort gesetzt";
-    private String comment ="Keine Bemerkung";
-    private String address ="Keine Adresse gesetzt";
-    private String operationRessources ="Keine Einsatzmittel gesetzt";
-    private String link="Kein Link vorhanden";
+    private String reporter = "Mitteiler nicht gesetzt";
+    private String operatioNumber = "Einsatznummer nicht gesetzt";
+    private String alarmTime = "Keine Alarmzeit gesetzt";
+    private String keyword = "Keine Schlüsselwort gesetzt";
+    private String comment = "Keine Bemerkung";
+    private String address = "Keine Adresse gesetzt";
+    private String operationRessources = "Keine Einsatzmittel gesetzt";
+    private String link = "Kein Link vorhanden";
 
     public String getLink() {
         return link;

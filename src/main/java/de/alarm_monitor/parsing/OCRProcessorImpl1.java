@@ -2,9 +2,10 @@ package de.alarm_monitor.parsing;
 
 
 import de.alarm_monitor.exception.OcrParserException;
-import de.alarm_monitor.main.MainConfiguration;
-import de.alarm_monitor.main.MainConfigurationLoader;
-import de.alarm_monitor.main.SystemInformationenImpl;
+import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.tika.exception.TikaException;
 import org.apache.tika.metadata.Metadata;
 import org.apache.tika.parser.AutoDetectParser;
@@ -13,16 +14,14 @@ import org.apache.tika.parser.Parser;
 import org.apache.tika.parser.ocr.TesseractOCRConfig;
 import org.apache.tika.parser.pdf.PDFParserConfig;
 import org.apache.tika.sax.BodyContentHandler;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 import org.xml.sax.SAXException;
 
-
-import java.io.*;
+import java.io.File;
+import java.io.FileInputStream;
+import java.io.IOException;
 import java.util.HashMap;
-import java.util.Map;
 
-public class OCRProcessorImpl1 implements OCRProcessor{
+public class OCRProcessorImpl1 implements OCRProcessor {
 
     private final static Logger logger = LogManager.getLogger(OCRProcessorImpl1.class);
     private static String tPath = null;
@@ -46,7 +45,7 @@ public class OCRProcessorImpl1 implements OCRProcessor{
         TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
         tesseractOCRConfig.setTesseractPath(tPath);
         tesseractOCRConfig.setLanguage(MainConfigurationLoader.getConfig().getOcrPacket());
-        logger.trace("Used language for OCR: "+ tesseractOCRConfig.getLanguage());
+        logger.trace("Used language for OCR: " + tesseractOCRConfig.getLanguage());
         PDFParserConfig pdfConfig = new PDFParserConfig();
         pdfConfig.setExtractInlineImages(true);
         pdfConfig.setExtractUniqueInlineImagesOnly(false); // set to false if
@@ -64,19 +63,15 @@ public class OCRProcessorImpl1 implements OCRProcessor{
         String content = handler.toString();
 
 
-
         return content;
     }
-
-
-
 
 
     @Override
     public String pdfToString(File pdf) throws OcrParserException {
         try {
             return getOCROfFile(PngConverter.convertToPng(pdf));
-        } catch(Exception e){
+        } catch (Exception e) {
             throw new OcrParserException(e);
         }
     }

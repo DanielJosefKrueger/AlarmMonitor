@@ -3,7 +3,6 @@ package de.alarm_monitor.email;
 import org.aeonbits.owner.Config;
 
 
-
 @Config.HotReload
 @Config.Sources("file:${emailconfig}")
 public interface EMailConfiguration extends Config {

@@ -1,4 +1,3 @@
-
 package de.alarm_monitor.visual;
 
 import de.alarm_monitor.main.AlarmFax;
@@ -29,10 +28,6 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     private JTextArea adresse;
     private JTextArea operationRessources;
     private JButton resetButton;
-
-
-
-
 
 
     public AlarmMonitorGridBag() {
@@ -166,7 +161,6 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         body.add(einsatzmittelPane, c);
 
 
-
         this.resetAlarm();
         this.setUndecorated(true);
         getRootPane().setBackground(Color.white);
@@ -174,27 +168,21 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
         getContentPane().setBackground(Color.white);
 
-       // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
+        // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
         this.setVisible(true);
 
 
     }
 
 
-
-
-
-    public static void main(String... args){
+    public static void main(String... args) {
         new AlarmMonitorGridBag().activateAlarm();
 
     }
 
 
-
-
-
-	private void refresh(){
-	    repaint();
+    private void refresh() {
+        repaint();
     }
 
     @Override
@@ -231,7 +219,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     @Override
     public void changeKeyWord(String keyWord) {
 
-	    this.KEYWORD.setText(KEYWORD_DEFAULT + keyWord);
+        this.KEYWORD.setText(KEYWORD_DEFAULT + keyWord);
     }
 
 
@@ -254,7 +242,6 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     }
 
 
-
     @Override
     public void resetAlarm() {
         changeOperationNumber("Einsatznummer:");
@@ -269,7 +256,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
     @Override
     public void activateAlarm() {
-       // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
+        // getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
 
 
         Runnable runnable = new Runnable() {
@@ -277,7 +264,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
             public void run() {
                 long start = System.currentTimeMillis();
 
-                while(System.currentTimeMillis() < start + 5*60*1000) {
+                while (System.currentTimeMillis() < start + 5 * 60 * 1000) {
                     //getRootPane().setBorder(BorderFactory.createMatteBorder(15, 15, 15, 15, Color.RED));
                     getContentPane().setBackground(Color.red);
                     refresh();
@@ -285,11 +272,11 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
                         Thread.sleep(500);
 
 
-                   // getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
+                        // getRootPane().setBorder(BorderFactory.createMatteBorder(1, 1, 1, 1, Color.WHITE));
                         getContentPane().setBackground(Color.white);
 
                         refresh();
-                    Thread.sleep(500);
+                        Thread.sleep(500);
                     } catch (InterruptedException e) {
                         e.printStackTrace();
                     }
@@ -301,7 +288,6 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         Thread thread = new Thread(runnable);
         thread.start();
     }
-
 
 
 }

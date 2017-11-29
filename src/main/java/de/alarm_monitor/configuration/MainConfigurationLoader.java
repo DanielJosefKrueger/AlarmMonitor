@@ -1,16 +1,14 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.configuration;
 
 import com.google.inject.Provides;
+import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.email.EMailConfigurationLoader;
+import de.alarm_monitor.main.SystemInformationenImpl;
 import org.aeonbits.owner.ConfigCache;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
-import java.io.FileReader;
-import java.io.IOException;
-import java.util.Properties;
 
 public class MainConfigurationLoader {
 
@@ -19,7 +17,7 @@ public class MainConfigurationLoader {
 
     @Provides
     public static MainConfiguration getConfig() {
-        File file = new File(SystemInformationenImpl.get().getConfigFolder(),CONFIG_PATH);
+        File file = new File(SystemInformationenImpl.get().getConfigFolder(), CONFIG_PATH);
         if (!file.canRead()) {
             logger.error("Die Konfigurationsdatei {} konnte nicht geladen werden", file.getAbsoluteFile());
         }

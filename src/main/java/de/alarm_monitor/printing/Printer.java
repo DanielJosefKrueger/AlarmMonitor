@@ -1,9 +1,9 @@
 package de.alarm_monitor.printing;
 
-import org.apache.pdfbox.pdmodel.PDDocument;
-import org.apache.pdfbox.printing.PDFPrintable;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.apache.pdfbox.pdmodel.PDDocument;
+import org.apache.pdfbox.printing.PDFPrintable;
 
 import java.awt.print.PageFormat;
 import java.awt.print.Paper;

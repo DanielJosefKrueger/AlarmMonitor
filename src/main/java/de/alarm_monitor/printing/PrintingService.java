@@ -1,8 +1,7 @@
 package de.alarm_monitor.printing;
 
-import de.alarm_monitor.main.MainConfiguration;
-import de.alarm_monitor.main.MainConfigurationLoader;
-import de.alarm_monitor.printing.Printer;
+import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 
 import java.awt.print.PrinterException;
 import java.io.File;

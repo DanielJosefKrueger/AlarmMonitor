@@ -1,6 +1,5 @@
 package de.alarm_monitor.util;
 
-import de.alarm_monitor.security.AdminReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -15,18 +14,18 @@ public class FileUtil {
 
     private static final Logger logger = LogManager.getLogger(FileUtil.class);
 
-    public static String getLastLinesOfFile(int number, File file){
+    public static String getLastLinesOfFile(int number, File file) {
 
-        try(BufferedReader in = new BufferedReader(new FileReader(file))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(file))) {
 
             List<String> list = new ArrayList<>();
             in.lines().forEach(list::add);
 
 
-            int begin = list.size()-number>0?list.size()-number:0;
+            int begin = list.size() - number > 0 ? list.size() - number : 0;
             List<String> sublist = list.subList(begin, list.size());
             StringBuilder sb = new StringBuilder();
-            for(String s: sublist){
+            for (String s : sublist) {
                 sb.append(s).append("\n");
             }
 

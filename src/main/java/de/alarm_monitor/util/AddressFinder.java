@@ -7,10 +7,11 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
-import de.alarm_monitor.main.FaxProzessorImpl;
-import de.alarm_monitor.main.MainConfigurationLoader;
+import de.alarm_monitor.processing.FaxProzessorImpl;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.net.MalformedURLException;
@@ -28,28 +29,28 @@ public class AddressFinder {
 
         StringBuilder adressbuilder = new StringBuilder();
         Arrays.stream(address.split("\n"))
-                .filter(e->e.startsWith("Str")||e.startsWith("Ort"))
-                .forEach(e->adressbuilder.append(e.replaceAll(".tra.e", "")
-                        .replaceAll("Ort","")
+                .filter(e -> e.startsWith("Str") || e.startsWith("Ort"))
+                .forEach(e -> adressbuilder.append(e.replaceAll(".tra.e", "")
+                        .replaceAll("Ort", "")
                         .replaceAll("Haus-Nr", "")
-                        .replaceAll("\\.","")
-                        .replaceAll("=","")
+                        .replaceAll("\\.", "")
+                        .replaceAll("=", "")
                         .replaceAll(":", "")
                 ));
 
 
         GeoApiContext context = new GeoApiContext.Builder()
-            .apiKey(api_key)
-            .build();
+                .apiKey(api_key)
+                .build();
         GeocodingResult[] results = new GeocodingResult[0];
 
 
         logger.trace("Fetching the kords from Google");
-        logger.trace("Fetch-String is:"+ adressbuilder );
+        logger.trace("Fetch-String is:" + adressbuilder);
         results = GeocodingApi.geocode(context, adressbuilder.toString()).awaitIgnoreError();
-            Gson gson = new GsonBuilder().setPrettyPrinting().create();
-            logger.trace("Received following coordinates from Google" +gson.toJson(results[0].geometry.location));
-            return results[0].geometry.location;
+        Gson gson = new GsonBuilder().setPrettyPrinting().create();
+        logger.trace("Received following coordinates from Google" + gson.toJson(results[0].geometry.location));
+        return results[0].geometry.location;
 
     }
 
@@ -57,23 +58,23 @@ public class AddressFinder {
     //https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/48.45397,12.54189
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
-    private static String createLinkFromCoordinates(LatLng kords){
-       String begin = MainConfigurationLoader.getConfig().getRoutingLinkBegin();
+    private static String createLinkFromCoordinates(LatLng kords) {
+        String begin = MainConfigurationLoader.getConfig().getRoutingLinkBegin();
 
         return begin + kords.lat + "," + kords.lng;
     }
 
-    public static String createLink(String address){
-        try{
+    public static String createLink(String address) {
+        try {
             LatLng kords = getCordsAdress(address);
-            return  createLinkFromCoordinates(kords);
+            return createLinkFromCoordinates(kords);
 
 
-        }catch(Exception e){
-            if(address.lastIndexOf(" ")>-1){
+        } catch (Exception e) {
+            if (address.lastIndexOf(" ") > -1) {
                 logger.info("Couldnt get link from google, retry");
                 return createLink(address.substring(0, address.lastIndexOf(" ")));
-            }else{
+            } else {
                 return "Leider konnte kein Link geparst werden";
             }
 
@@ -84,7 +85,7 @@ public class AddressFinder {
     }
 
 
-    public static String getHtmlFromUrl(String url_string){
+    public static String getHtmlFromUrl(String url_string) {
 
         URL url = null;
         try {
@@ -95,9 +96,9 @@ public class AddressFinder {
 
         int ptr = 0;
         StringBuffer buffer = new StringBuffer();
-        try(InputStream is = url.openStream();) {
+        try (InputStream is = url.openStream();) {
             while ((ptr = is.read()) != -1) {
-                buffer.append((char)ptr);
+                buffer.append((char) ptr);
             }
         } catch (IOException e) {
             e.printStackTrace();
@@ -107,10 +108,8 @@ public class AddressFinder {
     }
 
 
-
-    public static String test_html(String url){
+    public static String test_html(String url) {
         getHtmlFromUrl(url);
-
 
 
         return "";
@@ -142,14 +141,6 @@ public class AddressFinder {
         }
 
     }*/
-
-
-
-
-
-
-
-
 
 
 }

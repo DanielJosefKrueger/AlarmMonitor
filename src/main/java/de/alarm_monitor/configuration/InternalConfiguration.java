@@ -1,7 +1,6 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.configuration;
 
 public class InternalConfiguration {
-
 
 
     public static final int INTERVALL_BETWEEN_FOLDER_ERROR_MESSAGES = 20000; //in ms

@@ -1,12 +1,18 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.observing;
 
 import de.alarm_monitor.callback.NewPdfCallback;
+import de.alarm_monitor.configuration.InternalConfiguration;
+import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.io.IOException;
-import java.nio.file.*;
+import java.nio.file.DirectoryIteratorException;
+import java.nio.file.DirectoryStream;
+import java.nio.file.Files;
+import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.concurrent.TimeUnit;
@@ -16,23 +22,21 @@ public class Observer extends Thread {
 
     private static Logger logger = LogManager.getLogger(Observer.class);
     private List<NewPdfCallback> callbacks = new ArrayList<>();
-    private  long lastErrorMsg=0;
+    private long lastErrorMsg = 0;
     private MainConfiguration mainConfiguration;
     private Path pathPdfFolder;
     private List<String> foundedFiles;
 
-    Observer(){
+    public Observer() {
         mainConfiguration = MainConfigurationLoader.getConfig();
         pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
 
 
-
-
     private boolean initiateFirstRun(List<String> foundedFiles) {
 
-        try{
+        try {
             for (Path file : getListOfFiles()) {
                 String s = file.getFileName().toString();
                 if (!foundedFiles.contains(s)) {
@@ -58,14 +62,14 @@ public class Observer extends Thread {
         initiateFirstRun(foundedFiles);
 
         while (true) {
-            try{
+            try {
 
-               for(Path file: getListOfFiles()){
-                   if (!foundedFiles.contains(file.getFileName().toString())) {
-                       foundedFiles.add(file.getFileName().toString());
-                       triggerCallbacks(file);
-                   }
-               }
+                for (Path file : getListOfFiles()) {
+                    if (!foundedFiles.contains(file.getFileName().toString())) {
+                        foundedFiles.add(file.getFileName().toString());
+                        triggerCallbacks(file);
+                    }
+                }
                 Thread.sleep(InternalConfiguration.INTERVAL_PDF_FOLDER_INVESTIGATION);
 
             } catch (IOException | DirectoryIteratorException | InterruptedException x) {
@@ -99,7 +103,7 @@ public class Observer extends Thread {
     }
 
 
-    void addCallback(NewPdfCallback callback) {
+    public void  addCallback(NewPdfCallback callback) {
         this.callbacks.add(callback);
     }
 

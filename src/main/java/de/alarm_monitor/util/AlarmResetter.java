@@ -7,8 +7,6 @@ import de.alarm_monitor.main.Start;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-
-
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -20,29 +18,26 @@ public class AlarmResetter {
 
 
     @Inject
-    public AlarmResetter(){
+    public AlarmResetter() {
         startController();
     }
 
 
-
-
-
-    public void resetAlarm(long delay){
+    public void resetAlarm(long delay) {
         logger.info("Setting delay");
-        resetTime =System.currentTimeMillis() + delay*1000*60;
+        resetTime = System.currentTimeMillis() + delay * 1000 * 60;
     }
 
-    private void  startController(){
+    private void startController() {
 
         Runnable controller = new Runnable() {
             @Override
             public void run() {
-                while(true){
-                    if(resetTime < System.currentTimeMillis()){
-                           Start.getDisplay().resetAlarm();
-                           logger.info("resetting Display");
-                           resetTime = Long.MAX_VALUE;
+                while (true) {
+                    if (resetTime < System.currentTimeMillis()) {
+                        Start.getDisplay().resetAlarm();
+                        logger.info("resetting Display");
+                        resetTime = Long.MAX_VALUE;
                     }
 
                     try {
@@ -58,10 +53,6 @@ public class AlarmResetter {
         controllerThread.start();
 
     }
-
-
-
-
 
 
 }

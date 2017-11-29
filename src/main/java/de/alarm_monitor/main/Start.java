@@ -4,19 +4,19 @@ package de.alarm_monitor.main;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import de.alarm_monitor.callback.NewPdfCallback;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
+import de.alarm_monitor.observing.Observer;
 import de.alarm_monitor.printing.PrintingService;
+import de.alarm_monitor.processing.FaxProcessor;
+import de.alarm_monitor.processing.FaxProzessorImpl;
 import de.alarm_monitor.security.AdminReporter;
-import de.alarm_monitor.visual.AlarmMonitorGridBag;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
-
-
 import de.alarm_monitor.visual.NewLayout;
 import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
-
 
 import javax.swing.*;
 import java.io.File;
@@ -27,11 +27,10 @@ public class Start {
     static private SystemInformationen systemInformationen;
 
 
-//TODO bemerkung newLine
+    //TODO bemerkung newLine
     //TODO dummes Fenster beim Parser
     //TODO refsctor beim text extrahieren
     //TODO adminemail länger (evtl zippen)
-
 
 
     public static void main(String[] args) {
@@ -71,11 +70,11 @@ public class Start {
         logger.info("Die Logger-Konfiguration aus dem config Ordner wird verwendet");
 
 
-        ConfigFactory.setProperty("mainconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "config.properties").toURI().getRawPath());
-        ConfigFactory.setProperty("emailconfig",new File( SystemInformationenImpl.get().getConfigFolder() , "email_config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("mainconfig", new File(SystemInformationenImpl.get().getConfigFolder(), "config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("emailconfig", new File(SystemInformationenImpl.get().getConfigFolder(), "email_config.properties").toURI().getRawPath());
 
         display = new NewLayout();
-        GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame)display);
+        GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame) display);
         systemInformationen = new SystemInformationenImpl();
     }
 }

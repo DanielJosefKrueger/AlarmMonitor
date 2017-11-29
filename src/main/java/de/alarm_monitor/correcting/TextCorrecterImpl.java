@@ -1,8 +1,7 @@
-package de.alarm_monitor.TextCorrecting;
+package de.alarm_monitor.correcting;
 
 import de.alarm_monitor.exception.CorrectingException;
 import de.alarm_monitor.main.SystemInformationenImpl;
-import de.alarm_monitor.parsing.OCRProcessorImpl1;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -10,14 +9,14 @@ import java.io.*;
 import java.util.HashMap;
 import java.util.Map;
 
-public class TextCorrecterImpl implements TextCorrecter{
+public class TextCorrecterImpl implements TextCorrecter {
 
     private final static Logger logger = LogManager.getLogger(TextCorrecterImpl.class);
     private HashMap<String, String> mapping = null;
 
     @Override
     public String correct(String text) throws CorrectingException {
-    if (mapping == null) {
+        if (mapping == null) {
             try {
                 initiateOcrMapping();
             } catch (IOException e) {

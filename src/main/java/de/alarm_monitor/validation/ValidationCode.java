@@ -1,7 +1,7 @@
 package de.alarm_monitor.validation;
 
 
-public enum ValidationCode{
+public enum ValidationCode {
     good, non_critical, critical;
 }
 

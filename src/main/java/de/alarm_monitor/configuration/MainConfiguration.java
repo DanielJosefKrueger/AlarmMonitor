@@ -1,9 +1,7 @@
-package de.alarm_monitor.main;
+package de.alarm_monitor.configuration;
 
 import org.aeonbits.owner.Config;
 import org.aeonbits.owner.Reloadable;
-
-import javax.ws.rs.DefaultValue;
 
 
 @Config.HotReload
