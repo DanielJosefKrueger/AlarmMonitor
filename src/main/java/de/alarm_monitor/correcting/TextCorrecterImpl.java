@@ -42,7 +42,7 @@ public class TextCorrecterImpl implements TextCorrecter {
                         line = in.readLine();
                         continue;
                     }
-                    String[] splitted = line.split(" ");
+                    String[] splitted = line.split("\\$");
                     if (splitted.length != 2) {
                         logger.warn("Fehler in der OCR Datei, zu wenig oder zu viele Einträge in einer Zeile. Eintrag wird Übersprungen");
                         continue;

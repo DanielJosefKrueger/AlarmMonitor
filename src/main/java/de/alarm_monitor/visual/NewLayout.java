@@ -99,6 +99,7 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionComment = new JTextArea(COMMENT_DEFAULT);
         sectionComment.setBounds(calculator.getRectangleForPosition(0, 7, 2, 3));
         sectionComment.setFont(FONT);
+        sectionComment.setLineWrap(true);
         body.add(sectionComment);
 
 
@@ -110,7 +111,7 @@ public class NewLayout extends JFrame implements IDisplay {
 
     public static void main(String... args) {
 
-        new NewLayout();
+        new NewLayout().changeComment("hallo\nhallo\nhallo");
     }
 
 
