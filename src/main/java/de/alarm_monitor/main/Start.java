@@ -24,8 +24,7 @@ import java.io.File;
 public class Start {
     private static Logger logger;
     static private IDisplay display;
-    static private SystemInformationen systemInformationen;
-
+    static private SystemInformation systemInformation;
 
 
 //TODO evtl pfad veränderung wenn nicht auas ordner gestartet
@@ -33,10 +32,9 @@ public class Start {
 
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AlarmMonitorModule());
-        systemInformationen = injector.getInstance(SystemInformationen.class);
+        systemInformation = injector.getInstance(SystemInformation.class);
         startProcedure();
         logger.info("Der Alarmmonitor startet");
-
 
 
         Observer obs = injector.getInstance(Observer.class);
@@ -63,11 +61,11 @@ public class Start {
     }
 
     public static void startProcedure() {
-        Configurator.initialize(null, systemInformationen.getConfigFolder().toURI().getPath() + "logconfig.xml");
+        Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(FaxProzessorImpl.class);
 
-        ConfigFactory.setProperty("mainconfig", new File(systemInformationen.getConfigFolder(), "config.properties").toURI().getRawPath());
-        ConfigFactory.setProperty("emailconfig", new File(systemInformationen.getConfigFolder(), "email_config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("mainconfig", new File(systemInformation.getConfigFolder(), "config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("emailconfig", new File(systemInformation.getConfigFolder(), "email_config.properties").toURI().getRawPath());
 
         display = new NewLayout();
         GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame) display);

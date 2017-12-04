@@ -4,7 +4,7 @@ import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.InternalConfiguration;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
-import de.alarm_monitor.main.SystemInformationen;
+import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,17 +24,17 @@ public class Observer extends Thread {
 
     private static final Logger logger = LogManager.getLogger(Observer.class);
     private final List<NewPdfCallback> callbacks = new ArrayList<>();
-    private long lastErrorMsg = 0;
     private final MainConfiguration mainConfiguration;
-    private Path pathPdfFolder;
     private final List<String> foundedFiles;
-    private final SystemInformationen systemInformationen;
+    private final SystemInformation systemInformation;
+    private long lastErrorMsg = 0;
+    private Path pathPdfFolder;
 
     @Inject
-    public Observer(SystemInformationen systemInformationen) {
-        this.systemInformationen = systemInformationen;
+    public Observer(SystemInformation systemInformation) {
+        this.systemInformation = systemInformation;
         mainConfiguration = MainConfigurationLoader.getConfig();
-        pathPdfFolder = new File(systemInformationen.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
+        pathPdfFolder = new File(systemInformation.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
 
@@ -108,7 +108,7 @@ public class Observer extends Thread {
     }
 
 
-    public void  addCallback(NewPdfCallback callback) {
+    public void addCallback(NewPdfCallback callback) {
         this.callbacks.add(callback);
     }
 

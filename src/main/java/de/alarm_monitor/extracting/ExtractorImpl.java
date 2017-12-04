@@ -78,23 +78,19 @@ public class ExtractorImpl implements Extractor {
     }
 
 
-
     private String extractReporter(String[] lines) {
         StringBuilder sb = new StringBuilder();
 
         for (String line : lines) {
             String[] splitted = line.split(" ");
 
-            if(splitted[0].contains("Name")){
+            if (splitted[0].contains("Name")) {
                 sb.append(line);
             }
 
         }
         return sb.toString();
     }
-
-
-
 
 
     private String extractComment(String[] lines) {

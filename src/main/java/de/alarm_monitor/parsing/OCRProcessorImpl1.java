@@ -2,10 +2,10 @@ package de.alarm_monitor.parsing;
 
 
 import com.google.inject.Inject;
-import de.alarm_monitor.exception.OcrParserException;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
-import de.alarm_monitor.main.SystemInformationen;
+import de.alarm_monitor.exception.OcrParserException;
+import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.exception.TikaException;
@@ -27,14 +27,14 @@ public class OCRProcessorImpl1 implements OCRProcessor {
 
     private final static Logger logger = LogManager.getLogger(OCRProcessorImpl1.class);
     private static String tPath = null;
+    private final SystemInformation systemInformation;
+    private final PngConverter pngConverter;
     private MainConfiguration configuration;
     private HashMap<String, String> mapping = null;
-    private final SystemInformationen systemInformationen;
-    private final PngConverter pngConverter;
 
     @Inject
-    public OCRProcessorImpl1(SystemInformationen systemInformationen, PngConverter pngConverter) {
-        this.systemInformationen = systemInformationen;
+    public OCRProcessorImpl1(SystemInformation systemInformation, PngConverter pngConverter) {
+        this.systemInformation = systemInformation;
         this.pngConverter = pngConverter;
         configuration = MainConfigurationLoader.getConfig();
     }

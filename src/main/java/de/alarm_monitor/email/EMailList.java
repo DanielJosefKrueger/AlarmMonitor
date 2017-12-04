@@ -1,7 +1,6 @@
 package de.alarm_monitor.email;
 
-import de.alarm_monitor.main.SystemInformationen;
-import de.alarm_monitor.main.SystemInformationenImpl;
+import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -26,11 +25,11 @@ public class EMailList {
     private final static Logger log = LogManager.getLogger(EMailList.class);
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
-    private final SystemInformationen systemInformationen;
+    private final SystemInformation systemInformation;
 
     @Inject
-    public EMailList(SystemInformationen systemInformationen) {
-        this.systemInformationen = systemInformationen;
+    public EMailList(SystemInformation systemInformation) {
+        this.systemInformation = systemInformation;
         config = EMailConfigurationLoader.getConfig();
         loadReceiverList();
     }
@@ -89,29 +88,27 @@ public class EMailList {
         try {
             Message email = new MimeMessage(session);
 
-            MimeMultipart content = new MimeMultipart( "mixed" );
+            MimeMultipart content = new MimeMultipart("mixed");
 
             MimeBodyPart text = new MimeBodyPart();
-            text.setText( message );
-            content.addBodyPart( text );
+            text.setText(message);
+            content.addBodyPart(text);
 
 
-            if(filename !=null){
-                try{
+            if (filename != null) {
+                try {
                     BodyPart messageBodyPart = new MimeBodyPart();
                     messageBodyPart.setDataHandler(
-                            new DataHandler( new FileDataSource( filename ) ) );
-                    messageBodyPart.setFileName( new File(filename).getName() );
-                    content.addBodyPart( messageBodyPart );
-                }catch(Exception e){
+                            new DataHandler(new FileDataSource(filename)));
+                    messageBodyPart.setFileName(new File(filename).getName());
+                    content.addBodyPart(messageBodyPart);
+                } catch (Exception e) {
                     log.error("Fehler beim Erstellen des Anhangs");
                 }
             }
 
 
-
-            email.setContent( content );
-
+            email.setContent(content);
 
 
             email.setFrom(new InternetAddress(config.username()));
@@ -128,16 +125,8 @@ public class EMailList {
     }
 
 
-
-
-
-
-
-
-
-
     public void loadReceiverList() {
-        try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformationen.getConfigFolder(), EMAIL_List_PATH)))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformation.getConfigFolder(), EMAIL_List_PATH)))) {
             String line = in.readLine();
             String[] split = line.split(";");
             for (String s : split) {

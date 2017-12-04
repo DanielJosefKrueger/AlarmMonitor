@@ -7,8 +7,8 @@ import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
-import de.alarm_monitor.processing.FaxProzessorImpl;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
+import de.alarm_monitor.processing.FaxProzessorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 

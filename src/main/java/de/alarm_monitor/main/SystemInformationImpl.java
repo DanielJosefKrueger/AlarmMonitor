@@ -3,32 +3,31 @@ package de.alarm_monitor.main;
 
 import com.google.inject.Singleton;
 
-
 import java.io.File;
 import java.net.URISyntaxException;
 
 @Singleton
-public class SystemInformationenImpl implements SystemInformationen {
+public class SystemInformationImpl implements SystemInformation {
 
     private static final String configFolderSuffix = "config" + File.separator;
     private static final String workingFolderSuffix = "working" + File.separator;
     private static final String logFolderSuffix = "logs" + File.separator;
-    private static SystemInformationenImpl singleton;
+    private static SystemInformationImpl singleton;
     private final File projectPath;
     private final File configFolder;
     private final File workingFolder;
     private final File logFolder;
 
-    SystemInformationenImpl() {
+    SystemInformationImpl() {
         projectPath = calcProjectPath();
         this.configFolder = new File(projectPath, configFolderSuffix);
         this.workingFolder = new File(projectPath, workingFolderSuffix);
         this.logFolder = new File(projectPath, logFolderSuffix);
     }
 
-   /* public static SystemInformationen get() {
+   /* public static SystemInformation get() {
         if (singleton == null) {
-            singleton = new SystemInformationenImpl();
+            singleton = new SystemInformationImpl();
         }
         return singleton;
     }*/

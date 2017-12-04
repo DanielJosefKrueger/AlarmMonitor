@@ -1,13 +1,13 @@
 package de.alarm_monitor.processing;
 
 import com.google.inject.Inject;
-import de.alarm_monitor.correcting.TextCorrecter;
-import de.alarm_monitor.extracting.Extractor;
-import de.alarm_monitor.email.EMailList;
-import de.alarm_monitor.exception.*;
-import de.alarm_monitor.main.AlarmFax;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
+import de.alarm_monitor.correcting.TextCorrecter;
+import de.alarm_monitor.email.EMailList;
+import de.alarm_monitor.exception.*;
+import de.alarm_monitor.extracting.Extractor;
+import de.alarm_monitor.main.AlarmFax;
 import de.alarm_monitor.main.Start;
 import de.alarm_monitor.parsing.OCRProcessor;
 import de.alarm_monitor.util.AddressFinder;
