@@ -1,6 +1,8 @@
 package de.alarm_monitor.correcting;
 
+import com.google.inject.Inject;
 import de.alarm_monitor.exception.CorrectingException;
+import de.alarm_monitor.main.SystemInformationen;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -13,6 +15,13 @@ public class TextCorrecterImpl implements TextCorrecter {
 
     private final static Logger logger = LogManager.getLogger(TextCorrecterImpl.class);
     private HashMap<String, String> mapping = null;
+    private final SystemInformationen systemInformationen;
+
+    @Inject
+    TextCorrecterImpl(SystemInformationen systemInformationen){
+        this.systemInformationen = systemInformationen;
+    }
+
 
     @Override
     public String correct(String text) throws CorrectingException {
@@ -33,7 +42,7 @@ public class TextCorrecterImpl implements TextCorrecter {
     private void initiateOcrMapping() throws IOException {
 
         if (mapping == null) {
-            String file = SystemInformationenImpl.get().getConfigFolder().getPath() + File.separator + "ocr.txt";
+            String file = systemInformationen.getConfigFolder().getPath() + File.separator + "ocr.txt";
             try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Cp1252"))) {
                 mapping = new HashMap<>();
                 String line = in.readLine();

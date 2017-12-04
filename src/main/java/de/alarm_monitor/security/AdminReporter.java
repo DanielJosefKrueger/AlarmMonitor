@@ -6,7 +6,6 @@ import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformationen;
-import de.alarm_monitor.main.SystemInformationenImpl;
 import de.alarm_monitor.util.FileUtil;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -20,12 +19,13 @@ public class AdminReporter extends Thread {
 
 
     private MainConfiguration mainConfiguration;
-    private SystemInformationen systemInformationen;
+    private final SystemInformationen systemInformationen;
 
     @Inject
-    AdminReporter() {
+    AdminReporter(SystemInformationen systemInformationen) {
+        this.systemInformationen = systemInformationen;
         mainConfiguration = MainConfigurationLoader.getConfig();
-        systemInformationen = SystemInformationenImpl.get();
+
     }
 
 
@@ -35,11 +35,18 @@ public class AdminReporter extends Thread {
         logger.debug("Starting Adminreporter");
 
         while (true) {
+            File dir = systemInformationen.getLoggingFolder();
+            logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
+            File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
+            File log = files[0];
+
+
 
             String content = createEmailForAdmin();
             String emailAdresses = mainConfiguration.getEmailAdmin();
             logger.debug("Sending regular notification to admin");
-            EMailList.sendEmail(emailAdresses, content, "Status Alarmmonitor");
+           // EMailList.sendEmail(emailAdresses, content, "Status Alarmmonitor");
+            EMailList.sendAdminEmail(emailAdresses, content, "Status Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
 
             try {
                 TimeUnit.MINUTES.sleep(mainConfiguration.getIntervalEmailAdmin());

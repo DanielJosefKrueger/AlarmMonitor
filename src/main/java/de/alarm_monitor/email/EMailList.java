@@ -1,12 +1,18 @@
 package de.alarm_monitor.email;
 
+import de.alarm_monitor.main.SystemInformationen;
 import de.alarm_monitor.main.SystemInformationenImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.activation.DataHandler;
+import javax.activation.FileDataSource;
+import javax.inject.Inject;
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
+import javax.mail.internet.MimeBodyPart;
 import javax.mail.internet.MimeMessage;
+import javax.mail.internet.MimeMultipart;
 import java.io.*;
 import java.util.ArrayList;
 import java.util.List;
@@ -20,9 +26,11 @@ public class EMailList {
     private final static Logger log = LogManager.getLogger(EMailList.class);
     private final EMailConfiguration config;
     private final List<String> receivers = new ArrayList<>();
+    private final SystemInformationen systemInformationen;
 
-
-    public EMailList() {
+    @Inject
+    public EMailList(SystemInformationen systemInformationen) {
+        this.systemInformationen = systemInformationen;
         config = EMailConfigurationLoader.getConfig();
         loadReceiverList();
     }
@@ -53,6 +61,8 @@ public class EMailList {
             message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             message.setSubject(subject);
             message.setText(msg);
+
+
             Transport.send(message);
             return true;
 
@@ -62,8 +72,72 @@ public class EMailList {
         }
     }
 
+    public static boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
+        EMailConfiguration config = EMailConfigurationLoader.getConfig();
+        Properties props = new Properties();
+        props.put("mail.smtp.auth", config.smtpAuth());
+        props.put("mail.smtp.starttls.enable", config.startTls());
+        props.put("mail.smtp.host", config.smtpHost());
+        props.put("mail.smtp.port", config.smtpPort());
+
+        Session session = Session.getInstance(props, new javax.mail.Authenticator() {
+            protected PasswordAuthentication getPasswordAuthentication() {
+                return new PasswordAuthentication(config.username(), config.password());
+            }
+        });
+
+        try {
+            Message email = new MimeMessage(session);
+
+            MimeMultipart content = new MimeMultipart( "mixed" );
+
+            MimeBodyPart text = new MimeBodyPart();
+            text.setText( message );
+            content.addBodyPart( text );
+
+
+            if(filename !=null){
+                try{
+                    BodyPart messageBodyPart = new MimeBodyPart();
+                    messageBodyPart.setDataHandler(
+                            new DataHandler( new FileDataSource( filename ) ) );
+                    messageBodyPart.setFileName( new File(filename).getName() );
+                    content.addBodyPart( messageBodyPart );
+                }catch(Exception e){
+                    log.error("Fehler beim Erstellen des Anhangs");
+                }
+            }
+
+
+
+            email.setContent( content );
+
+
+
+            email.setFrom(new InternetAddress(config.username()));
+            email.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
+            email.setSubject(subject);
+
+            Transport.send(email);
+            return true;
+
+        } catch (MessagingException e) {
+            log.error("", e);
+            throw new RuntimeException(e);
+        }
+    }
+
+
+
+
+
+
+
+
+
+
     public void loadReceiverList() {
-        try (BufferedReader in = new BufferedReader(new FileReader(new File(SystemInformationenImpl.get().getConfigFolder(), EMAIL_List_PATH)))) {
+        try (BufferedReader in = new BufferedReader(new FileReader(new File(systemInformationen.getConfigFolder(), EMAIL_List_PATH)))) {
             String line = in.readLine();
             String[] split = line.split(";");
             for (String s : split) {

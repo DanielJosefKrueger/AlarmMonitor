@@ -29,16 +29,21 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final OCRProcessor ocrProcessor;
     private final TextCorrecter correcter;
     private final Extractor extractor;
+    private final EMailList queue;
 
     @Inject
     FaxProzessorImpl(final AlarmResetter alarmResetter,
-                     final OCRProcessor ocrProcessor, TextCorrecter correcter, Extractor extractor) {
+                     final OCRProcessor ocrProcessor,
+                     final TextCorrecter correcter,
+                     final Extractor extractor,
+                     final EMailList queue) {
 
 
         this.alarmResetter = alarmResetter;
         this.ocrProcessor = ocrProcessor;
         this.correcter = correcter;
         this.extractor = extractor;
+        this.queue = queue;
         configuration = MainConfigurationLoader.getConfig();
         this.shouldSendEmails = configuration.isEmailActive();
 
@@ -124,7 +129,7 @@ public class FaxProzessorImpl implements FaxProcessor {
         email.append(alarmFax.getLink()).append("\n");
 
         try {
-            EMailList queue = new EMailList();
+
             queue.broadcast(email.toString());
         } catch (Exception e) {
             throw new EMailSendException();

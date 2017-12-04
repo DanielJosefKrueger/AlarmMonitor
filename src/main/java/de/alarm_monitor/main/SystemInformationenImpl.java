@@ -1,8 +1,13 @@
 package de.alarm_monitor.main;
 
+
+import com.google.inject.Singleton;
+
+
 import java.io.File;
 import java.net.URISyntaxException;
 
+@Singleton
 public class SystemInformationenImpl implements SystemInformationen {
 
     private static final String configFolderSuffix = "config" + File.separator;
@@ -21,12 +26,12 @@ public class SystemInformationenImpl implements SystemInformationen {
         this.logFolder = new File(projectPath, logFolderSuffix);
     }
 
-    public static SystemInformationen get() {
+   /* public static SystemInformationen get() {
         if (singleton == null) {
             singleton = new SystemInformationenImpl();
         }
         return singleton;
-    }
+    }*/
 
     @Override
     public File getWorkingFolder() {

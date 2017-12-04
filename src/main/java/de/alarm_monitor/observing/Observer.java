@@ -4,9 +4,11 @@ import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.InternalConfiguration;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
+import de.alarm_monitor.main.SystemInformationen;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import javax.inject.Inject;
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.DirectoryIteratorException;
@@ -20,16 +22,19 @@ import java.util.concurrent.TimeUnit;
 public class Observer extends Thread {
 
 
-    private static Logger logger = LogManager.getLogger(Observer.class);
-    private List<NewPdfCallback> callbacks = new ArrayList<>();
+    private static final Logger logger = LogManager.getLogger(Observer.class);
+    private final List<NewPdfCallback> callbacks = new ArrayList<>();
     private long lastErrorMsg = 0;
-    private MainConfiguration mainConfiguration;
+    private final MainConfiguration mainConfiguration;
     private Path pathPdfFolder;
-    private List<String> foundedFiles;
+    private final List<String> foundedFiles;
+    private final SystemInformationen systemInformationen;
 
-    public Observer() {
+    @Inject
+    public Observer(SystemInformationen systemInformationen) {
+        this.systemInformationen = systemInformationen;
         mainConfiguration = MainConfigurationLoader.getConfig();
-        pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
+        pathPdfFolder = new File(systemInformationen.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
 
