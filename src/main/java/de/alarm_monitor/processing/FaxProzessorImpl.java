@@ -132,7 +132,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
             queue.broadcast(email.toString());
         } catch (Exception e) {
-            throw new EMailSendException();
+            throw new EMailSendException(e);
         }
     }
 

@@ -12,7 +12,6 @@ public class SystemInformationImpl implements SystemInformation {
     private static final String configFolderSuffix = "config" + File.separator;
     private static final String workingFolderSuffix = "working" + File.separator;
     private static final String logFolderSuffix = "logs" + File.separator;
-    private static SystemInformationImpl singleton;
     private final File projectPath;
     private final File configFolder;
     private final File workingFolder;

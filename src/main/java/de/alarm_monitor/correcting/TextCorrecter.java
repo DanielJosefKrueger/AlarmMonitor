@@ -4,5 +4,5 @@ import de.alarm_monitor.exception.CorrectingException;
 
 public interface TextCorrecter {
 
-    public String correct(String text) throws CorrectingException;
+    String correct(String text) throws CorrectingException;
 }

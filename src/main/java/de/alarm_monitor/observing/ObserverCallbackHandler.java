@@ -9,7 +9,7 @@ public class ObserverCallbackHandler extends Thread {
     private NewPdfCallback callback;
     private File file;
 
-    public ObserverCallbackHandler(NewPdfCallback callback, File file) {
+    ObserverCallbackHandler(NewPdfCallback callback, File file) {
         this.callback = callback;
         this.file = file;
     }

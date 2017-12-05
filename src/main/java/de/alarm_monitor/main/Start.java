@@ -44,14 +44,10 @@ public class Start {
         reporter.start();
 
 
-        NewPdfCallback callback = new NewPdfCallback() {
-            @Override
-            public void onNewPdfFile(File pdf) {
-
-                new PrintingService(pdf).start();
-                FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
-                processor.processAlarmFax(pdf);
-            }
+        NewPdfCallback callback = pdf -> {
+            new PrintingService(pdf).start();
+            FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
+            processor.processAlarmFax(pdf);
         };
         obs.addCallback(callback);
     }
@@ -60,7 +56,7 @@ public class Start {
         return display;
     }
 
-    public static void startProcedure() {
+    private static void startProcedure() {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(FaxProzessorImpl.class);
 

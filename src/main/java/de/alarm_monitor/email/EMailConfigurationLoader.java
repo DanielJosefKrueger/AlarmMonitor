@@ -11,7 +11,7 @@ public class EMailConfigurationLoader {
     public final static String EMAIL_CONFIG_FILR = "email_config.properties";
     public final static String EMAIL_List_PATH = "email_list.txt";
     final static Logger log = LogManager.getLogger(EMailConfigurationLoader.class);
-    private static EMailConfiguration singleton;
+
 
     private EMailConfigurationLoader() {
     }
