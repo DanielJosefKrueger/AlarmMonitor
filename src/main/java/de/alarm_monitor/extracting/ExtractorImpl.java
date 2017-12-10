@@ -1,6 +1,7 @@
 package de.alarm_monitor.extracting;
 
 
+import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.AlarmFax;
@@ -15,13 +16,14 @@ public class ExtractorImpl implements Extractor {
     private static final Logger logger = LogManager.getLogger(ExtractorImpl.class);
     private final Boolean filterOperationResources;
     private final String filter;
+    private final MainConfiguration mainConfiguration;
 
     @Inject
-    ExtractorImpl() {
+    ExtractorImpl(Provider<MainConfiguration> mainConfigurationProvider) {
 
-        MainConfiguration configuration = MainConfigurationLoader.getConfig();
-        if (configuration.should_filter_einsatzmittel()) {
-            if (configuration.filter_einsatzmittel().length() > 2) {
+         this.mainConfiguration = mainConfigurationProvider.get();
+        if (mainConfiguration.should_filter_einsatzmittel()) {
+            if (mainConfiguration.filter_einsatzmittel().length() > 2) {
                 filterOperationResources = true;
             } else {
                 logger.error("Filter der Einsatzmittel wurde deaktiviert, da kein Filter gesetzt wurde");
@@ -30,7 +32,7 @@ public class ExtractorImpl implements Extractor {
         } else {
             filterOperationResources = false;
         }
-        this.filter = configuration.filter_einsatzmittel();
+        this.filter = mainConfiguration.filter_einsatzmittel();
     }
 
 

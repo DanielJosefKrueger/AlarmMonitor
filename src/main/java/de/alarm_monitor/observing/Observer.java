@@ -1,10 +1,12 @@
 package de.alarm_monitor.observing;
 
+import com.google.inject.Provider;
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.InternalConfiguration;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformation;
+import de.alarm_monitor.security.CriticalAdminReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -24,16 +26,21 @@ public class Observer extends Thread {
 
     private static final Logger logger = LogManager.getLogger(Observer.class);
     private final List<NewPdfCallback> callbacks = new ArrayList<>();
-    private final MainConfiguration mainConfiguration;
     private final List<String> foundedFiles;
     private final SystemInformation systemInformation;
     private long lastErrorMsg = 0;
+    private long lastErroreMAIL = 0;
     private Path pathPdfFolder;
+    private final MainConfiguration mainConfiguration;
+    private final CriticalAdminReporter criticalAdminReporter;
 
     @Inject
-    public Observer(SystemInformation systemInformation) {
+    public Observer(SystemInformation systemInformation,
+                    Provider<MainConfiguration> provider,
+                    CriticalAdminReporter criticalAdminReporter) {
+        this.criticalAdminReporter = criticalAdminReporter;
         this.systemInformation = systemInformation;
-        mainConfiguration = MainConfigurationLoader.getConfig();
+        this.mainConfiguration = provider.get();
         pathPdfFolder = new File(systemInformation.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
@@ -83,6 +90,10 @@ public class Observer extends Thread {
                     lastErrorMsg = System.currentTimeMillis();
                     testNewFolderConfigured();
                 }
+                if (System.currentTimeMillis() - lastErroreMAIL > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_email*1000*60) {
+                    criticalAdminReporter.sendCriticalEmailToAdmin("Fehler beim Durchsuchen des Pdf Ordners",x);
+                    lastErroreMAIL = System.currentTimeMillis();
+                }
             }
         }
     }
@@ -99,7 +110,7 @@ public class Observer extends Thread {
     private void triggerCallbacks(Path file) throws InterruptedException {
 
         logger.info("Neue Datei wurde gefunden " + file.getFileName());
-        TimeUnit.MILLISECONDS.sleep(MainConfigurationLoader.getConfig().getDelayPdf());
+        TimeUnit.MILLISECONDS.sleep(mainConfiguration.getDelayPdf());
 
         for (NewPdfCallback callback : callbacks) {
             ObserverCallbackHandler handler = new ObserverCallbackHandler(callback, file.toFile());

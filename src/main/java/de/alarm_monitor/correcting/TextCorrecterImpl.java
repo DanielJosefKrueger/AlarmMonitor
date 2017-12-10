@@ -24,6 +24,7 @@ public class TextCorrecterImpl implements TextCorrecter {
 
     @Override
     public String correct(String text) throws CorrectingException {
+
         if (mapping == null) {
             try {
                 initiateOcrMapping();
@@ -33,13 +34,14 @@ public class TextCorrecterImpl implements TextCorrecter {
         }
 
         for (Map.Entry<String, String> e : mapping.entrySet()) {
+
             text = text.replaceAll(e.getKey(), e.getValue());
         }
         return text;
     }
 
     private void initiateOcrMapping() throws IOException {
-
+        logger.trace("OCR Korrektur wird initialisiert");
         if (mapping == null) {
             String file = systemInformation.getConfigFolder().getPath() + File.separator + "ocr.txt";
             try (BufferedReader in = new BufferedReader(new InputStreamReader(new FileInputStream(file), "Cp1252"))) {
@@ -53,6 +55,7 @@ public class TextCorrecterImpl implements TextCorrecter {
                     String[] splitted = line.split("\\$");
                     if (splitted.length != 2) {
                         logger.warn("Fehler in der OCR Datei, zu wenig oder zu viele Einträge in einer Zeile. Eintrag wird Übersprungen");
+                        line = in.readLine();
                         continue;
                     }
                     mapping.put(splitted[0], splitted[1]);

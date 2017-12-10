@@ -4,9 +4,11 @@ package de.alarm_monitor.util;
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
 import de.alarm_monitor.main.Start;
+import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
+import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -24,8 +26,10 @@ public class AlarmResetter {
 
 
     public void resetAlarm(long delay) {
-        logger.info("Setting delay");
+
         resetTime = System.currentTimeMillis() + delay * 1000 * 60;
+        FastDateFormat format = FastDateFormat.getInstance();
+        logger.info("Dieplay wird um {} zurückgesetzt" , format.format(resetTime));
     }
 
     private void startController() {

@@ -1,5 +1,7 @@
 package de.alarm_monitor.validation;
 
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 
@@ -9,6 +11,14 @@ import java.util.List;
 
 public class Validator {
 
+   private final MainConfiguration mainConfiguration;
+
+   @Inject
+    Validator(Provider<MainConfiguration> provider){
+
+        mainConfiguration = provider.get();
+    }
+
 
     /**
      * @return true: all configuration is valid, false otherwise
@@ -16,7 +26,7 @@ public class Validator {
     public List<ValidationResult> validateMainConfig() {
 
         List<ValidationResult> results = new ArrayList<>();
-        MainConfiguration mainConfiguration = MainConfigurationLoader.getConfig();
+
         results.addAll(testPdfFolder(mainConfiguration));
 
 

@@ -1,6 +1,8 @@
 package de.alarm_monitor.main;
 
 import com.google.inject.AbstractModule;
+import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.correcting.TextCorrecter;
 import de.alarm_monitor.correcting.TextCorrecterImpl;
 import de.alarm_monitor.extracting.Extractor;
@@ -17,5 +19,6 @@ public class AlarmMonitorModule extends AbstractModule {
         bind(TextCorrecter.class).to(TextCorrecterImpl.class);
         bind(Extractor.class).to(ExtractorImpl.class);
         bind(SystemInformation.class).to(SystemInformationImpl.class);
+        bind(MainConfiguration.class).toProvider(MainConfigurationLoader.class);
     }
 }

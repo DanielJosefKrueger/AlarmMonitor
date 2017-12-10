@@ -2,6 +2,7 @@ package de.alarm_monitor.parsing;
 
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.exception.OcrParserException;
@@ -33,10 +34,10 @@ public class OCRProcessorImpl1 implements OCRProcessor {
     private HashMap<String, String> mapping = null;
 
     @Inject
-    public OCRProcessorImpl1(SystemInformation systemInformation, PngConverter pngConverter) {
+    public OCRProcessorImpl1(SystemInformation systemInformation, PngConverter pngConverter, Provider<MainConfiguration> configurationProvider) {
         this.systemInformation = systemInformation;
         this.pngConverter = pngConverter;
-        configuration = MainConfigurationLoader.getConfig();
+        configuration = configurationProvider.get();
     }
 
 
@@ -51,7 +52,7 @@ public class OCRProcessorImpl1 implements OCRProcessor {
         BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
         TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
         tesseractOCRConfig.setTesseractPath(tPath);
-        tesseractOCRConfig.setLanguage(MainConfigurationLoader.getConfig().getOcrPacket());
+        tesseractOCRConfig.setLanguage(configuration.getOcrPacket());
         logger.trace("Used language for OCR: " + tesseractOCRConfig.getLanguage());
         PDFParserConfig pdfConfig = new PDFParserConfig();
         pdfConfig.setExtractInlineImages(true);

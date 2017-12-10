@@ -1,9 +1,9 @@
 package de.alarm_monitor.security;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.inject.Singleton;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.main.SystemInformation;
 import de.alarm_monitor.util.FileUtil;
@@ -14,15 +14,15 @@ import java.io.File;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
-public class AdminReporter extends Thread {
-    private static final Logger logger = LogManager.getLogger(AdminReporter.class);
+public class PeriodicalAdminReporter extends Thread {
+    private static final Logger logger = LogManager.getLogger(PeriodicalAdminReporter.class);
     private final SystemInformation systemInformation;
     private MainConfiguration mainConfiguration;
 
     @Inject
-    AdminReporter(SystemInformation systemInformation) {
+    PeriodicalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider) {
         this.systemInformation = systemInformation;
-        mainConfiguration = MainConfigurationLoader.getConfig();
+        mainConfiguration = provider.get();
 
     }
 

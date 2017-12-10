@@ -3,13 +3,14 @@ package de.alarm_monitor.main;
 
 import com.google.inject.Guice;
 import com.google.inject.Injector;
+import com.google.inject.Provider;
 import de.alarm_monitor.callback.NewPdfCallback;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
+import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.observing.Observer;
 import de.alarm_monitor.printing.PrintingService;
 import de.alarm_monitor.processing.FaxProcessor;
 import de.alarm_monitor.processing.FaxProzessorImpl;
-import de.alarm_monitor.security.AdminReporter;
+import de.alarm_monitor.security.PeriodicalAdminReporter;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
 import de.alarm_monitor.visual.NewLayout;
@@ -25,6 +26,7 @@ public class Start {
     private static Logger logger;
     static private IDisplay display;
     static private SystemInformation systemInformation;
+    static private MainConfiguration mainConfiguration;
 
 
 //TODO evtl pfad veränderung wenn nicht auas ordner gestartet
@@ -33,20 +35,23 @@ public class Start {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AlarmMonitorModule());
         systemInformation = injector.getInstance(SystemInformation.class);
-        startProcedure();
+
+
+
+
+
+        startProcedure(injector);
+
         logger.info("Der Alarmmonitor startet");
-
-
         Observer obs = injector.getInstance(Observer.class);
         obs.start();
 
-        AdminReporter reporter = injector.getInstance(AdminReporter.class);
+        PeriodicalAdminReporter reporter = injector.getInstance(PeriodicalAdminReporter.class);
         reporter.start();
 
 
         NewPdfCallback callback = pdf -> {
-            new PrintingService(pdf).start();
-            FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
+            new PrintingService(pdf, mainConfiguration).start();             FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
             processor.processAlarmFax(pdf);
         };
         obs.addCallback(callback);
@@ -56,15 +61,16 @@ public class Start {
         return display;
     }
 
-    private static void startProcedure() {
+    private static void startProcedure(Injector injector) {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(FaxProzessorImpl.class);
 
         ConfigFactory.setProperty("mainconfig", new File(systemInformation.getConfigFolder(), "config.properties").toURI().getRawPath());
         ConfigFactory.setProperty("emailconfig", new File(systemInformation.getConfigFolder(), "email_config.properties").toURI().getRawPath());
-
+        Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
+        mainConfiguration = provider.get();
         display = new NewLayout();
-        GraphicUtil.showOnScreen(MainConfigurationLoader.getConfig().monitor(), (JFrame) display);
+        GraphicUtil.showOnScreen(mainConfiguration.monitor(), (JFrame) display);
 
     }
 }

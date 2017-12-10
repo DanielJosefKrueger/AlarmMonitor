@@ -1,6 +1,7 @@
 package de.alarm_monitor.processing;
 
 import com.google.inject.Inject;
+import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.correcting.TextCorrecter;
@@ -30,21 +31,24 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final TextCorrecter correcter;
     private final Extractor extractor;
     private final EMailList queue;
+    private final AddressFinder addressFinder;
 
     @Inject
     FaxProzessorImpl(final AlarmResetter alarmResetter,
                      final OCRProcessor ocrProcessor,
                      final TextCorrecter correcter,
                      final Extractor extractor,
-                     final EMailList queue) {
+                     final EMailList queue,
+                     final Provider<MainConfiguration> provider,
+                     final AddressFinder addressFinder) {
 
-
+        this.addressFinder = addressFinder;
         this.alarmResetter = alarmResetter;
         this.ocrProcessor = ocrProcessor;
         this.correcter = correcter;
         this.extractor = extractor;
         this.queue = queue;
-        configuration = MainConfigurationLoader.getConfig();
+        configuration = provider.get();
         this.shouldSendEmails = configuration.isEmailActive();
 
 
@@ -63,7 +67,7 @@ public class FaxProzessorImpl implements FaxProcessor {
                 logger.trace("Ursprüngliche Exception:", e);
             }
 
-            logger.trace("Parsed Text:\n" + text);
+            logger.trace("Creected Text:\n" + text);
 
 
             AlarmFax alarmFax = extractor.extractInformation(text);
@@ -100,7 +104,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     private void updateDisplay(AlarmFax alarmFax) throws DisplayChangeException {
 
-        alarmResetter.resetAlarm(MainConfigurationLoader.getConfig().getMonitorResetTime());
+        alarmResetter.resetAlarm(configuration.getMonitorResetTime());
         try {
             IDisplay display = Start.getDisplay();
             display.changeAlarmFax(alarmFax);
@@ -139,7 +143,7 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     private void addLinkToInformation(AlarmFax alarmFax) throws LinkCreationException {
         try {
-            String link = AddressFinder.createLink(alarmFax.getAddress());
+            String link = addressFinder.createLink(alarmFax.getAddress());
             alarmFax.setLink(link);
         } catch (Exception e) {
             throw new LinkCreationException(e.getMessage());

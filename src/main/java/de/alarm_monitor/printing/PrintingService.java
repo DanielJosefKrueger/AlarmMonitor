@@ -13,10 +13,11 @@ public class PrintingService extends Thread {
     private final File toPrint;
     private final int numberOfCopies;
     private final Boolean shouldPrint;
+    private final   MainConfiguration configuration;
 
-    public PrintingService(File toPrint) {
+    public PrintingService(File toPrint, MainConfiguration configuration) {
         this.toPrint = toPrint;
-        MainConfiguration configuration = MainConfigurationLoader.getConfig();
+     this.configuration = configuration;
         this.numberOfCopies = configuration.numerOfCopies();
         this.shouldPrint = configuration.isPrintingActive();
     }

@@ -2,11 +2,14 @@ package de.alarm_monitor.util;
 
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
+import com.google.inject.Inject;
+import com.google.inject.Provider;
 import com.google.maps.GeoApiContext;
 import com.google.maps.GeocodingApi;
 import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
+import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.processing.FaxProzessorImpl;
 import org.apache.logging.log4j.LogManager;
@@ -24,6 +27,14 @@ public class AddressFinder {
 
     private final static String api_key = "AIzaSyAx-W1Y0Mv3l0liFCNZhavr0-vPKwU0Scc";
     private static final Logger logger = LogManager.getLogger(FaxProzessorImpl.class);
+
+    private final MainConfiguration mainConfiguration;
+
+    @Inject
+    AddressFinder(Provider<MainConfiguration> provider){
+        this.mainConfiguration= provider.get();
+    }
+
 
     public static LatLng getCordsAdress(String address) throws InterruptedException, ApiException, IOException {
 
@@ -58,13 +69,13 @@ public class AddressFinder {
     //https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/48.45397,12.54189
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
-    private static String createLinkFromCoordinates(LatLng kords) {
-        String begin = MainConfigurationLoader.getConfig().getRoutingLinkBegin();
+    private  String createLinkFromCoordinates(LatLng kords) {
+        String begin = mainConfiguration.getRoutingLinkBegin();
 
         return begin + kords.lat + "," + kords.lng;
     }
 
-    public static String createLink(String address) {
+    public  String createLink(String address) {
         try {
             LatLng kords = getCordsAdress(address);
             return createLinkFromCoordinates(kords);

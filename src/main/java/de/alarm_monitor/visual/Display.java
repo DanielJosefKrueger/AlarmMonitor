@@ -20,8 +20,8 @@ public class Display extends JFrame {
     private final MainConfiguration configuration;
 
 
-    public Display() {
-        configuration = MainConfigurationLoader.getConfig();
+    public Display(MainConfiguration mainConfiguration) {
+        configuration = mainConfiguration;
 
 
         Dimension dim = Toolkit.getDefaultToolkit().getScreenSize();
