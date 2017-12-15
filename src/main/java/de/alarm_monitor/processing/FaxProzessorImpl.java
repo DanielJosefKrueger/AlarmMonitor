@@ -11,6 +11,7 @@ import de.alarm_monitor.extracting.Extractor;
 import de.alarm_monitor.main.AlarmFax;
 import de.alarm_monitor.main.Start;
 import de.alarm_monitor.parsing.OCRProcessor;
+import de.alarm_monitor.security.AlertAdminReporter;
 import de.alarm_monitor.util.AddressFinder;
 import de.alarm_monitor.util.AlarmResetter;
 import de.alarm_monitor.visual.IDisplay;
@@ -32,6 +33,7 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final Extractor extractor;
     private final EMailList queue;
     private final AddressFinder addressFinder;
+    private final AlertAdminReporter alertAdminReporter;
 
     @Inject
     FaxProzessorImpl(final AlarmResetter alarmResetter,
@@ -40,7 +42,8 @@ public class FaxProzessorImpl implements FaxProcessor {
                      final Extractor extractor,
                      final EMailList queue,
                      final Provider<MainConfiguration> provider,
-                     final AddressFinder addressFinder) {
+                     final AddressFinder addressFinder,
+                     final AlertAdminReporter alertAdminReporter) {
 
         this.addressFinder = addressFinder;
         this.alarmResetter = alarmResetter;
@@ -48,8 +51,9 @@ public class FaxProzessorImpl implements FaxProcessor {
         this.correcter = correcter;
         this.extractor = extractor;
         this.queue = queue;
-        configuration = provider.get();
+        this.configuration = provider.get();
         this.shouldSendEmails = configuration.isEmailActive();
+        this.alertAdminReporter = alertAdminReporter;
 
 
     }
@@ -63,8 +67,10 @@ public class FaxProzessorImpl implements FaxProcessor {
             try {
                 text = correcter.correct(text);
             } catch (CorrectingException e) {
+
                 logger.error("Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort");
                 logger.trace("Ursprüngliche Exception:", e);
+                alertAdminReporter.sendAlertToAdmin("Error while correcting Text", e);
             }
 
             logger.trace("Creected Text:\n" + text);
@@ -76,6 +82,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             try {
                 updateDisplay(alarmFax);
             } catch (DisplayChangeException e) {
+                alertAdminReporter.sendAlertToAdmin("Error while changing the display", e);
                 logger.error("Fehler beim Update der Bildschirmanzeige");
                 logger.trace("Ursprüngliche Exception:", e);
             }
@@ -84,6 +91,7 @@ public class FaxProzessorImpl implements FaxProcessor {
             try {
                 addLinkToInformation(alarmFax);
             } catch (LinkCreationException e) {
+                alertAdminReporter.sendAlertToAdmin("Error while getting the link for the routing from google", e);
                 logger.error("Fehler beim Erstellen des Routing Links. Führe Verarbeitung fort.");
                 logger.trace("Ursprüngliche Exception:", e);
             }
@@ -95,9 +103,12 @@ public class FaxProzessorImpl implements FaxProcessor {
         } catch (OcrParserException e) {
             logger.error("Fehler beim OCR der .png-Datei");
             logger.trace("Ursprüngliche Exception:", e);
+            alertAdminReporter.sendAlertToAdmin("Error while performing ocr", e);
         } catch (EMailSendException e) {
             logger.error("Fehler beim Versenden der Emails");
             logger.trace("Ursprüngliche Exception:", e);
+            alertAdminReporter.sendAlertToAdmin("Error while sending alarm emails ", e);
+
         }
     }
 

@@ -35,11 +35,6 @@ public class Start {
     public static void main(String[] args) {
         Injector injector = Guice.createInjector(new AlarmMonitorModule());
         systemInformation = injector.getInstance(SystemInformation.class);
-
-
-
-
-
         startProcedure(injector);
 
         logger.info("Der Alarmmonitor startet");
@@ -65,8 +60,8 @@ public class Start {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
         logger = LogManager.getLogger(FaxProzessorImpl.class);
 
-        ConfigFactory.setProperty("mainconfig", new File(systemInformation.getConfigFolder(), "config.properties").toURI().getRawPath());
-        ConfigFactory.setProperty("emailconfig", new File(systemInformation.getConfigFolder(), "email_config.properties").toURI().getRawPath());
+
+
         Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
         mainConfiguration = provider.get();
         display = new NewLayout();

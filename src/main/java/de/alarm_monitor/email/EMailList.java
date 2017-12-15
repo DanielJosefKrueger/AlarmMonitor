@@ -1,5 +1,6 @@
 package de.alarm_monitor.email;
 
+import com.google.inject.Provider;
 import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -7,6 +8,8 @@ import org.apache.logging.log4j.Logger;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.inject.Inject;
+
+
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -27,15 +30,16 @@ public class EMailList {
     private final List<String> receivers = new ArrayList<>();
     private final SystemInformation systemInformation;
 
+
     @Inject
-    public EMailList(SystemInformation systemInformation) {
+    public EMailList(SystemInformation systemInformation, Provider<EMailConfiguration> provider) {
         this.systemInformation = systemInformation;
-        config = EMailConfigurationLoader.getConfig();
+        config = provider.get();
         loadReceiverList();
     }
 
-    public static boolean sendEmail(String receiver, String msg, String subject) {
-        EMailConfiguration config = EMailConfigurationLoader.getConfig();
+    public  boolean sendEmail(String receiver, String msg, String subject) {
+
         Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
             props.put("mail.smtp.starttls.enable", "true");
@@ -71,10 +75,10 @@ public class EMailList {
         }
     }
 
-    public static boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
-        EMailConfiguration config = EMailConfigurationLoader.getConfig();
+    public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
+
         Properties props = new Properties();
-        props.put("mail.smtp.auth", config.smtpAuth());
+        props.put("mail.smtp.auth",config .smtpAuth());
         props.put("mail.smtp.starttls.enable", config.startTls());
         props.put("mail.smtp.host", config.smtpHost());
         props.put("mail.smtp.port", config.smtpPort());
@@ -131,7 +135,7 @@ public class EMailList {
             String[] split = line.split(";");
             for (String s : split) {
                 if (s.length() > 2) {
-                    log.info("Adding {} to Recervers", s);
+                    log.trace("Adding {} to Recervers", s);
                     receivers.add(s);
                 }
             }

@@ -4,9 +4,8 @@ import com.google.inject.Provider;
 import de.alarm_monitor.callback.NewPdfCallback;
 import de.alarm_monitor.configuration.InternalConfiguration;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.SystemInformation;
-import de.alarm_monitor.security.CriticalAdminReporter;
+import de.alarm_monitor.security.AlertAdminReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -32,13 +31,13 @@ public class Observer extends Thread {
     private long lastErroreMAIL = 0;
     private Path pathPdfFolder;
     private final MainConfiguration mainConfiguration;
-    private final CriticalAdminReporter criticalAdminReporter;
+    private final AlertAdminReporter alertAdminReporter;
 
     @Inject
-    public Observer(SystemInformation systemInformation,
-                    Provider<MainConfiguration> provider,
-                    CriticalAdminReporter criticalAdminReporter) {
-        this.criticalAdminReporter = criticalAdminReporter;
+    public Observer(final SystemInformation systemInformation,
+                    final Provider<MainConfiguration> provider,
+                    final AlertAdminReporter alertAdminReporter) {
+        this.alertAdminReporter = alertAdminReporter;
         this.systemInformation = systemInformation;
         this.mainConfiguration = provider.get();
         pathPdfFolder = new File(systemInformation.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
@@ -91,7 +90,7 @@ public class Observer extends Thread {
                     testNewFolderConfigured();
                 }
                 if (System.currentTimeMillis() - lastErroreMAIL > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_email*1000*60) {
-                    criticalAdminReporter.sendCriticalEmailToAdmin("Fehler beim Durchsuchen des Pdf Ordners",x);
+                    alertAdminReporter.sendAlertToAdmin("Fehler beim Durchsuchen des Pdf Ordners",x);
                     lastErroreMAIL = System.currentTimeMillis();
                 }
             }

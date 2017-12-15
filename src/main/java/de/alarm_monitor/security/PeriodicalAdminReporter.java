@@ -18,12 +18,14 @@ public class PeriodicalAdminReporter extends Thread {
     private static final Logger logger = LogManager.getLogger(PeriodicalAdminReporter.class);
     private final SystemInformation systemInformation;
     private MainConfiguration mainConfiguration;
+    private final EMailList eMailList;
 
     @Inject
-    PeriodicalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider) {
+    PeriodicalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {
         this.systemInformation = systemInformation;
         mainConfiguration = provider.get();
 
+        this.eMailList = eMailList;
     }
 
 
@@ -43,7 +45,7 @@ public class PeriodicalAdminReporter extends Thread {
             String emailAdresses = mainConfiguration.getEmailAdmin();
             logger.debug("Sending regular notification to admin");
             // EMailList.sendEmail(emailAdresses, content, "Status Alarmmonitor");
-            EMailList.sendAdminEmail(emailAdresses, content, "Status Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
+            eMailList.sendAdminEmail(emailAdresses, content, "Status Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
 
             try {
                 TimeUnit.MINUTES.sleep(mainConfiguration.getIntervalEmailAdmin());

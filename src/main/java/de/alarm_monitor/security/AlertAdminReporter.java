@@ -1,6 +1,5 @@
 package de.alarm_monitor.security;
 
-import com.ctc.wstx.util.ExceptionUtil;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import com.google.inject.Singleton;
@@ -14,21 +13,23 @@ import org.apache.logging.log4j.Logger;
 import java.io.File;
 
 @Singleton
-public class CriticalAdminReporter {
+public class AlertAdminReporter {
 
 
         private static final Logger logger = LogManager.getLogger(de.alarm_monitor.security.PeriodicalAdminReporter.class);
         private final SystemInformation systemInformation;
         private MainConfiguration mainConfiguration;
+    private final EMailList eMailList;
 
-        @Inject
-        CriticalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider) {
+    @Inject
+        AlertAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {
             this.systemInformation = systemInformation;
             mainConfiguration = provider.get();
 
-        }
+        this.eMailList = eMailList;
+    }
 
-    public void sendCriticalEmailToAdmin(String message, Throwable throwable){
+    public void sendAlertToAdmin(String message, Throwable throwable){
         logger.info("Sende Email zum Admin wegen eines kritischen Problems");
         File dir = systemInformation.getLoggingFolder();
         logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
@@ -44,11 +45,11 @@ public class CriticalAdminReporter {
         }
         String emailAdresses = mainConfiguration.getEmailAdmin();
         logger.debug("Sending critical EMail notification to admin");
-        EMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
+        eMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
     }
 
-    public void sendCriticalEmailToAdmin(String message){
-        sendCriticalEmailToAdmin(message, null);
+    public void sendAlertToAdmin(String message){
+        sendAlertToAdmin(message, null);
     }
 
 }

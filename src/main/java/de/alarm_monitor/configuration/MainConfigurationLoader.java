@@ -6,6 +6,7 @@ import com.google.inject.Provides;
 import de.alarm_monitor.email.EMailConfigurationLoader;
 import de.alarm_monitor.main.SystemInformation;
 import org.aeonbits.owner.ConfigCache;
+import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -19,7 +20,7 @@ public class MainConfigurationLoader implements Provider<MainConfiguration>{
 
     @Inject
     MainConfigurationLoader(final SystemInformation systemInformation){
-
+        ConfigFactory.setProperty("mainconfig", new File(systemInformation.getConfigFolder(), "config.properties").toURI().getRawPath());
         this.systemInformation = systemInformation;
     }
 
