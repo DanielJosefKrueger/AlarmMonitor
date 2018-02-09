@@ -17,7 +17,7 @@ public class TextCorrecterImpl implements TextCorrecter {
     private HashMap<String, String> mapping = null;
 
     @Inject
-    TextCorrecterImpl(SystemInformation systemInformation) {
+    public TextCorrecterImpl(SystemInformation systemInformation) {
         this.systemInformation = systemInformation;
     }
 

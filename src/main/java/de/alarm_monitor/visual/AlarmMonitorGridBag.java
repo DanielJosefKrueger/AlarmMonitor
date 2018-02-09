@@ -224,7 +224,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
 
 
     @Override
-    public void changeAdress(String adresse) {
+    public void changeAddress(String adresse) {
         this.adresse.setText(ADRESSE_DEFAULT + adresse);
     }
 
@@ -249,7 +249,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
         changeKeyWord("Schlagwort:");
         changeComment("");
         changeReporter("");
-        changeAdress("");
+        changeAddress("");
         changeOperationRessources("");
 
     }

@@ -1,13 +1,16 @@
 package de.alarm_monitor.printing;
 
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.IOException;
 
 public class PrintingService extends Thread {
+
+    private static final Logger logger = LogManager.getLogger(PrintingService.class);
 
 
     private final File toPrint;
@@ -30,10 +33,8 @@ public class PrintingService extends Thread {
         } else {
             try {
                 Printer.print(toPrint, numberOfCopies);
-            } catch (IOException e) {
-                //TODO
-            } catch (PrinterException e) {
-                //TODO
+            } catch (IOException | PrinterException e) {
+                logger.warn("Error while printing", e);
             }
         }
 

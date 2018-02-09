@@ -3,7 +3,6 @@ package de.alarm_monitor.processing;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.correcting.TextCorrecter;
 import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.exception.*;
@@ -34,13 +33,13 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final AddressFinder addressFinder;
 
     @Inject
-    FaxProzessorImpl(final AlarmResetter alarmResetter,
-                     final OCRProcessor ocrProcessor,
-                     final TextCorrecter correcter,
-                     final Extractor extractor,
-                     final EMailList queue,
-                     final Provider<MainConfiguration> provider,
-                     final AddressFinder addressFinder) {
+    public FaxProzessorImpl(final AlarmResetter alarmResetter,
+                            final OCRProcessor ocrProcessor,
+                            final TextCorrecter correcter,
+                            final Extractor extractor,
+                            final EMailList queue,
+                            final Provider<MainConfiguration> provider,
+                            final AddressFinder addressFinder) {
 
         this.addressFinder = addressFinder;
         this.alarmResetter = alarmResetter;
