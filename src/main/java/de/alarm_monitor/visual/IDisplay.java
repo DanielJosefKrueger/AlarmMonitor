@@ -15,7 +15,7 @@ public interface IDisplay {
 
     void changeComment(String comment);
 
-    void changeAdress(String adresse);
+    void changeAddress(String adresse);
 
     void changeOperationRessources(String operationRessources);
 

@@ -141,7 +141,7 @@ public class NewLayout extends JFrame implements IDisplay {
     }
 
     @Override
-    public void changeAdress(String adresse) {
+    public void changeAddress(String adresse) {
         sectionAddress.setText(adresse);
     }
 
@@ -194,7 +194,7 @@ public class NewLayout extends JFrame implements IDisplay {
         changeAlarmTime(alarmFax.getAlarmTime());
         changeKeyWord(alarmFax.getKeyword());
         changeComment(alarmFax.getComment());
-        changeAdress(alarmFax.getAddress());
+        changeAddress(alarmFax.getAddress());
         changeOperationRessources(alarmFax.getOperationRessources());
     }
 }

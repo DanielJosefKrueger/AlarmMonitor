@@ -1,6 +1,7 @@
 package de.alarm_monitor.main;
 
 
+import com.google.common.annotations.VisibleForTesting;
 import com.google.inject.Guice;
 import com.google.inject.Injector;
 import com.google.inject.Provider;
@@ -46,7 +47,8 @@ public class Start {
 
 
         NewPdfCallback callback = pdf -> {
-            new PrintingService(pdf, mainConfiguration).start();             FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
+            new PrintingService(pdf, mainConfiguration).start();
+            FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
             processor.processAlarmFax(pdf);
         };
         obs.addCallback(callback);
@@ -54,6 +56,11 @@ public class Start {
 
     public static IDisplay getDisplay() {
         return display;
+    }
+
+    @VisibleForTesting
+    public static void setDisplay(IDisplay displayNew) {
+        display = displayNew;
     }
 
     private static void startProcedure(Injector injector) {

@@ -3,7 +3,6 @@ package de.alarm_monitor.extracting;
 
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.main.AlarmFax;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -19,7 +18,7 @@ public class ExtractorImpl implements Extractor {
     private final MainConfiguration mainConfiguration;
 
     @Inject
-    ExtractorImpl(Provider<MainConfiguration> mainConfigurationProvider) {
+    public ExtractorImpl(Provider<MainConfiguration> mainConfigurationProvider) {
 
          this.mainConfiguration = mainConfigurationProvider.get();
         if (mainConfiguration.should_filter_einsatzmittel()) {

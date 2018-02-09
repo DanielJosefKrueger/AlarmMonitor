@@ -1,0 +1,6 @@
+Ger.t Gerät
+Stra.e Straße
+Me.de Melde
+n.age anlage
+a.arm alarm
+A.arm Alarm

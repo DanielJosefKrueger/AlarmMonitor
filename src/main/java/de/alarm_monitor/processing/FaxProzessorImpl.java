@@ -3,7 +3,6 @@ package de.alarm_monitor.processing;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.correcting.TextCorrecter;
 import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.exception.*;
@@ -36,7 +35,7 @@ public class FaxProzessorImpl implements FaxProcessor {
     private final AlertAdminReporter alertAdminReporter;
 
     @Inject
-    FaxProzessorImpl(final AlarmResetter alarmResetter,
+    public FaxProzessorImpl(final AlarmResetter alarmResetter,
                      final OCRProcessor ocrProcessor,
                      final TextCorrecter correcter,
                      final Extractor extractor,
@@ -67,7 +66,6 @@ public class FaxProzessorImpl implements FaxProcessor {
             try {
                 text = correcter.correct(text);
             } catch (CorrectingException e) {
-
                 logger.error("Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort");
                 logger.trace("Ursprüngliche Exception:", e);
                 alertAdminReporter.sendAlertToAdmin("Error while correcting Text", e);
