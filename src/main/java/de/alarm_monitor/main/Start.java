@@ -11,17 +11,16 @@ import de.alarm_monitor.observing.Observer;
 import de.alarm_monitor.printing.PrintingService;
 import de.alarm_monitor.processing.FaxProcessor;
 import de.alarm_monitor.processing.FaxProzessorImpl;
+import de.alarm_monitor.security.AlertAdminReporter;
 import de.alarm_monitor.security.PeriodicalAdminReporter;
 import de.alarm_monitor.util.GraphicUtil;
 import de.alarm_monitor.visual.IDisplay;
 import de.alarm_monitor.visual.NewLayout;
-import org.aeonbits.owner.ConfigFactory;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.core.config.Configurator;
 
 import javax.swing.*;
-import java.io.File;
 
 public class Start {
     private static Logger logger;
@@ -42,12 +41,13 @@ public class Start {
         Observer obs = injector.getInstance(Observer.class);
         obs.start();
 
-        PeriodicalAdminReporter reporter = injector.getInstance(PeriodicalAdminReporter.class);
+        final PeriodicalAdminReporter reporter = injector.getInstance(PeriodicalAdminReporter.class);
+        final AlertAdminReporter alertAdminReporter = injector.getInstance(AlertAdminReporter.class);
         reporter.start();
 
 
         NewPdfCallback callback = pdf -> {
-            new PrintingService(pdf, mainConfiguration).start();
+            new PrintingService(alertAdminReporter, pdf, mainConfiguration).start();
             FaxProcessor processor = injector.getInstance(FaxProzessorImpl.class);
             processor.processAlarmFax(pdf);
         };
@@ -65,15 +65,24 @@ public class Start {
 
     private static void startProcedure(Injector injector) {
         Configurator.initialize(null, systemInformation.getConfigFolder().toURI().getPath() + "logconfig.xml");
-        logger = LogManager.getLogger(FaxProzessorImpl.class);
-
-
-
+        logger = LogManager.getLogger(Start.class);
+        printConfiguration();
         Provider<MainConfiguration> provider = injector.getProvider(MainConfiguration.class);
         mainConfiguration = provider.get();
         display = new NewLayout();
         GraphicUtil.showOnScreen(mainConfiguration.monitor(), (JFrame) display);
 
+    }
+
+
+
+    private static void printConfiguration() {
+        logger.info("Konfiguration:" +
+                ", Projekt-Ordner: " + systemInformation.getProjectDirectory().getAbsolutePath() +
+                ", Log-Ordner:" + systemInformation.getLoggingFolder().getAbsolutePath() +
+
+                ", Working-Ordner:" + systemInformation.getWorkingFolder().getAbsolutePath() + "" +
+                ", Config-Ordner:" + systemInformation.getConfigFolder().getAbsolutePath());
     }
 }
 

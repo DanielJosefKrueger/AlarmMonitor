@@ -1,6 +1,9 @@
 package de.alarm_monitor.printing;
 
 import de.alarm_monitor.configuration.MainConfiguration;
+import de.alarm_monitor.security.AlertAdminReporter;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
@@ -13,14 +16,22 @@ public class PrintingService extends Thread {
     private static final Logger logger = LogManager.getLogger(PrintingService.class);
 
 
+    private final AlertAdminReporter alertAdminReporter;
     private final File toPrint;
     private final int numberOfCopies;
     private final Boolean shouldPrint;
     private final   MainConfiguration configuration;
+    private final static Logger log = LogManager.getLogger(PrintingService.class);
 
-    public PrintingService(File toPrint, MainConfiguration configuration) {
+
+
+    public PrintingService(final AlertAdminReporter alertAdminReporter,
+                           final File toPrint,
+                           final MainConfiguration configuration) {
+
+        this.alertAdminReporter = alertAdminReporter;
         this.toPrint = toPrint;
-     this.configuration = configuration;
+        this.configuration = configuration;
         this.numberOfCopies = configuration.numerOfCopies();
         this.shouldPrint = configuration.isPrintingActive();
     }
@@ -28,16 +39,13 @@ public class PrintingService extends Thread {
 
     @Override
     public void run() {
-        if (!shouldPrint) {
-            return;
-        } else {
+        if (shouldPrint) {
             try {
                 Printer.print(toPrint, numberOfCopies);
             } catch (IOException | PrinterException e) {
-                logger.warn("Error while printing", e);
+                log.error("Error while printing", e);
+                alertAdminReporter.sendAlertToAdmin("Error while printing ", e);
             }
         }
-
     }
-
 }

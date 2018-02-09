@@ -1,6 +1,7 @@
 package de.alarm_monitor.extracting;
 
 
+import com.drew.lang.annotations.NotNull;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.AlarmFax;
@@ -36,9 +37,9 @@ public class ExtractorImpl implements Extractor {
 
 
     @Override
-    public AlarmFax extractInformation(String recognizedText) {
+    public AlarmFax extractInformation(@NotNull String recognizedText) {
 
-        String[] allLines = (recognizedText.split("\n"));
+        String[] allLines = recognizedText.split("\n");
         ArrayList<String> lineList = new ArrayList<>();
         for (String line : allLines) {
             if (line.length() > 5) {
@@ -56,7 +57,7 @@ public class ExtractorImpl implements Extractor {
         String coordinates = extractCoordinates(lines);
         String operationResources = extractOperationRessources(lines);
         String operationNumber = extractOperationNumber(lines);
-        String alarmTime = extractAlarmtime(lines);
+        String alarmTime = extractAlarmTime(lines);
 
 
         //for information
@@ -90,7 +91,7 @@ public class ExtractorImpl implements Extractor {
             }
 
         }
-        return sb.toString();
+        return removeNewLineAtEnd(sb.toString());
     }
 
 
@@ -105,8 +106,11 @@ public class ExtractorImpl implements Extractor {
                 aignalSeen = true;
             }
         }
-        return sb.toString();
+        String comment = sb.toString();
+        return removeNewLineAtEnd(comment);
+
     }
+
 
 
     private String extractKeyword(String[] lines) {
@@ -121,7 +125,7 @@ public class ExtractorImpl implements Extractor {
             }
 
         }
-        return sb.toString();
+        return removeBeginTillFirstEmptySpace(removeNewLineAtEnd(sb.toString())).trim();
     }
 
     private String extractAddress(String[] lines) {
@@ -133,7 +137,7 @@ public class ExtractorImpl implements Extractor {
                 sb.append(line).append("\n");
             }
         }
-        return sb.toString();
+        return removeNewLineAtEnd(sb.toString());
     }
 
     private String extractCoordinates(String[] lines) {
@@ -155,33 +159,47 @@ public class ExtractorImpl implements Extractor {
 
             if (splitted[0].contains("Einsatznu")) {
                 int beginAlarmPart = line.indexOf("Alarm");
-                sb.append(line.subSequence(0, beginAlarmPart));
+                if(beginAlarmPart >=0){
+                    sb.append(line.subSequence(0, beginAlarmPart));
+                }
+
             }
         }
-        return sb.toString();
+        String operationNumber = sb.toString();
+        int index = operationNumber.indexOf(' ');
+        if(index>=0){
+            operationNumber = operationNumber.substring(index, operationNumber.length());
+        }
+
+
+        return operationNumber.trim();
     }
 
 
-    private String extractAlarmtime(String[] lines) {
+    private String extractAlarmTime(String[] lines) {
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             String[] splitted = line.split(" ");
 
             if (splitted[0].contains("Einsatznu")) {
+
+
                 int beginAlarmPart = line.indexOf("Alarm");
-                sb.append(line.subSequence(beginAlarmPart, line.length()));
+                if (beginAlarmPart >= 0) {
+                    sb.append(line.subSequence(beginAlarmPart, line.length()));
+                } else {
+                    logger.error("In der Einsatznummer-Zeile wurde keine Alarmzeit gefunden");
+                }
+
             }
         }
-        return sb.toString();
+        return removeBeginTillFirstEmptySpace(removeNewLineAtEnd(sb.toString())).trim();
     }
 
 
     private String extractOperationRessources(String[] lines) {
         StringBuilder sb = new StringBuilder();
-
-
         String previousLine = "";
-
         for (String line : lines) {
             String[] splitted = line.split(" ");
 
@@ -198,13 +216,33 @@ public class ExtractorImpl implements Extractor {
                         if (previousLine.contains(filter)) {
                             sb.append(line);
                         }
-
                     }
                 }
             }
             previousLine = line;
         }
-        return sb.toString();
+
+
+        return removeNewLineAtEnd(sb.toString());
+    }
+
+
+    @org.jetbrains.annotations.NotNull
+    private String removeNewLineAtEnd(String string) {
+        if (string.endsWith("\n")){
+            string = string.substring(0, string.lastIndexOf("\n"));
+        }
+        return string;
+    }
+
+
+    @org.jetbrains.annotations.NotNull
+    private String removeBeginTillFirstEmptySpace(String string) {
+        int index = string.indexOf(" ");
+        if(index >0){
+            return string.substring(index,string.length());
+        }
+        return string;
     }
 
 }

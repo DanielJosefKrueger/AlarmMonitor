@@ -1,13 +1,17 @@
 package de.alarm_monitor.main;
 
 
+import com.google.inject.Inject;
 import com.google.inject.Singleton;
+import org.apache.logging.log4j.LogManager;
+import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.URISyntaxException;
 
 @Singleton
 public class SystemInformationImpl implements SystemInformation {
+
 
     private static final String configFolderSuffix = "config" + File.separator;
     private static final String workingFolderSuffix = "working" + File.separator;
@@ -17,6 +21,7 @@ public class SystemInformationImpl implements SystemInformation {
     private final File workingFolder;
     private final File logFolder;
 
+    @Inject
     SystemInformationImpl() {
         projectPath = calcProjectPath();
         this.configFolder = new File(projectPath, configFolderSuffix);
@@ -24,12 +29,8 @@ public class SystemInformationImpl implements SystemInformation {
         this.logFolder = new File(projectPath, logFolderSuffix);
     }
 
-   /* public static SystemInformation get() {
-        if (singleton == null) {
-            singleton = new SystemInformationImpl();
-        }
-        return singleton;
-    }*/
+
+
 
     @Override
     public File getWorkingFolder() {
@@ -54,6 +55,7 @@ public class SystemInformationImpl implements SystemInformation {
         try {
             return new File(Start.class.getProtectionDomain().getCodeSource().getLocation().toURI()).getParentFile();
         } catch (URISyntaxException e) {
+            // no logging because at this point the logger is not configured yet
             e.printStackTrace();
         }
         return null;

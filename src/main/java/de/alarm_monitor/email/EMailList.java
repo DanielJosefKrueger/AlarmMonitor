@@ -8,8 +8,6 @@ import org.apache.logging.log4j.Logger;
 import javax.activation.DataHandler;
 import javax.activation.FileDataSource;
 import javax.inject.Inject;
-
-
 import javax.mail.*;
 import javax.mail.internet.InternetAddress;
 import javax.mail.internet.MimeBodyPart;
@@ -23,7 +21,7 @@ import java.util.Properties;
 
 public class EMailList {
 
-    private static final String EMAIL_CONFIG_PATH = "email_config.txt";
+
     private static final String EMAIL_List_PATH = "email_list.txt";
     private final static Logger log = LogManager.getLogger(EMailList.class);
     private final EMailConfiguration config;

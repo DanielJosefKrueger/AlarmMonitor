@@ -24,7 +24,7 @@ public class Printer {
         }
 
         if (numberOfCopies < 1) {
-            throw new IllegalArgumentException("Number of copies was negative:" + numberOfCopies);
+            throw new IllegalArgumentException("Number of copies was negative: " + numberOfCopies);
         }
 
 

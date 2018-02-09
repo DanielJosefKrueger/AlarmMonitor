@@ -11,4 +11,5 @@ public interface SystemInformation {
     File getLoggingFolder();
 
     File getProjectDirectory();
+
 }

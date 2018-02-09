@@ -40,7 +40,7 @@ public class Observer extends Thread {
         this.alertAdminReporter = alertAdminReporter;
         this.systemInformation = systemInformation;
         this.mainConfiguration = provider.get();
-        pathPdfFolder = new File(systemInformation.getProjectDirectory(), mainConfiguration.path_folder()).toPath();
+        pathPdfFolder = new File(mainConfiguration.path_folder()).toPath();
         foundedFiles = new ArrayList<>();
     }
 
@@ -70,7 +70,18 @@ public class Observer extends Thread {
         ArrayList<String> foundedFiles = new ArrayList<>();
         logger.trace("PDF Folder is set to: {}", mainConfiguration.path_folder());
         //first Run
-        initiateFirstRun(foundedFiles);
+        boolean initiated =  initiateFirstRun(foundedFiles);
+
+
+        while(!initiated){
+            try {
+                logger.error("Fehler beim initialisieren der bereits vorhand3enen PFDs, versuche es in 5 Sekunden erneut");
+                Thread.sleep(5000);
+                initiated = initiateFirstRun(foundedFiles);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+        }
 
         while (true) {
             try {

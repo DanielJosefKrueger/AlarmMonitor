@@ -61,19 +61,24 @@ public class FaxProzessorImpl implements FaxProcessor {
     public void processAlarmFax(File pdf) {
         String pathPng;
         try {
-            String text = ocrProcessor.pdfToString(pdf);
-            logger.trace("Parsed Text:\n" + text);
+            String textWithoutCorrection = ocrProcessor.pdfToString(pdf);
+            String text = null;
+            logger.trace("Parsed Text:\n" + textWithoutCorrection);
             try {
-                text = correcter.correct(text);
+                text = correcter.correct(textWithoutCorrection);
+                logger.trace("Created Text:\n" + text);
             } catch (CorrectingException e) {
                 logger.error("Fehler beim Korregieren des eingelesenen Textes, fahre ohne Verbesserung fort");
                 logger.trace("Ursprüngliche Exception:", e);
                 alertAdminReporter.sendAlertToAdmin("Error while correcting Text", e);
             }
 
-            logger.trace("Creected Text:\n" + text);
 
 
+            //if correction failed we use the non corrrected text
+            if(text == null){
+                text = textWithoutCorrection;
+            }
             AlarmFax alarmFax = extractor.extractInformation(text);
 
 

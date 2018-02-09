@@ -15,7 +15,7 @@ import java.util.concurrent.TimeUnit;
 
 @Singleton
 public class PeriodicalAdminReporter extends Thread {
-    private static final Logger logger = LogManager.getLogger(PeriodicalAdminReporter.class);
+    private static final Logger logger = LogManager.getLogger(AlertAdminReporter.class);
     private final SystemInformation systemInformation;
     private MainConfiguration mainConfiguration;
     private final EMailList eMailList;
@@ -36,7 +36,6 @@ public class PeriodicalAdminReporter extends Thread {
 
         while (true) {
             File dir = systemInformation.getLoggingFolder();
-            logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
             File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
             File log = files[0];
 
@@ -59,8 +58,6 @@ public class PeriodicalAdminReporter extends Thread {
     private String createEmailForAdmin() {
 
         File dir = systemInformation.getLoggingFolder();
-
-        logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
         File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
         File log = files[0];
         return FileUtil.getLastLinesOfFile(200, log);

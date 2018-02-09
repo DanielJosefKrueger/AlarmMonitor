@@ -34,7 +34,6 @@ public class TextCorrecterImpl implements TextCorrecter {
         }
 
         for (Map.Entry<String, String> e : mapping.entrySet()) {
-
             text = text.replaceAll(e.getKey(), e.getValue());
         }
         return text;
@@ -54,7 +53,7 @@ public class TextCorrecterImpl implements TextCorrecter {
                     }
                     String[] splitted = line.split("\\$");
                     if (splitted.length != 2) {
-                        logger.warn("Fehler in der OCR Datei, zu wenig oder zu viele Einträge in einer Zeile. Eintrag wird Übersprungen");
+                        logger.warn("Fehler in der OCR Datei, zu wenig oder zu viele Einträge in einer Zeile. Eintrag wird Übersprungen. Zeile war: {}", line);
                         line = in.readLine();
                         continue;
                     }

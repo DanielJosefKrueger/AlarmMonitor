@@ -65,4 +65,8 @@ public class TestDisplay implements IDisplay {
     public void changeAlarmFax(AlarmFax alarmFax) {
         this.alarmfax = alarmFax;
     }
+
+    public AlarmFax getAlarmfax() {
+        return alarmfax;
+    }
 }

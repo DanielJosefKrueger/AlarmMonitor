@@ -42,6 +42,7 @@ public class PngConverter {
         PDDocument document = PDDocument.load(file);
         try {
             PDFRenderer pdfRenderer = new PDFRenderer(document);
+            //TODO handling if mpdf has more than one side
             for (int page = 0; page < document.getNumberOfPages(); ++page) {
                 BufferedImage bim = pdfRenderer.renderImageWithDPI(page, mainConfiguration.getDpiPng(), ImageType.RGB);
                 ImageIOUtil.writeImage(bim, name, mainConfiguration.getDpiPng());

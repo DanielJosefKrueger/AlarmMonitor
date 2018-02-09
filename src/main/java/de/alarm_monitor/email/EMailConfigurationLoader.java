@@ -3,7 +3,6 @@ package de.alarm_monitor.email;
 
 import com.google.inject.Inject;
 import com.google.inject.Provider;
-import de.alarm_monitor.exception.InvalidConfigurationException;
 import de.alarm_monitor.main.SystemInformation;
 import org.aeonbits.owner.ConfigCache;
 import org.aeonbits.owner.ConfigFactory;
@@ -23,37 +22,12 @@ public class EMailConfigurationLoader implements Provider<EMailConfiguration> {
     @Inject
     private EMailConfigurationLoader(SystemInformation systemInformation) {
         this.systemInformation = systemInformation;
-        ConfigFactory.setProperty("emailconfig", new File(systemInformation.getConfigFolder(), "email_config.properties").toURI().getRawPath());
+        ConfigFactory.setProperty("emailconfig", new File(systemInformation.getConfigFolder(), EMAIL_CONFIG_FILR).toURI().getRawPath());
     }
 
 
     public  EMailConfiguration get() {
         return ConfigCache.getOrCreate(EMailConfiguration.class);
     }
-
-
-    private static void testSense(EMailConfiguration configuration) {
-        try {
-            testSmtpAuth(configuration);
-        } catch (InvalidConfigurationException e) {
-            e.printStackTrace();
-        }
-    }
-
-
-    private static void testSmtpAuth(EMailConfiguration configuration) throws InvalidConfigurationException {
-
-        try {
-            configuration.smtpAuth();
-        } catch (Exception e) {
-            throw new InvalidConfigurationException("Fehler beim Feld smtpAuth");
-        }
-
-        String auth = configuration.smtpAuth();
-        if (auth == null) {
-            throw new InvalidConfigurationException("\"Fehler beim Feld smtpAuth\"");
-        }
-    }
-
 
 }

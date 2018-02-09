@@ -7,12 +7,13 @@ import de.alarm_monitor.correcting.TextCorrecterImpl;
 import de.alarm_monitor.email.EMailList;
 import de.alarm_monitor.extracting.Extractor;
 import de.alarm_monitor.extracting.ExtractorImpl;
+import de.alarm_monitor.main.Start;
 import de.alarm_monitor.main.SystemInformation;
 import de.alarm_monitor.parsing.OCRProcessor;
 import de.alarm_monitor.processing.FaxProzessorImpl;
+import de.alarm_monitor.security.AlertAdminReporter;
 import de.alarm_monitor.util.AddressFinder;
 import de.alarm_monitor.util.AlarmResetter;
-import de.alarm_monitor.visual.IDisplay;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.*;
@@ -20,7 +21,9 @@ import testutil.TestDisplay;
 
 import java.io.File;
 
+import static integrationtests.TestConstants.LINK;
 import static integrationtests.TestConstants.testForPdf;
+import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.doNothing;
 import static org.mockito.Mockito.when;
 
@@ -39,8 +42,10 @@ class AfterOcrIntegrationTest {
     private EMailList eMailList;
     @Mock
     private AddressFinder addressFinder;
+    @Mock
+    AlertAdminReporter alertAdminReporter;
 
-    private IDisplay display;
+    private TestDisplay display;
     @Captor
     private ArgumentCaptor<File> pdfCaptor;
     @Captor
@@ -58,16 +63,18 @@ class AfterOcrIntegrationTest {
 
     @BeforeEach
     void setup() throws Exception {
-        MockitoAnnotations.initMocks(this.getClass());
+        MockitoAnnotations.initMocks(this);
         //main config
         when(mainConfiguration.should_filter_einsatzmittel()).thenReturn(false);
+        when(ocrProcessor.pdfToString(Matchers.anyObject())).thenReturn(testForPdf);
         display = new TestDisplay();
-        doNothing().when(display).changeAddress(addressCaptor.capture());
-        doNothing().when(display).activateAlarm();
-        when(systemInformation.getConfigFolder()).thenReturn(new File("../testressources"));
+        when(systemInformation.getConfigFolder()).thenReturn(new File("src/java/test/ressources"));
         doNothing().when(alarmResetter).resetAlarm(Matchers.anyLong());
         doNothing().when(eMailList).broadcast(emailTextCaptor.capture());
-        when(addressFinder.createLink(Matchers.anyString())).thenReturn(address);
+        doNothing().when(alertAdminReporter).sendAlertToAdmin(Matchers.anyString());
+        doNothing().when(alertAdminReporter).sendAlertToAdmin(Matchers.anyString(), Matchers.anyObject());
+        when(addressFinder.createLink(Matchers.anyString())).thenReturn(LINK);
+        Start.setDisplay(display);
         mainConfigurationProvider = () -> mainConfiguration;
         correcter = new TextCorrecterImpl(systemInformation);
         extractor = new ExtractorImpl(mainConfigurationProvider);
@@ -76,12 +83,19 @@ class AfterOcrIntegrationTest {
 
     @Test
     void testProcessAfterOcr() throws Exception {
-
-
+        System.out.println(TestConstants.testForPdf);
         FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
-                mainConfigurationProvider, addressFinder);
+                mainConfigurationProvider, addressFinder, alertAdminReporter);
         faxProzessor.processAlarmFax(new File(""));
-        when(ocrProcessor.pdfToString(pdfCaptor.capture())).thenReturn(testForPdf);
+
+        assertEquals(TestConstants.opertionNumber, display.getAlarmfax().getOperatioNumber());
+        assertEquals(TestConstants.comment, display.getAlarmfax().getComment());
+        assertEquals(TestConstants.operationResources, display.getAlarmfax().getOperationRessources());
+        assertEquals(TestConstants.keyword, display.getAlarmfax().getKeyword());
+        assertEquals(TestConstants.reporter, display.getAlarmfax().getReporter());
+        assertEquals(TestConstants.address, display.getAlarmfax().getAddress());
+        assertEquals(TestConstants.LINK, display.getAlarmfax().getLink());
+        assertEquals(TestConstants.alarmTime, display.getAlarmfax().getAlarmTime());
 
 
     }

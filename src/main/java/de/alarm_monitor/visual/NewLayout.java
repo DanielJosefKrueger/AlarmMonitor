@@ -10,13 +10,13 @@ import java.awt.event.ActionListener;
 
 public class NewLayout extends JFrame implements IDisplay {
 
-    private final static String OPERATIONNUMBER_DEFAULT = "EinsatzNummer:";
-    private final static String ALARMTIME_DEFAULT = "Alarm Zeit:";
-    private final static String REPORTER_DEFAULT = "Mitteiler:\n";
-    private final static String KEYWORD_DEFAULT = "Schlagwort:";
-    private final static String COMMENT_DEFAULT = "Bemerkung:\n";
-    private final static String ADRESSE_DEFAULT = "Adresse:\n";
-    private final static String OPERATIONRESSOURCES_DEFAULT = "Einsatzmittel:\n";
+    private final static String OPERATIONNUMBER_DEFAULT = "EinsatzNummer: ";
+    private final static String ALARMTIME_DEFAULT = "Alarm Zeit: ";
+    private final static String REPORTER_DEFAULT = "Mitteiler: \n";
+    private final static String KEYWORD_DEFAULT = "Schlagwort: ";
+    private final static String COMMENT_DEFAULT = "Bemerkung: \n";
+    private final static String ADRESSE_DEFAULT = "Adresse: \n";
+    private final static String OPERATIONRESSOURCES_DEFAULT = "Einsatzmittel: \n";
     private static Font FONT = new Font(Font.SANS_SERIF, Font.BOLD, 20);
 
 
@@ -122,17 +122,17 @@ public class NewLayout extends JFrame implements IDisplay {
 
     @Override
     public void changeOperationNumber(String operationNumber) {
-        sectionOperationNumber.setText(operationNumber);
+        sectionOperationNumber.setText(OPERATIONNUMBER_DEFAULT +operationNumber);
     }
 
     @Override
     public void changeAlarmTime(String alarmTime) {
-        sectionOperationTime.setText(alarmTime);
+        sectionOperationTime.setText(ALARMTIME_DEFAULT  + " " + alarmTime);
     }
 
     @Override
     public void changeKeyWord(String keyWord) {
-        sectionKeyWord.setText(keyWord);
+        sectionKeyWord.setText(KEYWORD_DEFAULT + " "+keyWord);
     }
 
     @Override
