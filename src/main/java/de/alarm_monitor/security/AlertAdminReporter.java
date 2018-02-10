@@ -32,9 +32,6 @@ public class AlertAdminReporter {
     public void sendAlertToAdmin(String message, Throwable throwable) {
         logger.info("Sende Email zum Admin wegen eines kritischen Problems");
         File dir = systemInformation.getLoggingFolder();
-        logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
-        File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
-        File log = files[0];
 
 
         StringBuilder contentSb = new StringBuilder();
@@ -45,11 +42,17 @@ public class AlertAdminReporter {
         }
         String emailAdresses = mainConfiguration.getEmailAdmin();
         logger.debug("Sending critical EMail notification to admin");
-        eMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
-    }
 
+        File[] files = dir.listFiles((dir1, name) -> name.equals("alarmmonitor.log"));
+        if (files != null) {
+            File log = files[0];
+            eMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
+        } else {
+            logger.warn("Error while fetching log file in directory {}.", dir);
+            eMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", null);
+        }
+    }
     public void sendAlertToAdmin(String message) {
         sendAlertToAdmin(message, null);
     }
-
 }

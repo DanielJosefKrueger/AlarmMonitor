@@ -74,6 +74,13 @@
             <version>1.9.5</version>
             <scope>test</scope>
         </dependency>
+        <!-- https://mvnrepository.com/artifact/net.sourceforge.tess4j/tess4j -->
+        <dependency>
+            <groupId>net.sourceforge.tess4j</groupId>
+            <artifactId>tess4j</artifactId>
+            <version>3.4.3</version>
+        </dependency>
+
 
     </dependencies>
 

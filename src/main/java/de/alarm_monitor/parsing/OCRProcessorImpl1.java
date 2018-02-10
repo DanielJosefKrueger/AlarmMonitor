@@ -5,7 +5,6 @@ import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.exception.OcrParserException;
-import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 import org.apache.tika.exception.TikaException;
@@ -27,14 +26,12 @@ public class OCRProcessorImpl1 implements OCRProcessor {
 
     private final static Logger logger = LogManager.getLogger(OCRProcessorImpl1.class);
     private static String tPath = null;
-    private final SystemInformation systemInformation;
     private final PngConverter pngConverter;
     private MainConfiguration configuration;
     private HashMap<String, String> mapping = null;
 
     @Inject
-    public OCRProcessorImpl1(SystemInformation systemInformation, PngConverter pngConverter, Provider<MainConfiguration> configurationProvider) {
-        this.systemInformation = systemInformation;
+    public OCRProcessorImpl1(PngConverter pngConverter, Provider<MainConfiguration> configurationProvider) {
         this.pngConverter = pngConverter;
         configuration = configurationProvider.get();
     }
@@ -67,10 +64,7 @@ public class OCRProcessorImpl1 implements OCRProcessor {
         FileInputStream stream = new FileInputStream(filename);
         Metadata metadata = new Metadata();
         parser.parse(stream, handler, metadata, parseContext);
-        String content = handler.toString();
-
-
-        return content;
+        return handler.toString();
     }
 
 
@@ -82,4 +76,6 @@ public class OCRProcessorImpl1 implements OCRProcessor {
             throw new OcrParserException(e);
         }
     }
+
+
 }

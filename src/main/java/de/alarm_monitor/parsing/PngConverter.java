@@ -36,24 +36,12 @@ public class PngConverter {
         String time = sdf.format(cal.getTime());
 
         String name = systemInformation.getWorkingFolder().getPath() + File.separatorChar + time.toString() + ".png";
-        PDDocument document = PDDocument.load(file);
-        try {
-            PDFRenderer pdfRenderer = new PDFRenderer(document);
-            BufferedImage bim;
-            if (document.getNumberOfPages() == 1) {
-                bim = pdfRenderer.renderImageWithDPI(0, mainConfiguration.getDpiPng(), ImageType.RGB);
-            } else {
-                // we only handle 2 pages. This should be really enough
-                BufferedImage bufferedImage1 = pdfRenderer.renderImageWithDPI(0, mainConfiguration.getDpiPng(), ImageType.RGB);
-                BufferedImage bufferedImage2 = pdfRenderer.renderImageWithDPI(1, mainConfiguration.getDpiPng(), ImageType.RGB);
-                bim = concatTwoImages(bufferedImage1, bufferedImage2);
-            }
-            ImageIOUtil.writeImage(bim, name, mainConfiguration.getDpiPng());
+        BufferedImage bim = convertToBufferedImage(file);
+
+        ImageIOUtil.writeImage(bim, name, mainConfiguration.getDpiPng());
             return name;
-        } finally {
-            document.close();
         }
-    }
+
 
     @NotNull
     private BufferedImage concatTwoImages(BufferedImage bufferedImage1, BufferedImage bufferedImage2) {
@@ -66,4 +54,26 @@ public class PngConverter {
         graphics.drawImage(bufferedImage2, 0, bufferedImage1.getHeight(), null);
         return bim;
     }
+
+    public BufferedImage convertToBufferedImage(File pdf) throws IOException {
+        PDDocument document = PDDocument.load(pdf);
+        BufferedImage bim;
+        try {
+            PDFRenderer pdfRenderer = new PDFRenderer(document);
+
+            if (document.getNumberOfPages() == 1) {
+                bim = pdfRenderer.renderImageWithDPI(0, mainConfiguration.getDpiPng(), ImageType.RGB);
+            } else {
+                // we only handle 2 pages. This should be really enough
+                BufferedImage bufferedImage1 = pdfRenderer.renderImageWithDPI(0, mainConfiguration.getDpiPng(), ImageType.RGB);
+                BufferedImage bufferedImage2 = pdfRenderer.renderImageWithDPI(1, mainConfiguration.getDpiPng(), ImageType.RGB);
+                bim = concatTwoImages(bufferedImage1, bufferedImage2);
+            }
+        } finally {
+            document.close();
+        }
+        return bim;
+
+    }
+
 }

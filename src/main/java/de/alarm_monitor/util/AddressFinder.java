@@ -13,6 +13,7 @@ import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.processing.FaxProzessorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
+import org.jetbrains.annotations.TestOnly;
 
 import java.io.IOException;
 import java.io.InputStream;
@@ -48,16 +49,13 @@ public class AddressFinder {
                         .replaceAll(":", "")
                 ));
 
-
         GeoApiContext context = new GeoApiContext.Builder()
                 .apiKey(api_key)
                 .build();
-        GeocodingResult[] results = new GeocodingResult[0];
-
 
         logger.trace("Fetching the kords from Google");
         logger.trace("Fetch-String is:" + adressbuilder);
-        results = GeocodingApi.geocode(context, adressbuilder.toString()).awaitIgnoreError();
+        GeocodingResult[] results = GeocodingApi.geocode(context, adressbuilder.toString()).awaitIgnoreError();
         Gson gson = new GsonBuilder().setPrettyPrinting().create();
         logger.trace("Received following coordinates from Google" + gson.toJson(results[0].geometry.location));
         return results[0].geometry.location;
@@ -68,16 +66,17 @@ public class AddressFinder {
     //https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/48.45397,12.54189
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
+    @TestOnly
     public static String getHtmlFromUrl(String url_string) {
 
         URL url = null;
         try {
             url = new URL(url_string);
         } catch (MalformedURLException e) {
-            e.printStackTrace();
+            logger.warn("Error on url {} ", url_string, e);
         }
 
-        int ptr = 0;
+        int ptr;
         StringBuffer buffer = new StringBuffer();
         try (InputStream is = url.openStream();) {
             while ((ptr = is.read()) != -1) {
@@ -86,14 +85,12 @@ public class AddressFinder {
         } catch (IOException e) {
             e.printStackTrace();
         }
-        System.out.println(buffer);
         return buffer.toString();
     }
 
+    @TestOnly
     public static String test_html(String url) {
         getHtmlFromUrl(url);
-
-
         return "";
     }
 
