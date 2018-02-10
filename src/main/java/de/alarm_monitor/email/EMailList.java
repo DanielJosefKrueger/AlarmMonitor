@@ -36,7 +36,7 @@ public class EMailList {
         loadReceiverList();
     }
 
-    public  boolean sendEmail(String receiver, String msg, String subject) {
+    public boolean sendEmail(String receiver, String msg, String subject, boolean isHtml) {
 
         Properties props = new Properties();
             /*props.put("mail.smtp.auth", "true");
@@ -61,7 +61,11 @@ public class EMailList {
             message.setFrom(new InternetAddress(config.username()));
             message.setRecipients(Message.RecipientType.BCC, InternetAddress.parse(receiver));
             message.setSubject(subject);
-            message.setText(msg);
+            //message.setText(msg);
+
+            if (isHtml) {
+                message.setContent(msg, "text/html");
+            }
 
 
             Transport.send(message);
@@ -72,6 +76,7 @@ public class EMailList {
             throw new RuntimeException(e);
         }
     }
+
 
     public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
 
@@ -144,7 +149,7 @@ public class EMailList {
         }
     }
 
-    public void broadcast(String msg) {
+    public void broadcast(String msg, boolean isHtml) {
 
         String subject = config.getEmailTopic();
         log.info("Sending Broadcast to Receivers");
@@ -154,6 +159,8 @@ public class EMailList {
             sb.append(receiver).append(",");
         }
         log.info("Send Email to: " + sb);
-        sendEmail(sb.toString(), msg, subject);
+        sendEmail(sb.toString(), msg, subject, isHtml);
     }
+
+
 }

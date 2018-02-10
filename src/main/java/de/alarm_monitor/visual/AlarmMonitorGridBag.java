@@ -188,7 +188,7 @@ public class AlarmMonitorGridBag extends JFrame implements IDisplay {
     @Override
     public void changeAlarmFax(AlarmFax alarmFax) {
         this.reporter.setText(REPORTER_DEFAULT + alarmFax.getReporter());
-        this.oprationNumber.setText(OPERATIONNUMBER_DEFAULT + alarmFax.getOperatioNumber());
+        this.oprationNumber.setText(OPERATIONNUMBER_DEFAULT + alarmFax.getOperationNumber());
         this.alarmTime.setText(ALARMTIME_DEFAULT + alarmFax.getAlarmTime());
         this.KEYWORD.setText(KEYWORD_DEFAULT + alarmFax.getKeyword());
         this.adresse.setText(ADRESSE_DEFAULT + alarmFax.getAddress());

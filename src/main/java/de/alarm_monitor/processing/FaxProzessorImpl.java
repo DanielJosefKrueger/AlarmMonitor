@@ -122,8 +122,6 @@ public class FaxProzessorImpl implements FaxProcessor {
         try {
             IDisplay display = Start.getDisplay();
             display.changeAlarmFax(alarmFax);
-
-
         } catch (Exception e) {
             throw new DisplayChangeException(e);
         }
@@ -131,24 +129,10 @@ public class FaxProzessorImpl implements FaxProcessor {
 
 
     private void sendEmail(AlarmFax alarmFax) throws EMailSendException {
-        StringBuilder email = new StringBuilder();
-        email.append("Informationen zum Alarm\n");
-        email.append(alarmFax.getOperatioNumber()).append("\n");
-        email.append(alarmFax.getAlarmTime()).append("\n");
 
-        email.append(alarmFax.getReporter()).append("\n");
-        email.append(alarmFax.getKeyword()).append("\n");
-        email.append(alarmFax.getComment()).append("\n");
-        email.append(alarmFax.getAddress()).append("\n");
-
-        email.append(alarmFax.getOperationRessources()).append("\n");
-
-        email.append("Link zum Routenplaner von Google:\n");
-        email.append(alarmFax.getLink()).append("\n");
 
         try {
-
-            queue.broadcast(email.toString());
+            queue.broadcast(alarmFax.toEmailHtml(), true);
         } catch (Exception e) {
             throw new EMailSendException(e);
         }

@@ -190,7 +190,7 @@ public class NewLayout extends JFrame implements IDisplay {
     @Override
     public void changeAlarmFax(AlarmFax alarmFax) {
         changeReporter(alarmFax.getReporter());
-        changeOperationNumber(alarmFax.getOperatioNumber());
+        changeOperationNumber(alarmFax.getOperationNumber());
         changeAlarmTime(alarmFax.getAlarmTime());
         changeKeyWord(alarmFax.getKeyword());
         changeComment(alarmFax.getComment());

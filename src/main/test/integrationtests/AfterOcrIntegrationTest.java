@@ -70,7 +70,7 @@ class AfterOcrIntegrationTest {
         display = new TestDisplay();
         when(systemInformation.getConfigFolder()).thenReturn(new File("src/java/test/ressources"));
         doNothing().when(alarmResetter).resetAlarm(Matchers.anyLong());
-        doNothing().when(eMailList).broadcast(emailTextCaptor.capture());
+        doNothing().when(eMailList).broadcast(emailTextCaptor.capture(), Matchers.anyBoolean());
         doNothing().when(alertAdminReporter).sendAlertToAdmin(Matchers.anyString());
         doNothing().when(alertAdminReporter).sendAlertToAdmin(Matchers.anyString(), Matchers.anyObject());
         when(addressFinder.createLink(Matchers.anyString())).thenReturn(LINK);
@@ -82,13 +82,13 @@ class AfterOcrIntegrationTest {
 
 
     @Test
-    void testProcessAfterOcr() throws Exception {
-        System.out.println(TestConstants.testForPdf);
+    void testProcessAfterOcr_FULL_EMAIL() throws Exception {
+        when(ocrProcessor.pdfToString(Matchers.anyObject())).thenReturn(testForPdf);
         FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
                 mainConfigurationProvider, addressFinder, alertAdminReporter);
         faxProzessor.processAlarmFax(new File(""));
 
-        assertEquals(TestConstants.opertionNumber, display.getAlarmfax().getOperatioNumber());
+        assertEquals(TestConstants.opertionNumber, display.getAlarmfax().getOperationNumber());
         assertEquals(TestConstants.comment, display.getAlarmfax().getComment());
         assertEquals(TestConstants.operationResources, display.getAlarmfax().getOperationRessources());
         assertEquals(TestConstants.keyword, display.getAlarmfax().getKeyword());
@@ -96,6 +96,14 @@ class AfterOcrIntegrationTest {
         assertEquals(TestConstants.address, display.getAlarmfax().getAddress());
         assertEquals(TestConstants.LINK, display.getAlarmfax().getLink());
         assertEquals(TestConstants.alarmTime, display.getAlarmfax().getAlarmTime());
+    }
+
+    @Test
+    void testProcessAfterOcr_EMPY_PDF_WITHOUT_EXCEPTION() throws Exception {
+        when(ocrProcessor.pdfToString(Matchers.anyObject())).thenReturn("");
+        FaxProzessorImpl faxProzessor = new FaxProzessorImpl(alarmResetter, ocrProcessor, correcter, extractor, eMailList,
+                mainConfigurationProvider, addressFinder, alertAdminReporter);
+        faxProzessor.processAlarmFax(new File(""));
 
 
     }
