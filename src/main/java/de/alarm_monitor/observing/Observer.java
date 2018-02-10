@@ -27,11 +27,11 @@ public class Observer extends Thread {
     private final List<NewPdfCallback> callbacks = new ArrayList<>();
     private final List<String> foundedFiles;
     private final SystemInformation systemInformation;
+    private final MainConfiguration mainConfiguration;
+    private final AlertAdminReporter alertAdminReporter;
     private long lastErrorMsg = 0;
     private long lastErroreMAIL = 0;
     private Path pathPdfFolder;
-    private final MainConfiguration mainConfiguration;
-    private final AlertAdminReporter alertAdminReporter;
 
     @Inject
     public Observer(final SystemInformation systemInformation,
@@ -70,10 +70,10 @@ public class Observer extends Thread {
         ArrayList<String> foundedFiles = new ArrayList<>();
         logger.trace("PDF Folder is set to: {}", mainConfiguration.path_folder());
         //first Run
-        boolean initiated =  initiateFirstRun(foundedFiles);
+        boolean initiated = initiateFirstRun(foundedFiles);
 
 
-        while(!initiated){
+        while (!initiated) {
             try {
                 logger.error("Fehler beim initialisieren der bereits vorhand3enen PFDs, versuche es in 5 Sekunden erneut");
                 Thread.sleep(5000);
@@ -100,8 +100,8 @@ public class Observer extends Thread {
                     lastErrorMsg = System.currentTimeMillis();
                     testNewFolderConfigured();
                 }
-                if (System.currentTimeMillis() - lastErroreMAIL > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_email*1000*60) {
-                    alertAdminReporter.sendAlertToAdmin("Fehler beim Durchsuchen des Pdf Ordners",x);
+                if (System.currentTimeMillis() - lastErroreMAIL > InternalConfiguration.INTERVALL_BETWEEN_FOLDER_ERROR_email * 1000 * 60) {
+                    alertAdminReporter.sendAlertToAdmin("Fehler beim Durchsuchen des Pdf Ordners", x);
                     lastErroreMAIL = System.currentTimeMillis();
                 }
             }

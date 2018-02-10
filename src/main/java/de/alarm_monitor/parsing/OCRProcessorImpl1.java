@@ -4,7 +4,6 @@ package de.alarm_monitor.parsing;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.exception.OcrParserException;
 import de.alarm_monitor.main.SystemInformation;
 import org.apache.logging.log4j.LogManager;

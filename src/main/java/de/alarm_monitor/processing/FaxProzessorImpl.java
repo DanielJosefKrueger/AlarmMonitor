@@ -36,13 +36,13 @@ public class FaxProzessorImpl implements FaxProcessor {
 
     @Inject
     public FaxProzessorImpl(final AlarmResetter alarmResetter,
-                     final OCRProcessor ocrProcessor,
-                     final TextCorrecter correcter,
-                     final Extractor extractor,
-                     final EMailList queue,
-                     final Provider<MainConfiguration> provider,
-                     final AddressFinder addressFinder,
-                     final AlertAdminReporter alertAdminReporter) {
+                            final OCRProcessor ocrProcessor,
+                            final TextCorrecter correcter,
+                            final Extractor extractor,
+                            final EMailList queue,
+                            final Provider<MainConfiguration> provider,
+                            final AddressFinder addressFinder,
+                            final AlertAdminReporter alertAdminReporter) {
 
         this.addressFinder = addressFinder;
         this.alarmResetter = alarmResetter;
@@ -74,9 +74,8 @@ public class FaxProzessorImpl implements FaxProcessor {
             }
 
 
-
             //if correction failed we use the non corrrected text
-            if(text == null){
+            if (text == null) {
                 text = textWithoutCorrection;
             }
             AlarmFax alarmFax = extractor.extractInformation(text);

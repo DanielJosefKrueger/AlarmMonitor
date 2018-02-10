@@ -17,8 +17,8 @@ import java.util.concurrent.TimeUnit;
 public class PeriodicalAdminReporter extends Thread {
     private static final Logger logger = LogManager.getLogger(AlertAdminReporter.class);
     private final SystemInformation systemInformation;
-    private MainConfiguration mainConfiguration;
     private final EMailList eMailList;
+    private MainConfiguration mainConfiguration;
 
     @Inject
     PeriodicalAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {

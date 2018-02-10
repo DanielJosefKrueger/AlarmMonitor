@@ -81,7 +81,7 @@ public class EMailList {
     public boolean sendAdminEmail(String receiver, String message, String subject, String filename) {
 
         Properties props = new Properties();
-        props.put("mail.smtp.auth",config .smtpAuth());
+        props.put("mail.smtp.auth", config.smtpAuth());
         props.put("mail.smtp.starttls.enable", config.startTls());
         props.put("mail.smtp.host", config.smtpHost());
         props.put("mail.smtp.port", config.smtpPort());

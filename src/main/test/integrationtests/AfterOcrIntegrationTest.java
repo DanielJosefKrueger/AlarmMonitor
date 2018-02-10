@@ -30,6 +30,13 @@ import static org.mockito.Mockito.when;
 
 class AfterOcrIntegrationTest {
 
+    private static final String address = "testadress";
+    @Mock
+    AlertAdminReporter alertAdminReporter;
+    @Captor
+    ArgumentCaptor<String> emailTextCaptor;
+    @Captor
+    ArgumentCaptor<String> addressCaptor;
     @Mock
     private AlarmResetter alarmResetter;
     @Mock
@@ -42,24 +49,12 @@ class AfterOcrIntegrationTest {
     private EMailList eMailList;
     @Mock
     private AddressFinder addressFinder;
-    @Mock
-    AlertAdminReporter alertAdminReporter;
-
     private TestDisplay display;
     @Captor
     private ArgumentCaptor<File> pdfCaptor;
-    @Captor
-    ArgumentCaptor<String> emailTextCaptor;
-
-    @Captor
-    ArgumentCaptor<String> addressCaptor;
-
-
     private Provider<MainConfiguration> mainConfigurationProvider;
     private Extractor extractor;
     private TextCorrecter correcter;
-
-    private static final String address = "testadress";
 
     @BeforeEach
     void setup() throws Exception {

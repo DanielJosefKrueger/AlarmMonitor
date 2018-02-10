@@ -18,6 +18,7 @@ import java.io.File;
 import java.io.IOException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
+
 public class PngConverter {
     private static Logger logger = LogManager.getLogger(PngConverter.class);
     private final SystemInformation systemInformation;

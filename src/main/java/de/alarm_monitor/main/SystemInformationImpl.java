@@ -3,8 +3,6 @@ package de.alarm_monitor.main;
 
 import com.google.inject.Inject;
 import com.google.inject.Singleton;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.io.File;
 import java.net.URISyntaxException;
@@ -28,8 +26,6 @@ public class SystemInformationImpl implements SystemInformation {
         this.workingFolder = new File(projectPath, workingFolderSuffix);
         this.logFolder = new File(projectPath, logFolderSuffix);
     }
-
-
 
 
     @Override

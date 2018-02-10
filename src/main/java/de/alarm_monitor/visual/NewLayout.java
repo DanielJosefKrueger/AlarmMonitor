@@ -122,17 +122,17 @@ public class NewLayout extends JFrame implements IDisplay {
 
     @Override
     public void changeOperationNumber(String operationNumber) {
-        sectionOperationNumber.setText(OPERATIONNUMBER_DEFAULT +operationNumber);
+        sectionOperationNumber.setText(OPERATIONNUMBER_DEFAULT + operationNumber);
     }
 
     @Override
     public void changeAlarmTime(String alarmTime) {
-        sectionOperationTime.setText(ALARMTIME_DEFAULT  + " " + alarmTime);
+        sectionOperationTime.setText(ALARMTIME_DEFAULT + " " + alarmTime);
     }
 
     @Override
     public void changeKeyWord(String keyWord) {
-        sectionKeyWord.setText(KEYWORD_DEFAULT + " "+keyWord);
+        sectionKeyWord.setText(KEYWORD_DEFAULT + " " + keyWord);
     }
 
     @Override

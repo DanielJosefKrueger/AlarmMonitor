@@ -3,7 +3,6 @@ package de.alarm_monitor.validation;
 import com.google.inject.Inject;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -11,10 +10,10 @@ import java.util.List;
 
 public class Validator {
 
-   private final MainConfiguration mainConfiguration;
+    private final MainConfiguration mainConfiguration;
 
-   @Inject
-    Validator(Provider<MainConfiguration> provider){
+    @Inject
+    Validator(Provider<MainConfiguration> provider) {
 
         mainConfiguration = provider.get();
     }

@@ -1,7 +1,6 @@
 package de.alarm_monitor.visual;
 
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 
 import javax.swing.*;
 import java.awt.*;

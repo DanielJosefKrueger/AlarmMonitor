@@ -4,8 +4,6 @@ import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.security.AlertAdminReporter;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
-import org.apache.logging.log4j.LogManager;
-import org.apache.logging.log4j.Logger;
 
 import java.awt.print.PrinterException;
 import java.io.File;
@@ -14,15 +12,12 @@ import java.io.IOException;
 public class PrintingService extends Thread {
 
     private static final Logger logger = LogManager.getLogger(PrintingService.class);
-
-
+    private final static Logger log = LogManager.getLogger(PrintingService.class);
     private final AlertAdminReporter alertAdminReporter;
     private final File toPrint;
     private final int numberOfCopies;
     private final Boolean shouldPrint;
-    private final   MainConfiguration configuration;
-    private final static Logger log = LogManager.getLogger(PrintingService.class);
-
+    private final MainConfiguration configuration;
 
 
     public PrintingService(final AlertAdminReporter alertAdminReporter,

@@ -16,20 +16,20 @@ import java.io.File;
 public class AlertAdminReporter {
 
 
-        private static final Logger logger = LogManager.getLogger(de.alarm_monitor.security.PeriodicalAdminReporter.class);
-        private final SystemInformation systemInformation;
-        private MainConfiguration mainConfiguration;
+    private static final Logger logger = LogManager.getLogger(de.alarm_monitor.security.PeriodicalAdminReporter.class);
+    private final SystemInformation systemInformation;
     private final EMailList eMailList;
+    private MainConfiguration mainConfiguration;
 
     @Inject
-        AlertAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {
-            this.systemInformation = systemInformation;
-            mainConfiguration = provider.get();
+    AlertAdminReporter(SystemInformation systemInformation, Provider<MainConfiguration> provider, EMailList eMailList) {
+        this.systemInformation = systemInformation;
+        mainConfiguration = provider.get();
 
         this.eMailList = eMailList;
     }
 
-    public void sendAlertToAdmin(String message, Throwable throwable){
+    public void sendAlertToAdmin(String message, Throwable throwable) {
         logger.info("Sende Email zum Admin wegen eines kritischen Problems");
         File dir = systemInformation.getLoggingFolder();
         logger.debug("Logging-Folder is {}", dir.getAbsoluteFile().getAbsolutePath());
@@ -40,7 +40,7 @@ public class AlertAdminReporter {
         StringBuilder contentSb = new StringBuilder();
         contentSb.append("Folgendes Problem ist aufgtreten:\nNachricht:");
         contentSb.append(message).append("\n");
-        if(throwable !=null){
+        if (throwable != null) {
             contentSb.append("Stacktrace:\n").append(ExceptionUtils.getStackTrace(throwable));
         }
         String emailAdresses = mainConfiguration.getEmailAdmin();
@@ -48,7 +48,7 @@ public class AlertAdminReporter {
         eMailList.sendAdminEmail(emailAdresses, contentSb.toString(), "KRITISCHER FEHLER Alarmmonitor", log.getAbsoluteFile().getAbsolutePath());
     }
 
-    public void sendAlertToAdmin(String message){
+    public void sendAlertToAdmin(String message) {
         sendAlertToAdmin(message, null);
     }
 

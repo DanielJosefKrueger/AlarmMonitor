@@ -26,7 +26,7 @@ public class EMailConfigurationLoader implements Provider<EMailConfiguration> {
     }
 
 
-    public  EMailConfiguration get() {
+    public EMailConfiguration get() {
         return ConfigCache.getOrCreate(EMailConfiguration.class);
     }
 

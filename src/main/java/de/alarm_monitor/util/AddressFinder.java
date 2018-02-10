@@ -10,7 +10,6 @@ import com.google.maps.errors.ApiException;
 import com.google.maps.model.GeocodingResult;
 import com.google.maps.model.LatLng;
 import de.alarm_monitor.configuration.MainConfiguration;
-import de.alarm_monitor.configuration.MainConfigurationLoader;
 import de.alarm_monitor.processing.FaxProzessorImpl;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
@@ -31,8 +30,8 @@ public class AddressFinder {
     private final MainConfiguration mainConfiguration;
 
     @Inject
-    AddressFinder(Provider<MainConfiguration> provider){
-        this.mainConfiguration= provider.get();
+    AddressFinder(Provider<MainConfiguration> provider) {
+        this.mainConfiguration = provider.get();
     }
 
 
@@ -69,33 +68,6 @@ public class AddressFinder {
     //https://www.google.de/maps/dir/Freiwillige+Feuerwehr+Markt+Gangkofen,+Jahnstraße,+Gangkofen/48.45397,12.54189
     //https://www.google.de/maps/place/48.39979700000001, 12.7468121
 
-    private  String createLinkFromCoordinates(LatLng kords) {
-        String begin = mainConfiguration.getRoutingLinkBegin();
-
-        return begin + kords.lat + "," + kords.lng;
-    }
-
-    public  String createLink(String address) {
-        try {
-            LatLng kords = getCordsAdress(address);
-            return createLinkFromCoordinates(kords);
-
-
-        } catch (Exception e) {
-            if (address.lastIndexOf(" ") > -1) {
-                logger.info("Couldnt get link from google, retry");
-                return createLink(address.substring(0, address.lastIndexOf(" ")));
-            } else {
-                return "Leider konnte kein Link geparst werden";
-            }
-
-
-        }
-
-
-    }
-
-
     public static String getHtmlFromUrl(String url_string) {
 
         URL url = null;
@@ -118,12 +90,37 @@ public class AddressFinder {
         return buffer.toString();
     }
 
-
     public static String test_html(String url) {
         getHtmlFromUrl(url);
 
 
         return "";
+    }
+
+    private String createLinkFromCoordinates(LatLng kords) {
+        String begin = mainConfiguration.getRoutingLinkBegin();
+
+        return begin + kords.lat + "," + kords.lng;
+    }
+
+    public String createLink(String address) {
+        try {
+            LatLng kords = getCordsAdress(address);
+            return createLinkFromCoordinates(kords);
+
+
+        } catch (Exception e) {
+            if (address.lastIndexOf(" ") > -1) {
+                logger.info("Couldnt get link from google, retry");
+                return createLink(address.substring(0, address.lastIndexOf(" ")));
+            } else {
+                return "Leider konnte kein Link geparst werden";
+            }
+
+
+        }
+
+
     }
 
 

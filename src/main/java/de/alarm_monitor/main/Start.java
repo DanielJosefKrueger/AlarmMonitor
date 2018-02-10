@@ -75,7 +75,6 @@ public class Start {
     }
 
 
-
     private static void printConfiguration() {
         logger.info("Konfiguration:" +
                 ", Projekt-Ordner: " + systemInformation.getProjectDirectory().getAbsolutePath() +

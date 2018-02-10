@@ -8,7 +8,6 @@ import org.apache.commons.lang.time.FastDateFormat;
 import org.apache.logging.log4j.LogManager;
 import org.apache.logging.log4j.Logger;
 
-import java.util.TimeZone;
 import java.util.concurrent.TimeUnit;
 
 @Singleton
@@ -29,7 +28,7 @@ public class AlarmResetter {
 
         resetTime = System.currentTimeMillis() + delay * 1000 * 60;
         FastDateFormat format = FastDateFormat.getInstance();
-        logger.info("Dieplay wird um {} zurückgesetzt" , format.format(resetTime));
+        logger.info("Dieplay wird um {} zurückgesetzt", format.format(resetTime));
     }
 
     private void startController() {

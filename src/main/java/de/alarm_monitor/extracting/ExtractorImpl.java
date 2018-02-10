@@ -21,7 +21,7 @@ public class ExtractorImpl implements Extractor {
     @Inject
     public ExtractorImpl(Provider<MainConfiguration> mainConfigurationProvider) {
 
-         this.mainConfiguration = mainConfigurationProvider.get();
+        this.mainConfiguration = mainConfigurationProvider.get();
         if (mainConfiguration.should_filter_einsatzmittel()) {
             if (mainConfiguration.filter_einsatzmittel().length() > 2) {
                 filterOperationResources = true;
@@ -112,7 +112,6 @@ public class ExtractorImpl implements Extractor {
     }
 
 
-
     private String extractKeyword(String[] lines) {
         StringBuilder sb = new StringBuilder();
 
@@ -159,7 +158,7 @@ public class ExtractorImpl implements Extractor {
 
             if (splitted[0].contains("Einsatznu")) {
                 int beginAlarmPart = line.indexOf("Alarm");
-                if(beginAlarmPart >=0){
+                if (beginAlarmPart >= 0) {
                     sb.append(line.subSequence(0, beginAlarmPart));
                 }
 
@@ -167,7 +166,7 @@ public class ExtractorImpl implements Extractor {
         }
         String operationNumber = sb.toString();
         int index = operationNumber.indexOf(' ');
-        if(index>=0){
+        if (index >= 0) {
             operationNumber = operationNumber.substring(index, operationNumber.length());
         }
 
@@ -229,7 +228,7 @@ public class ExtractorImpl implements Extractor {
 
     @org.jetbrains.annotations.NotNull
     private String removeNewLineAtEnd(String string) {
-        if (string.endsWith("\n")){
+        if (string.endsWith("\n")) {
             string = string.substring(0, string.lastIndexOf("\n"));
         }
         return string;
@@ -239,8 +238,8 @@ public class ExtractorImpl implements Extractor {
     @org.jetbrains.annotations.NotNull
     private String removeBeginTillFirstEmptySpace(String string) {
         int index = string.indexOf(" ");
-        if(index >0){
-            return string.substring(index,string.length());
+        if (index > 0) {
+            return string.substring(index, string.length());
         }
         return string;
     }
