@@ -32,15 +32,14 @@ public class PngConverter {
 
     public String convertToPng(File file) throws IOException {
         Calendar cal = Calendar.getInstance();
-        SimpleDateFormat sdf = new SimpleDateFormat("dd MM YYYY HH mm ss");
+        SimpleDateFormat sdf = new SimpleDateFormat("dd.MM.YYYY.HH.mm.ss");
         String time = sdf.format(cal.getTime());
 
         String name = systemInformation.getWorkingFolder().getPath() + File.separatorChar + time.toString() + ".png";
         BufferedImage bim = convertToBufferedImage(file);
-
         ImageIOUtil.writeImage(bim, name, mainConfiguration.getDpiPng());
-            return name;
-        }
+        return name;
+    }
 
 
     @NotNull

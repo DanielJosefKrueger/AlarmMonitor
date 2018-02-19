@@ -29,6 +29,7 @@ public class NewLayout extends JFrame implements IDisplay {
     private final JTextArea sectionComment;
     private final JButton resetButton;
 
+    private boolean alarmActive;
 
     public NewLayout() {
 
@@ -142,12 +143,12 @@ public class NewLayout extends JFrame implements IDisplay {
 
     @Override
     public void changeAddress(String adresse) {
-        sectionAddress.setText(adresse);
+        sectionAddress.setText(ADRESSE_DEFAULT + "\n" + adresse);
     }
 
     @Override
     public void changeOperationRessources(String operationRessources) {
-        sectionOperationRessources.setText(operationRessources);
+        sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT + "\n" + operationRessources);
     }
 
     @Override
@@ -159,14 +160,19 @@ public class NewLayout extends JFrame implements IDisplay {
         sectionComment.setText(COMMENT_DEFAULT);
         sectionAddress.setText(ADRESSE_DEFAULT);
         sectionOperationRessources.setText(OPERATIONRESSOURCES_DEFAULT);
-
+        alarmActive = false;
+        getContentPane().setBackground(Color.white);
     }
 
     @Override
     public void activateAlarm() {
+        alarmActive = true;
         Runnable runnable = () -> {
             long start = System.currentTimeMillis();
             while (System.currentTimeMillis() < start + 5 * 60 * 1000) {
+                if (!alarmActive) {
+                    break;
+                }
                 getContentPane().setBackground(Color.red);
                 refresh();
                 try {

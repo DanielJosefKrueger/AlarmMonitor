@@ -1,7 +1,6 @@
 package de.alarm_monitor.extracting;
 
 
-import com.drew.lang.annotations.NotNull;
 import com.google.inject.Provider;
 import de.alarm_monitor.configuration.MainConfiguration;
 import de.alarm_monitor.main.AlarmFax;
@@ -37,7 +36,7 @@ public class ExtractorImpl implements Extractor {
 
 
     @Override
-    public AlarmFax extractInformation(@NotNull String recognizedText) {
+    public AlarmFax extractInformation(String recognizedText) {
 
         String[] allLines = recognizedText.split("\n");
         ArrayList<String> lineList = new ArrayList<>();
@@ -85,7 +84,9 @@ public class ExtractorImpl implements Extractor {
 
         for (String line : lines) {
             String[] splitted = line.split(" ");
-
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
             if (splitted[0].contains("Name")) {
                 sb.append(line);
             }
@@ -117,7 +118,9 @@ public class ExtractorImpl implements Extractor {
 
         for (String line : lines) {
             String[] splitted = line.split(" ");
-
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
 
             if (splitted[0].contains("Schlagw")) {
                 sb.append(line).append("\n");
@@ -131,6 +134,9 @@ public class ExtractorImpl implements Extractor {
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             String[] splitted = line.split(" ");
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
 
             if (splitted[0].contains("Stra") | splitted[0].contains("Abschnitt") | splitted[0].contains("Ort") | splitted[0].contains("Objekt")) {
                 sb.append(line).append("\n");
@@ -143,6 +149,9 @@ public class ExtractorImpl implements Extractor {
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             String[] splitted = line.split(" ");
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
             if (splitted[0].contains("Koordinate")) {
                 sb.append(line).append("\n");
             }
@@ -155,6 +164,9 @@ public class ExtractorImpl implements Extractor {
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             String[] splitted = line.split(" ");
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
 
             if (splitted[0].contains("Einsatznu")) {
                 int beginAlarmPart = line.indexOf("Alarm");
@@ -179,10 +191,10 @@ public class ExtractorImpl implements Extractor {
         StringBuilder sb = new StringBuilder();
         for (String line : lines) {
             String[] splitted = line.split(" ");
-
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
             if (splitted[0].contains("Einsatznu")) {
-
-
                 int beginAlarmPart = line.indexOf("Alarm");
                 if (beginAlarmPart >= 0) {
                     sb.append(line.subSequence(beginAlarmPart, line.length()));
@@ -201,7 +213,9 @@ public class ExtractorImpl implements Extractor {
         String previousLine = "";
         for (String line : lines) {
             String[] splitted = line.split(" ");
-
+            if (splitted.length < 1) { // if no element is in the array
+                continue;
+            }
             if (splitted[0].contains("mittel") | (splitted.length > 1 && splitted[1].toLowerCase().contains("ger"))) {
 
                 if (!filterOperationResources) {
@@ -210,7 +224,6 @@ public class ExtractorImpl implements Extractor {
                     if (line.contains(filter)) {
                         sb.append(line).append("\n");
                     }
-
                     if (line.toLowerCase().contains("ger")) {
                         if (previousLine.contains(filter)) {
                             sb.append(line);
@@ -226,7 +239,6 @@ public class ExtractorImpl implements Extractor {
     }
 
 
-    @org.jetbrains.annotations.NotNull
     private String removeNewLineAtEnd(String string) {
         if (string.endsWith("\n")) {
             string = string.substring(0, string.lastIndexOf("\n"));
@@ -235,7 +247,6 @@ public class ExtractorImpl implements Extractor {
     }
 
 
-    @org.jetbrains.annotations.NotNull
     private String removeBeginTillFirstEmptySpace(String string) {
         int index = string.indexOf(" ");
         if (index > 0) {

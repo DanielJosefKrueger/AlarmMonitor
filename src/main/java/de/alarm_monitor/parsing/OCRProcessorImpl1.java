@@ -39,11 +39,9 @@ public class OCRProcessorImpl1 implements OCRProcessor {
 
     public String getOCROfFile(String filename) throws IOException, TikaException, SAXException {
 
-
         if (tPath == null) {
             tPath = configuration.path_tesseract();
         }
-
         Parser parser = new AutoDetectParser();
         BodyContentHandler handler = new BodyContentHandler(Integer.MAX_VALUE);
         TesseractOCRConfig tesseractOCRConfig = new TesseractOCRConfig();
@@ -60,7 +58,6 @@ public class OCRProcessorImpl1 implements OCRProcessor {
         parseContext.set(PDFParserConfig.class, pdfConfig);
         // need to add this to make sure recursive parsing happens!
         parseContext.set(Parser.class, parser);
-
         FileInputStream stream = new FileInputStream(filename);
         Metadata metadata = new Metadata();
         parser.parse(stream, handler, metadata, parseContext);
